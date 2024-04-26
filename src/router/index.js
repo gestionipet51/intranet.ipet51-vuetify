@@ -17,7 +17,7 @@ const routes = [
     { path:'/intranet/cursos/crear' , component:CrearCurso },
     { path:'/intranet/cursos/listar' , component:ListarCurso },
     { path:'/intranet/especialidades/electronica', component:TecnicoElectronica },
-    { path:'/intranet/especialidades/mecanico',componet:TecnicoMecanico },
+    { path:'/intranet/especialidades/mecanico',component:TecnicoMecanico },
     { path:'/intranet/especialidades/automotores', component:TecnicoAutomotores },
     { path:'/intranet/especialidades/carpinteria' , component:TecnicoCarpinteria },
 ];
