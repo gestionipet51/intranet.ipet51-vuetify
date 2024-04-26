@@ -2,7 +2,7 @@ import { createRouter,createWebHistory } from "vue-router";
 import Welcome from '../components/Welcome.vue';
 import Login from '../components/intranet/Login.vue';
 import CrearCurso from '../components/intranet/cursos/CrearCurso.vue';
-import ListarCurso from '../components/intranet/cursos/ListarCurso.vue';
+import ListarCursos from '../components/intranet/cursos/ListarCursos.vue';
 import TecnicoElectronica from '../components/intranet/especialidades/TecnicoElectronica.vue'; 
 import TecnicoAutomotores from "@/components/intranet/especialidades/TecnicoAutomotores.vue";
 import TecnicoMecanico from "@/components/intranet/especialidades/TecnicoMecanico.vue";
@@ -15,7 +15,7 @@ const routes = [
     { path:'/panelHome',component:PanelHome },
     { path:'/intranet/login' , component:Login },
     { path:'/intranet/cursos/crear' , component:CrearCurso },
-    { path:'/intranet/cursos/listar' , component:ListarCurso },
+    { path:'/intranet/cursos/listar' , component:ListarCursos },
     { path:'/intranet/especialidades/electronica', component:TecnicoElectronica },
     { path:'/intranet/especialidades/mecanico',component:TecnicoMecanico },
     { path:'/intranet/especialidades/automotores', component:TecnicoAutomotores },

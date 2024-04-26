@@ -13,7 +13,7 @@
         <div class="text-center">
           <div class="text-body-2 font-weight-light mb-n1">Bienvenidos al</div>
   
-          <h1 class="text-h2 font-weight-bold">Ipet 51 - Nicolas Avellaneda</h1>
+          <h1 class="text-h3 font-weight-bold">Ipet 51 - Nicolas Avellaneda</h1>
         </div>
   
         <div class="py-4" />
@@ -56,7 +56,7 @@
             <v-card
               append-icon="mdi-open-in-new"
               class="py-4 mx-auto"
-              color="primary"
+              color="blue-darken-4"
               href="/intranet/especialidades/mecanico"
               prepend-icon="mdi-cog"
               rel="noopener noreferrer"
@@ -85,7 +85,7 @@
             <v-card
               append-icon="mdi-open-in-new"
               class="py-4 mx-auto"
-              color="purple-darken-1"
+              color="deep-purple-darken-1"
               href="/intranet/especialidades/automotores"
               prepend-icon="mdi-car-wrench"
               rel="noopener noreferrer"
@@ -143,7 +143,7 @@
             <v-card
               append-icon="mdi-open-in-new"
               class="py-4 mx-auto"
-              color="red-accent-4"
+              color="orange-darken-4"
               href="/intranet/especialidades/carpinteria"
               prepend-icon="mdi-hand-saw"
               rel="noopener noreferrer"
