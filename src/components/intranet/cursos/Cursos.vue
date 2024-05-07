@@ -76,7 +76,7 @@ export default {
         methods:{
             loadItems({ page,itemsPerPage,sortBy }){
                 this.loading = true;
-                FakeAPI.fetch({ page , itemsPerPage,sortBy}).then(({items , total}) =>{ 
+                FakeAPI.fetch({ page , itemsPerPage,sortBy }).then(({items , total}) =>{ 
                     this.serverItems = items;
                     this.totalItems = total ;
                     this.loading = false;
@@ -92,11 +92,11 @@ export default {
 
         <v-data-table-server 
             v-model:items-per-page="itemsPerPage"
-            :items="cursos"
+            :items="serverItems"
             :headers="headers" 
             :items-length="totalItems"
             :loading="loading"
-            item-value="name"
+            item-value="id"
             @update:options="loadItems"
             >
         </v-data-table-server>
