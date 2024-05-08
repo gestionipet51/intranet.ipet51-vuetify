@@ -31,10 +31,11 @@ const cursos=[
               
               ];
 const cabeceras = [
-    { title:'Id'   , align:'start' ,sortable:false},
-    { title:'Ciclo', align:'center',sortable:true},
-    { title:'Año'  , align:'center',sortable: false},
-    { title:'División',align:'center',sortable: false}
+    { title:'Id'   , align:'start' ,sortable:false,key:'id'},
+    { title:'Ciclo', align:'center',sortable:true ,key:'ciclo'},
+    { title:'Año'  , align:'center',sortable: false,key:'anio'},
+    { title:'División',align:'center',sortable:false,key:'division'},
+    { title:'Acciones',align:'center',sortable:false,key:'acciones'},
 ];
 
 // console.log(cursos);
@@ -46,16 +47,16 @@ const FakeAPI = {
           const start = (page - 1) * itemsPerPage;
           const end = start + itemsPerPage;
           const items = cursos.slice();
-            /*
+            
           if (sortBy.length) {
             const sortKey = sortBy[0].key
             const sortOrder = sortBy[0].order
             items.sort((a, b) => {
-              const aValue = a[sortKey]
-              const bValue = b[sortKey]
-              return sortOrder === 'desc' ? bValue - aValue : aValue - bValue
+              const aValue = a[sortKey];
+              const bValue = b[sortKey];
+              return sortOrder === 'desc' ? bValue - aValue : aValue - bValue;
             })
-          }*/
+          }
 
           const paginated = items.slice(start, end);
 
@@ -67,13 +68,22 @@ const FakeAPI = {
 
 export default {
         data:() =>({
-            itemsPerPage:5,
+            itemsPerPage:10,
             headers : cabeceras,
             serverItems:[],
             loading:true,
             totalItems: 0,
+            search:'',
+            selected:[],
+            singleSelect:false,
+            dialog:false,
+            dialogDelete:false,
+            editedIndex: -1,
         }),
         methods:{
+            initialize(){
+
+             },
             loadItems({ page,itemsPerPage,sortBy }){
                 this.loading = true;
                 FakeAPI.fetch({ page , itemsPerPage,sortBy }).then(({items , total}) =>{ 
@@ -82,7 +92,26 @@ export default {
                     this.loading = false;
                     })
                 },
-            }
+                sendData(){
+                  let result = this.serverItems.map((item) => { return { ...item,isActive:this.selected.includes(item)}})
+                },
+              },
+        computed: {
+                  formTitle () {
+                    return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
+                  },
+                },
+        watch: {
+          dialog (val) {
+            val || this.close()
+          },
+          dialogDelete (val) {
+            val || this.closeDelete()
+          },
+        },
+        created () {
+          // this.initialize()
+        },
     }
 </script>
 <template>
@@ -90,16 +119,55 @@ export default {
 
         <v-app-bar :elevation="2" title="Cursos" color="deep-purple-darken-4"></v-app-bar>
 
-        <v-data-table-server 
-            v-model:items-per-page="itemsPerPage"
-            :items="serverItems"
-            :headers="headers" 
-            :items-length="totalItems"
-            :loading="loading"
-            item-value="id"
-            @update:options="loadItems"
-            >
-        </v-data-table-server>
+        <v-row no-gutters>
+          <v-col></v-col>
+          <v-col>
+            <v-sheet class="pa-2 ma-2">
+              <v-card title="Buscador" flat>
+                <template v-slot:text>
+                  <v-text-field
+                          v-model="search"
+                          label="Buscar"
+                          prepend-inner-icon="mdi-magnify"
+                          variant="outlined"
+                          hide-details
+                          single-line
+                  >
+                  </v-text-field>
+                </template>
+                <v-data-table-server 
+                v-model:items-per-page="itemsPerPage"
+                :items="serverItems"
+                :headers="headers" 
+                :items-length="totalItems"
+                :loading="loading"
+                item-value="id"
+                @update:options="loadItems"
+                :search="search"
+                :single-select="singleSelect"
+                >
+                <template v-slot:item.actions="{ item }">
+                  <v-icon
+                    class="me-2"
+                    size="small"
+                    @click="editItem(item)"
+                  >
+                    mdi-pencil
+                  </v-icon>
+                  <v-icon
+                    size="small"
+                    @click="deleteItem(item)"
+                  >
+                    mdi-delete
+                  </v-icon>
+                </template>
+              </v-data-table-server>
+              <!-- show-select class="elevation-1"-->
+            </v-card>
+          </v-sheet>
+          </v-col>
+          <v-col></v-col>
+        </v-row>
         
     </v-container>
 </template>
