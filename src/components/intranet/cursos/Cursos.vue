@@ -88,7 +88,7 @@ export default {
         }),
         methods:{
             initialize(){
-
+                this.serverItems = cursos;
              },
             loadItems({ page,itemsPerPage,sortBy }){
                 this.loading = true;
@@ -101,6 +101,17 @@ export default {
                 sendData(){
                   let result = this.serverItems.map((item) => { return { ...item,isActive:this.selected.includes(item)}})
                 },
+                editItem (item) {
+                        this.editedIndex = this.serverItems.indexOf(item)
+                        this.editedItem = Object.assign({}, item)
+                        this.dialog = true
+                    },
+
+                    deleteItem (item) {
+                        this.editedIndex = this.serverItems.indexOf(item)
+                        this.editedItem = Object.assign({}, item)
+                        this.dialogDelete = true
+                    },
               },
         computed: {
                   formTitle () {
@@ -116,7 +127,7 @@ export default {
           },
         },
         created () {
-          // this.initialize()
+          this.initialize()
         },
     }
 </script>
@@ -129,19 +140,35 @@ export default {
           <v-col cols="3"></v-col>
           <v-col cols="6">
             <v-sheet class="pa-2 ma-2">
-              <v-card title="Crud - Cursos" flat>
-                <template v-slot:text>
+                <v-data-table-server 
+                :headers="headers" 
+                :items="serverItems"
+                v-model:items-per-page="itemsPerPage"
+                :items-length="totalItems"
+                :loading="loading"
+                item-value="id"
+                @update:options="loadItems"
+                :search="search"
+                :single-select="singleSelect"
+                >
+                <template v-slot:top>
                   <v-toolbar flat>
+                        <v-toolbar-title>CRUD</v-toolbar-title>
                         <v-text-field
-                                    v-model="search"
-                                    label="Buscar"
-                                    prepend-inner-icon="mdi-magnify"
-                                    variant="outlined"
-                                    hide-details
-                                    single-line
-                                    cols="2"
+                            v-model="search"
+                            label="Buscar"
+                            prepend-inner-icon="mdi-magnify"
+                            variant="outlined"
+                            hide-details
+                            single-line
+                            cols="1"
                         >
                         </v-text-field>
+                        <v-divider
+                            class="mx-8"
+                            inset
+                            vertical
+                            ></v-divider>
                         <v-dialog v-model="dialog" max-width="500px">
                             <template v-slot:activator="{ props }">
                                 <v-btn class="mb-2" color="primary" variant="elevated" v-bind="props"> Nuevo Curso</v-btn>
@@ -166,27 +193,12 @@ export default {
                         </v-dialog>
                   </v-toolbar>
                 </template>
-                <v-data-table-server 
-                v-model:items-per-page="itemsPerPage"
-                :items="serverItems"
-                :headers="headers" 
-                :items-length="totalItems"
-                :loading="loading"
-                item-value="id"
-                @update:options="loadItems"
-                :search="search"
-                :single-select="singleSelect"
-                >
                 <template v-slot:item.actions="{ item }">
-                  <v-icon class="me-2" size="small" @click="editItem(item)">mdi-pencil
-                  </v-icon>
-                  <v-icon
-                    size="small"   @click="deleteItem(item)" >mdi-delete
-                  </v-icon>
+                  <v-icon class="me-2" size="small" @click="editItem(item)">mdi-pencil </v-icon>
+                  <v-icon class="me-2" size="small" @click="deleteItem(item)" >mdi-delete   </v-icon>
                 </template>
               </v-data-table-server>
               <!-- show-select class="elevation-1"-->
-            </v-card>
           </v-sheet>
           </v-col>
           <v-col></v-col>
