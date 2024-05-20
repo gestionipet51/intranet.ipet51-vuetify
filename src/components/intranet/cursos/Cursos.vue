@@ -97,27 +97,53 @@ export default {
                     this.totalItems = total ;
                     this.loading = false;
                     })
-                },
-                sendData(){
+            },
+            sendData(){
                   let result = this.serverItems.map((item) => { return { ...item,isActive:this.selected.includes(item)}})
-                },
-                editItem (item) {
+            },
+            editItem (item) {
                         this.editedIndex = this.serverItems.indexOf(item)
                         this.editedItem = Object.assign({}, item)
                         this.dialog = true
-                    },
-
-                    deleteItem (item) {
+            },
+            deleteItem (item) {
                         this.editedIndex = this.serverItems.indexOf(item)
                         this.editedItem = Object.assign({}, item)
                         this.dialogDelete = true
-                    },
-              },
+            },
+            deleteItemConfirm () {
+                this.serverItems.splice(this.editedIndex, 1)
+                this.closeDelete()
+            },
+            close () {
+                this.dialog = false
+                this.$nextTick(() => {
+                this.editedItem = Object.assign({}, this.defaultItem)
+                this.editedIndex = -1
+                })
+            },
+            closeDelete () {
+                this.dialogDelete = false
+                this.$nextTick(() => {
+                this.editedItem = Object.assign({}, this.defaultItem)
+                this.editedIndex = -1
+                })
+            },
+            save () {
+                if (this.editedIndex > -1) {
+                Object.assign(this.serverItems[this.editedIndex], this.editedItem)
+                } else {
+                this.serverItems.push(this.editedItem)
+                }
+                this.close()
+            },
+
+        },
         computed: {
-                  formTitle () {
+            formTitle () {
                     return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
-                  },
-                },
+            },
+        },
         watch: {
           dialog (val) {
             val || this.close()
@@ -175,7 +201,7 @@ export default {
                             </template>
                             <v-card>
                                 <v-card-title>
-                                        <span class="text-h5"> {{ form-title }}</span>
+                                        <span class="text-h5"> {{ formTitle }}</span>
                                 </v-card-title>
                                 <v-card-text>
                                     <v-container>
