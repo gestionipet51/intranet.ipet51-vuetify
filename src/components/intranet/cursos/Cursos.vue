@@ -35,36 +35,10 @@ const cabeceras = [
     { title:'Ciclo', align:'center',sortable:true ,key:'ciclo'},
     { title:'Año'  , align:'center',sortable: false,key:'anio'},
     { title:'División',align:'center',sortable:false,key:'division'},
-    { title:'Acciones',align:'center',sortable:false,key:'acciones'},
+    { title:'Acciones',align:'center',sortable:false,key:'actions'},
 ];
 
 // console.log(cursos);
-
-const FakeAPI = {
-    async fetch ({ page, itemsPerPage, sortBy }) {
-      return new Promise(resolve => {
-        setTimeout(() => {
-          const start = (page - 1) * itemsPerPage;
-          const end = start + itemsPerPage;
-          const items = cursos.slice();
-            
-          if (sortBy.length) {
-            const sortKey = sortBy[0].key
-            const sortOrder = sortBy[0].order
-            items.sort((a, b) => {
-              const aValue = a[sortKey];
-              const bValue = b[sortKey];
-              return sortOrder === 'desc' ? bValue - aValue : aValue - bValue;
-            })
-          }
-
-          const paginated = items.slice(start, end);
-
-          resolve({ items: paginated, total: items.length })
-        }, 500)
-      })
-    },
-  }
 
 export default {
         data:() =>({
@@ -89,16 +63,10 @@ export default {
         methods:{
             initialize(){
                 this.serverItems = cursos;
+                this.loading = false;
              },
-            loadItems({ page,itemsPerPage,sortBy }){
-                this.loading = true;
-                FakeAPI.fetch({ page , itemsPerPage,sortBy }).then(({items , total}) =>{ 
-                    this.serverItems = items;
-                    this.totalItems = total ;
-                    this.loading = false;
-                    })
-            },
-            sendData(){
+
+             sendData(){
                   let result = this.serverItems.map((item) => { return { ...item,isActive:this.selected.includes(item)}})
             },
             editItem (item) {
@@ -141,7 +109,7 @@ export default {
         },
         computed: {
             formTitle () {
-                    return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
+                    return (this.editedIndex === -1) ? 'Nuevo Curso' : 'Actualizar Curso'
             },
         },
         watch: {
@@ -157,23 +125,23 @@ export default {
         },
     }
 </script>
+<!--   @update:options="loadItems" -->
 <template>
     <v-container>
 
         <v-app-bar :elevation="2" title="Cursos" color="deep-purple-darken-4"></v-app-bar>
 
         <v-row no-gutters>
-          <v-col cols="3"></v-col>
-          <v-col cols="6">
-            <v-sheet class="pa-2 ma-2">
-                <v-data-table-server 
+          <v-col cols="4"></v-col>
+          <v-col cols="4">
+                <v-data-table 
                 :headers="headers" 
                 :items="serverItems"
                 v-model:items-per-page="itemsPerPage"
                 :items-length="totalItems"
                 :loading="loading"
                 item-value="id"
-                @update:options="loadItems"
+              
                 :search="search"
                 :single-select="singleSelect"
                 >
@@ -195,9 +163,9 @@ export default {
                             inset
                             vertical
                             ></v-divider>
-                        <v-dialog v-model="dialog" max-width="500px">
+                        <v-dialog v-model="dialog" max-width="600px">
                             <template v-slot:activator="{ props }">
-                                <v-btn class="mb-2" color="primary" variant="elevated" v-bind="props"> Nuevo Curso</v-btn>
+                                <v-btn class="mb-2" color="primary" variant="elevated" v-bind="props"><v-icon>mdi-plus</v-icon></v-btn>
                             </template>
                             <v-card>
                                 <v-card-title>
@@ -206,26 +174,44 @@ export default {
                                 <v-card-text>
                                     <v-container>
                                         <v-row>
-                                            <v-col cols="12" md="4" sm="6">
-                                                <v-text-field v-model="editedItem.id" label="Id"> </v-text-field>
+                                            <v-col cols="12" md="2" sm="4">
+                                                <v-text-field v-model="editedItem.id" label="Id" disabled> </v-text-field>
                                             </v-col>
-                                            <v-col cols="12" md="4" sm="6"> 
+                                            <v-col cols="12" md="2" sm="4"> 
+                                                <v-text-field v-model="editedItem.ciclo" label="Ciclo"></v-text-field> 
+                                            </v-col>
+                                            <v-col cols="12" md="2" sm="4"> 
                                                 <v-text-field v-model="editedItem.anio" label="Año"></v-text-field> 
+                                            </v-col>
+                                            <v-col cols="12" md="2" sm="4"> 
+                                                <v-text-field v-model="editedItem.division" label="División"></v-text-field> 
                                             </v-col>
                                         </v-row>
                                     </v-container>
                                 </v-card-text>
+                                <v-card-actions>
+                                    <v-spacer></v-spacer>
+                                    <v-btn color="red-accent-4" variant="text" @click="close" icon="mdi-arrow-u-left-top-bold"></v-btn>
+                                    <v-btn color="green-darken-4" variant="text" @click="save" icon="mdi-content-save-settings"></v-btn>
+                                </v-card-actions>
                             </v-card>
                         </v-dialog>
                   </v-toolbar>
                 </template>
                 <template v-slot:item.actions="{ item }">
-                  <v-icon class="me-2" size="small" @click="editItem(item)">mdi-pencil </v-icon>
-                  <v-icon class="me-2" size="small" @click="deleteItem(item)" >mdi-delete   </v-icon>
+                  <v-icon class="me-2" size="small" color="green-darken-4" @click="editItem(item)">mdi-pencil </v-icon>
+                  <v-icon class="me-2" size="small" color="red-accent-4" @click="deleteItem(item)" >mdi-delete   </v-icon>
                 </template>
-              </v-data-table-server>
+                <template v-slot:no-data>
+                    <v-btn
+                        color="primary"
+                        @click="initialize"
+                    >
+                        Reset
+                    </v-btn>
+                    </template>
+              </v-data-table>
               <!-- show-select class="elevation-1"-->
-          </v-sheet>
           </v-col>
           <v-col></v-col>
         </v-row>
