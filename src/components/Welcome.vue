@@ -6,14 +6,14 @@
       >
         <v-img
           class="mb-4"
-          height="150"
+          height="80"
           src="@/assets/ipet51/logos/logoIpet-lg.png"
         />
   
         <div class="text-center">
           <div class="text-body-2 font-weight-light mb-n1">Bienvenidos al</div>
   
-          <h1 class="text-h2 font-weight-bold">Ipet 51 - Nicolas Avellaneda</h1>
+          <h1 class="text-h3 font-weight-bold">Ipet 51 - Nicolas Avellaneda</h1>
         </div>
   
         <div class="py-4" />
@@ -55,16 +55,17 @@
           <v-col cols="6">
             <v-card
               append-icon="mdi-open-in-new"
-              class="py-4"
-              color="primary"
-              href="https://vuetifyjs.com/"
+              class="py-4 mx-auto"
+              color="blue-darken-4"
+              href="/intranet/especialidades/mecanico"
               prepend-icon="mdi-cog"
               rel="noopener noreferrer"
               rounded="lg"
-              subtitle="Learn about all things Vuetify in our documentation."
-              target="_blank"
+              subtitle=""
+              target="_self"
               title="Tecnico en Mecanización"
               variant="text"
+              max-width="344"
             >
               <v-overlay
                 opacity=".06"
@@ -73,22 +74,27 @@
                 model-value
                 persistent
               />
+              <v-img 
+                  height="200px"
+                  src="@/assets/ipet51/especialidades/Mecanico-00.png"
+              ></v-img>
             </v-card>
           </v-col>
   
           <v-col cols="6">
             <v-card
               append-icon="mdi-open-in-new"
-              class="py-4"
-              color="purple-darken-1"
-              href="https://vuetifyjs.com/introduction/why-vuetify/#feature-guides"
+              class="py-4 mx-auto"
+              color="deep-purple-darken-1"
+              href="/intranet/especialidades/automotores"
               prepend-icon="mdi-car-wrench"
               rel="noopener noreferrer"
               rounded="lg"
-              subtitle="Explore available framework Features."
-              target="_blank"
+              subtitle=""
+              target="_self"
               title="Técnico en Automotores"
               variant="text"
+              max-width="344"
             >
               <v-overlay
                 opacity=".06"
@@ -97,22 +103,27 @@
                 model-value
                 persistent
               />
+              <v-img 
+                height="200"
+                src="@/assets/ipet51/especialidades/Automotores-00.jpg"
+                ></v-img>
             </v-card>
           </v-col>
   
           <v-col cols="6">
             <v-card
               append-icon="mdi-open-in-new"
-              class="py-4"
+              class="py-4 mx-auto"
               color="teal-darken-3"
-              href="/especialidades/electronica"
+              href="/intranet/especialidades/electronica"
               prepend-icon="mdi-connection"
               rel="noopener noreferrer"
               rounded="lg"
-              subtitle="Discover components in the API Explorer."
+              subtitle=""
               target="_self"
               title="Técnico en Electrónica"
               variant="text"
+              max-width="344"
             >
               <v-overlay
                 opacity=".06"
@@ -121,22 +132,27 @@
                 model-value
                 persistent
               />
+              <v-img 
+                  height="200"
+                  src="@/assets/ipet51/especialidades/Electronico01.jpg"
+                ></v-img>
             </v-card>
           </v-col>
   
           <v-col cols="6">
             <v-card
               append-icon="mdi-open-in-new"
-              class="py-4"
-              color="red-accent-4"
-              href="https://discord.vuetifyjs.com"
+              class="py-4 mx-auto"
+              color="orange-darken-4"
+              href="/intranet/especialidades/carpinteria"
               prepend-icon="mdi-hand-saw"
               rel="noopener noreferrer"
               rounded="lg"
-              subtitle="Connect with Vuetify developers."
-              target="_blank"
+              target="_self"
+              subtitle=""
               title="Técnico en Industrialización de la Madera y el Mueble"
               variant="text"
+              max-width="344"
             >
               <v-overlay
                 opacity=".06"
@@ -145,19 +161,10 @@
                 model-value
                 persistent
               />
+              <v-img height="200" src="@/assets/ipet51/especialidades/carpinteria-000.jpg"></v-img>
             </v-card>
           </v-col>
         </v-row>
-
-        <br>
-        <a href="/panelHome">
-          <v-img
-            class="mb-4"
-            height="150"
-            src="@/assets/Login.png"
-          />
-        </a>
-
       </v-responsive>
     </v-container>
     <router-view></router-view>
