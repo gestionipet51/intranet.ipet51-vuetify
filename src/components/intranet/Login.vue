@@ -2,7 +2,7 @@
     <div>
       <v-img
         class="mx-auto my-6"
-        max-width="130"
+        max-width="80"
         src="../../assets/ipet51/logos/logoIpet-lg.png"
       ></v-img>
   
@@ -12,7 +12,7 @@
         max-width="448"
         rounded="lg"
       >
-        <div class="text-subtitle-1 text-medium-emphasis">Cuenta</div>
+        <div class="text-subtitle-1 text-medium-emphasis">Cuenta Usuario</div>
   
         <v-text-field
           density="compact"
