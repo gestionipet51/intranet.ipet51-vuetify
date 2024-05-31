@@ -31,11 +31,11 @@ const myCursos=[
               
               ];
 const cabeceras = [
-    { title:'Curso Id'   , align:'start' ,sortable:false,key:'id'},
-    { title:'Ciclo', align:'center',sortable:true ,key:'ciclo'},
-    { title:'Año'  , align:'center',sortable: false,key:'anio'},
-    { title:'División',align:'center',sortable:false,key:'division'},
-    { title:'Acciones',align:'center',sortable:false,key:'actions'},
+    { align:'d-none',sortable:false,key:'id'  , title:'Curso Id'},
+    { align:'center',sortable:true ,key:'ciclo',title:'Ciclo', },
+    { align:'center',sortable:false,key:'anio',title:'Año'  , },
+    { align:'center',sortable:false,key:'division',title:'Año'  , },
+    { align:'center',sortable:false,key:'actions',title:'Acciones',},
 ];
 
 const myCiclos =[
@@ -76,20 +76,19 @@ export default {
             dialogDelete:false,
             editedIndex: -1,
             editedCurso:{
-                id:0,
+                id:'',
                 ciclo:'',
-                anio:0,
+                anio:'',
                 division:''
             },
             ciclos:[],
-            ciclo:{
-                id:0,
+            cicloSel:{
+                id:'',
                 key:'',
                 caption:'',
                 description:'',
                 oldkey:''
                 },
-            cicloSel:null,
         }),
         methods:{
             initialize(){
@@ -118,7 +117,7 @@ export default {
                         this.selected = item;
                         this.editedIndex = this.cursos.indexOf(item);
                         this.editedCurso = { ...curso };
-                        this.editCurso.ciclo = this.ciclos.find(ciclo => ciclo.key == this.cicloSel);
+                        this.editCurso.ciclo = this.ciclos.find(ciclo => ciclo.key == this.cicloSel.id);
                         this.dialog = true;
             },
             async deleteCurso (item) {
@@ -151,16 +150,16 @@ export default {
                 this.closeDelete()
             },
             close () {
-                this.dialog = false
+                this.dialog = false;
                 this.$nextTick(() => {
-                this.editedCurso = Object.assign({}, this.defaultItem)
-                this.editedIndex = -1
+                    this.editedCurso =  { id:'',ciclo:'',anio:'',division:''};
+                    this.editedIndex = -1;
                 })
             },
             closeDelete () {
                 this.dialogDelete = false
                 this.$nextTick(() => {
-                this.editedCurso = Object.assign({}, this.defaultItem)
+                this.editedCurso = Object.assign({},  { id:'',ciclo:'',anio:'',division:''})
                 this.editedIndex = -1
                 })
             },
@@ -189,9 +188,22 @@ export default {
                 return this.ciclos.find(ciclo => ciclo.id ==  this.editedIndex.ciclo);
             },
             setCiclo(){
-                this.ciclo = this.ciclos.find(ciclo => ciclo.id == this.cicloSel);
-                this.editedCurso.ciclo = this.ciclo.key;
+
+                if(this.editedIndex === -1 ){
+                    /* nuevo Curso */
+                    if(this.cicloSel.id != ''){
+                        this.cicloSel = this.ciclos.find((c) => c.id === this.cicloSel.id);
+                        this.editedCurso.ciclo = this.ciclos.find((c) => c.id === this.cicloSel.id).key;
+
+                    }
+                }
+                
+                console.log(this.editedCurso);
             },
+            genId(){
+                
+                this.editedCurso.id = crypto.randomUUID();
+            }
         },
         watch: {
           dialog (val) {
@@ -213,8 +225,8 @@ export default {
     <v-container>
         <v-app-bar :elevation="2" title="Cursos" color="deep-purple-darken-4"></v-app-bar>
         <v-row no-gutters>
-          <v-col cols="4"></v-col>
-          <v-col cols="4">
+          <v-col cols="2"></v-col>
+          <v-col cols="6">
                 <v-data-table 
                 :headers="headers" 
                 :items="cursos"
@@ -251,12 +263,14 @@ export default {
                                     <v-card-text>
                                         <v-container>
                                             <v-row>
-                                                <v-col cols="12" md="2" sm="4">
+                                                <v-col cols="12" md="6" sm="6">
                                                     <v-text-field v-model="editedCurso.id" label="Curso Id" disabled> </v-text-field>
                                                 </v-col>
+                                            </v-row>
+                                            <v-row>
                                                 <v-col cols="12" md="4" sm="4"> 
-                                                    <v-select v-model="cicloSel" label="Seleccione" :items="ciclos" item-title="caption" item-value="id" @change="setCiclo"></v-select>
-                                                    <v-text-field v-model="editedCurso.ciclo" label="Ciclo" ></v-text-field> 
+                                                    <v-select v-model="cicloSel.id" label="Seleccione" :items="ciclos" item-title="caption" item-value="id" @change="setCiclo"></v-select>
+                                                    <v-text-field v-model="editedCurso.ciclo" label="Ciclo" v-show="false"></v-text-field> 
                                                 </v-col>
                                                 <v-col cols="12" md="2" sm="4"> 
                                                     <v-text-field v-model="editedCurso.anio" label="Año"></v-text-field> 
