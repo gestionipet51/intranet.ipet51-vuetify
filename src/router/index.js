@@ -8,11 +8,13 @@ import TecnicoAutomotores from "@/components/intranet/especialidades/TecnicoAuto
 import TecnicoMecanico from "@/components/intranet/especialidades/TecnicoMecanico.vue";
 import TecnicoCarpinteria from "@/components/intranet/especialidades/TecnicoCarpinteria.vue";
 import PanelHome from "@/components/PanelHome.vue";
+import Roles from '@/components/intranet/roles/Roles.vue'
 
 
 const routes = [
     { path:'/' , component:Welcome },
     { path:'/panelHome',component:PanelHome },
+    { path:'/intranet/roles',component:Roles},
     { path:'/intranet/login/index' , component:Login },
     { path:'/intranet/cursos/index' , component:Cursos },
     { path:'/intranet/cursos/listar' , component:ListarCursos },
