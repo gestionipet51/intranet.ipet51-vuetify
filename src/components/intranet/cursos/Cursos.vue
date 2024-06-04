@@ -1,40 +1,42 @@
 <script>
+
 const myCursos=[
-              {id:1,ciclo:"PC",anio:1,division:"A"},
-              {id:2,ciclo:"PC",anio:1,division:"B"},
-              {id:3,ciclo:"PC",anio:1,division:"C"},
-              {id:4,ciclo:"PC",anio:1,division:"D"},
-              {id:5,ciclo:"PC",anio:2,division:"A"},
-              {id:6,ciclo:"PC",anio:2,division:"B"},
-              {id:7,ciclo:"PC",anio:2,division:"C"},
-              {id:8,ciclo:"PC",anio:2,division:"D"},
-              {id:9,ciclo:"PC",anio:3,division:"A"},
-              {id:10,ciclo:"PC",anio:3,division:"B"},
-              {id:11,ciclo:"PC",anio:3,division:"C"},
-              {id:12,ciclo:"PC",anio:3,division:"D"},
-              {id:13,ciclo:"SC",anio:4,division:"A"},
-              {id:14,ciclo:"SC",anio:4,division:"B"},
-              {id:15,ciclo:"SC",anio:4,division:"C"},
-              {id:16,ciclo:"SC",anio:4,division:"D"},
-              {id:17,ciclo:"SC",anio:5,division:"A"},
-              {id:18,ciclo:"SC",anio:5,division:"B"},
-              {id:19,ciclo:"SC",anio:5,division:"C"},
-              {id:20,ciclo:"SC",anio:5,division:"D"},
-              {id:21,ciclo:"SC",anio:6,division:"A"},
-              {id:22,ciclo:"SC",anio:6,division:"B"},
-              {id:23,ciclo:"SC",anio:6,division:"C"},
-              {id:24,ciclo:"SC",anio:6,division:"D"},
-              {id:28,ciclo:"SC",anio:7,division:"A"},
-              {id:29,ciclo:"SC",anio:7,division:"B"},
-              {id:30,ciclo:"SC",anio:7,division:"C"},
-              {id:31,ciclo:"SC",anio:7,division:"D"}
-              
-              ];
+    {id:1,ciclo:"PC",anio:1,division:"A"},
+    {id:2,ciclo:"PC",anio:1,division:"B"},
+    {id:3,ciclo:"PC",anio:1,division:"C"},
+    {id:4,ciclo:"PC",anio:1,division:"D"},
+    {id:5,ciclo:"PC",anio:2,division:"A"},
+    {id:6,ciclo:"PC",anio:2,division:"B"},
+    {id:7,ciclo:"PC",anio:2,division:"C"},
+    {id:8,ciclo:"PC",anio:2,division:"D"},
+    {id:9,ciclo:"PC",anio:3,division:"A"},
+    {id:10,ciclo:"PC",anio:3,division:"B"},
+    {id:11,ciclo:"PC",anio:3,division:"C"},
+    {id:12,ciclo:"PC",anio:3,division:"D"},
+    {id:13,ciclo:"SC",anio:4,division:"A"},
+    {id:14,ciclo:"SC",anio:4,division:"B"},
+    {id:15,ciclo:"SC",anio:4,division:"C"},
+    {id:16,ciclo:"SC",anio:4,division:"D"},
+    {id:17,ciclo:"SC",anio:5,division:"A"},
+    {id:18,ciclo:"SC",anio:5,division:"B"},
+    {id:19,ciclo:"SC",anio:5,division:"C"},
+    {id:20,ciclo:"SC",anio:5,division:"D"},
+    {id:21,ciclo:"SC",anio:6,division:"A"},
+    {id:22,ciclo:"SC",anio:6,division:"B"},
+    {id:23,ciclo:"SC",anio:6,division:"C"},
+    {id:24,ciclo:"SC",anio:6,division:"D"},
+    {id:28,ciclo:"SC",anio:7,division:"A"},
+    {id:29,ciclo:"SC",anio:7,division:"B"},
+    {id:30,ciclo:"SC",anio:7,division:"C"},
+    {id:31,ciclo:"SC",anio:7,division:"D"} 
+    ];
+
 const cabeceras = [
     { align:'d-none',sortable:false,key:'id'  , title:'Curso Id'},
     { align:'center',sortable:true ,key:'ciclo',title:'Ciclo', },
-    { align:'center',sortable:false,key:'anio',title:'Año'  , },
-    { align:'center',sortable:false,key:'division',title:'Año'  , },
+    { align:'center',sortable:true ,key:'anio',title:'Año'  , },
+    { align:'center',sortable:true ,key:'division',title:'Año'  , },
+    { aling:'center',sortable:false,key:'descripcion',title:'Descripcion'},
     { align:'center',sortable:false,key:'actions',title:'Acciones',},
 ];
 
@@ -79,7 +81,8 @@ export default {
                 id:'',
                 ciclo:'',
                 anio:'',
-                division:''
+                division:'',
+                descripcion:''
             },
             ciclos:[],
             cicloSel:{
@@ -97,27 +100,23 @@ export default {
                 this.loading = true;
              },
             fetchCursos: async function (){
-                const querySnapshot = await getDocs(collection(db,"Cursos"));
+                const querySnapshot = await getDocs(collection(db,"cursos"));
                 this.cursos = querySnapshot.docs
                                     .map(doc => ({ id:doc.id, ...doc.data() }))
-                                    .sort((a,b) => a.anio.localCompare(b.anio));
+                                    // .sort((a,b) => a.anio.localCompare(b.anio));
                 this.loading = false;
             },
             sendData(){
                   let result = this.cursos.map((item) => { return { ...item,isActive:this.selected.includes(item)}})
             },
-            editCurso (item) {
-                        /*
-                            this.editedIndex = this.cursos.indexOf(item)
-                            this.editedCurso = Object.assign({}, item)
-                            this.dialog = true
-                        */
+            updateCurso (item) {
                         
-                        const curso = this.cursos.find(curso => curso.id == item.id )
+                        // const curso = this.cursos.find(curso => curso.id == item.id )
+                        this.cicloSel = this.ciclos.find(ciclo => ciclo.key == item.ciclo );
                         this.selected = item;
                         this.editedIndex = this.cursos.indexOf(item);
-                        this.editedCurso = { ...curso };
-                        this.editCurso.ciclo = this.ciclos.find(ciclo => ciclo.key == this.cicloSel.id);
+                        this.editedCurso = { ...this.selected };
+                        this.updateCurso.ciclo = this.cicloSel.key;
                         this.dialog = true;
             },
             async deleteCurso (item) {
@@ -125,25 +124,15 @@ export default {
                         this.editedIndex = this.cursos.indexOf(item)
                         this.editedCurso = Object.assign({}, item)
                         this.dialogDelete = true
-                        await deleteDoc(doc(db,"Cursos",item.id));
+                        await deleteDoc(doc(db,"cursos",item.id));
                         await this.fetchCursos();
-
             },
-            async submitCurso(){
-                    if(this.selected){
-                        await updateDoc(doc(db,"Cursos",this.selected),this.editedCurso)
-                    }else{
-                        await addDoc(collection(db,"Cursos"),this.editedCurso);
-                    }
 
-                    this.cancel();
-                    await this.fetchCursos();
-            }, 
             cancel(){
                 this.dialog = false;
                 this.selected = null;
                 this.cicloSel = null;
-                this.editedCurso = { id:0,ciclo:'',anio:0,division:''}
+                this.editedCurso = { id:0,ciclo:'',anio:0,division:'',descripcion:''}
             },
             confirmDeleteCurso () {
                 this.cursos.splice(this.editedIndex, 1)
@@ -152,24 +141,41 @@ export default {
             close () {
                 this.dialog = false;
                 this.$nextTick(() => {
-                    this.editedCurso =  { id:'',ciclo:'',anio:'',division:''};
+                    this.editedCurso =  { id:0,ciclo:'',anio:0,division:'',descripcion:''}
                     this.editedIndex = -1;
                 })
             },
             closeDelete () {
                 this.dialogDelete = false
                 this.$nextTick(() => {
-                this.editedCurso = Object.assign({},  { id:'',ciclo:'',anio:'',division:''})
-                this.editedIndex = -1
+                this.editedCurso = Object.assign({}, { id:0,ciclo:'',anio:0,division:'',descripcion:''} )
+                this.editedIndex = -1;
                 })
             },
-            save () {
-                if (this.editedIndex > -1) {
-                    Object.assign(this.cursos[this.editedIndex], this.editedCurso)
-                } else {
-                    this.cursos.push(this.editedCurso)
+
+            async update(){
+                // Update
+                Object.assign(this.cursos[this.editedIndex], this.editedCurso)
+                await updateDoc(doc(db,"cursos",this.selected),this.editedCurso)
+            },
+            async create(){
+                // create
+                this.editedCurso.id = crypto.randomUUID();
+                this.cursos.push(this.editedCurso)
+                await addDoc(collection(db,"cursos"),this.editedCurso);
+            },
+            async save () {
+
+                if(this.editedIndex > -1 ){
+                    await this.update() ;       
+                }else{
+                    await this.create();
                 }
-                this.close()
+
+                this.close();
+
+                await this.fetchCursos();
+
             },
 
             itemProps(ciclo){
@@ -185,7 +191,7 @@ export default {
                     return (this.editedIndex === -1) ? 'Nuevo Curso' : 'Actualizar Curso'
             },
             descriptionCiclo(){
-                return this.ciclos.find(ciclo => ciclo.id ==  this.editedIndex.ciclo);
+                return this.ciclos.find(ciclo => ciclo.key ==  this.editedCurso.ciclo);
             },
             setCiclo(){
 
@@ -193,17 +199,13 @@ export default {
                     /* nuevo Curso */
                     if(this.cicloSel.id != ''){
                         this.cicloSel = this.ciclos.find((c) => c.id === this.cicloSel.id);
-                        this.editedCurso.ciclo = this.ciclos.find((c) => c.id === this.cicloSel.id).key;
+                        this.editedCurso.ciclo = this.cicloSel.key;
 
                     }
                 }
                 
                 console.log(this.editedCurso);
             },
-            genId(){
-                
-                this.editedCurso.id = crypto.randomUUID();
-            }
         },
         watch: {
           dialog (val) {
@@ -254,7 +256,7 @@ export default {
                             <v-divider class="mx-8" inset vertical ></v-divider>
                             <v-dialog v-model="dialog" max-width="800px">
                                 <template v-slot:activator="{ props }">
-                                    <v-btn class="mb-2" color="primary" variant="elevated" v-bind="props" @click="genId"><v-icon>mdi-plus</v-icon></v-btn>
+                                    <v-btn class="mb-2" color="primary" variant="elevated" v-bind="props"><v-icon>mdi-plus</v-icon></v-btn>
                                 </template>
                                 <v-card>
                                     <v-card-title>
@@ -277,6 +279,9 @@ export default {
                                                 </v-col>
                                                 <v-col cols="12" md="2" sm="4"> 
                                                     <v-text-field v-model="editedCurso.division" label="División"></v-text-field> 
+                                                </v-col>
+                                                <v-col cols="12" md="4" sm="4">
+                                                    <v-text-field v-model="editedCurso.descripcion" label="Descripción"></v-text-field>
                                                 </v-col>
                                             </v-row>
                                         </v-container>
@@ -305,7 +310,7 @@ export default {
                     </v-toolbar>
                     </template>
                     <template v-slot:item.actions="{ item }">
-                    <v-icon class="me-2" size="small" color="green-darken-4" @click="editCurso(item)">mdi-pencil </v-icon>
+                    <v-icon class="me-2" size="small" color="green-darken-4" @click="updateCurso(item)">mdi-pencil </v-icon>
                     <v-icon class="me-2" size="small" color="red-accent-4"   @click="deleteCurso(item)">mdi-delete </v-icon>
                     </template>
                     <template v-slot:no-data>

@@ -7,14 +7,17 @@ import { getFirestore } from "firebase/firestore"
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyB_ZkXPyUOecizerUZ61mUKDfgnmA1iqe0",
-  authDomain: "intranetipet51-20049.firebaseapp.com",
-  projectId: "intranetipet51-20049",
-  storageBucket: "intranetipet51-20049.appspot.com",
-  messagingSenderId: "911892646464",
-  appId: "1:911892646464:web:62eff9e76cf00affd4ada5"
-};
 
+    apiKey: "AIzaSyB_ZkXPyUOecizerUZ61mUKDfgnmA1iqe0",
+    authDomain: "intranetipet51-20049.firebaseapp.com",
+    databaseURL: "https://intranetipet51-20049-default-rtdb.firebaseio.com",
+    projectId: "intranetipet51-20049",
+    storageBucket: "intranetipet51-20049.appspot.com",
+    messagingSenderId: "911892646464",
+    appId: "1:911892646464:web:62eff9e76cf00affd4ada5"
+  };
+  
+  
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
