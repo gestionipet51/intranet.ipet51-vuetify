@@ -8,7 +8,7 @@
         <v-row>
             <v-col cols="2"></v-col>
             <v-col cols="6">
-                <v-data-table :headers="header"></v-data-table>
+                <v-data-table :headers="headers"></v-data-table>
             </v-col>
             <v-col></v-col>
         </v-row>
@@ -21,6 +21,7 @@
 const tblHeader =[
 { align:'center',sortable:false,key:'id'  , title:'Rol Id'},
 { align:'center',sortable:false,key:'rol'  , title:'Rol'},
+{ align:'center',sortable:false,key:'code' , title:'Codigo'},
 { align:'center',sortable:false,key:'acciones'  , title:'Acciones'},
 ];
 
@@ -31,8 +32,25 @@ export default {
     data :() => ({
         headers:tblHeader,
         roles:[],
+        itemsPerPage:10,
+        search:'',
+        loading:false,
+        selected:[],
+        totalRoles: 0,
+        singleSelect:false,
+        dialog:false,
+        dialogDelete:false,
+        editedIndex: -1,
+        editedRol:{
+                id:'',
+                rol:'',
+                code:'',
+            },
 
-    })
+    }),
+    methods:{
+        
+    }
 }
 
 </script>
