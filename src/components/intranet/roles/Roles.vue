@@ -8,7 +8,15 @@
         <v-row>
             <v-col cols="2"></v-col>
             <v-col cols="6">
-                <v-data-table :headers="headers">
+                <v-data-table 
+                :headers="headers"
+                :items="roles"
+                v-model:items-per-page="itemsPerPage"
+                :items-length="totalRoles"
+                :loading="loading"
+                item-value="id"
+                :search="search"
+                >
                     <template v-slot:top>
                         <v-toolbar flat>
                             <v-toolbar-title>CRUD - Roles </v-toolbar-title>
@@ -45,7 +53,26 @@
                                     </v-card-actions>
                                 </v-card>
                             </v-dialog>
+
+                            <v-dialog v-model="dialogDelete" max-width="500px">
+                                    <v-card color="pink-lighten-4">
+                                        <v-card-title class="text-h6">
+                                            <v-icon color="red-accent-4">mdi-help-circle</v-icon> <span class="red-accent-4">¿Esta seguro de eliminar este ROL?</span>
+                                        </v-card-title>
+                                        <v-card-actions>
+                                        <v-spacer></v-spacer>
+                                        <v-btn color="red-accent-4"  variant="text" @click="closeDelete" icon="mdi-close-thick"></v-btn>
+                                        <v-btn color="blue-darken-1" variant="text" @click="confirmDeleteRol" icon="mdi-content-save"></v-btn>
+                                        <v-spacer></v-spacer>
+                                        </v-card-actions>
+                                    </v-card>
+                            </v-dialog>
+
                         </v-toolbar>
+                    </template>
+                    <template v-slot:item.acciones="{ item }">
+                        <v-icon class="me-2" size="small" color="green-darken-4" @click="updateRol(item)">mdi-pencil </v-icon>
+                        <v-icon class="me-2" size="small" color="red-accent-4"   @click="deleteRol(item)">mdi-delete </v-icon>
                     </template>
                 </v-data-table>
             </v-col>
@@ -88,8 +115,8 @@ export default {
 
     }),
     methods:{
-        init(){
-
+        async init(){
+            await this.fetchRoles();
         },
         close(){
             this.dialog = false;
@@ -97,6 +124,29 @@ export default {
                     this.editedRol =  { id:'',rol:'',code:''}
                     this.editedIndex = -1;
                 })
+        },
+        updateRol(item){
+            this.selected = item;
+            this.editedIndex = this.roles.indexOf(item);
+            this.editedRol = { ...this.selected };
+            this.dialog = true;
+        },
+
+        deleteRol(item){
+            this.editedIndex = this.roles.indexOf(item)
+            this.editedRol = Object.assign({}, item)
+            this.dialogDelete = true;
+        },
+        closeDelete () {
+                this.dialogDelete = false
+                this.$nextTick(() => {
+                    this.editedRol = Object.assign({}, { id:'',rol:'',code:''} )
+                    this.editedIndex = -1;
+                });
+        },
+        async confirmDeleteRol(){
+            await deleteDoc(doc(db,"roles",this.selected.id));
+            this.fetchCursos();  
         },
         async update(){
                 // Update
@@ -116,29 +166,24 @@ export default {
                 }else{
                     await this.create();
                 }
-
                 this.close();
-
                 await this.fetchRoles();
+        },
 
-            },
         async fetchRoles (){
                 const querySnapshot = await getDocs(collection(db,"roles"));
                 this.roles = querySnapshot.docs
                                     .map(doc => ({ id:doc.id, ...doc.data() }))
                 this.loading = false;
-        },
-
-        
+        },     
     },
     computed:{
         formTitle ()    {
             return (this.editedIndex === -1) ? 'Nuevo ROL' : 'Actualizar ROL'
         }
     },
-    async created(){
-        await this.fetchRoles();
+    created(){
+       this.init();
     }
 }
-
 </script>
