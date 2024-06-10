@@ -44,7 +44,7 @@
         { id:"1", caption:"Home",icon:"mdi-home-outline",class:"",disable:false ,target:"/"},
         { id:"2", caption:"Cursos",icon:"mdi-file-account-outline",class:"",disable:false ,target:"/intranet/cursos/index"},
         { id:"3", caption:"Roles" ,icon:"mdi-account-card-outline",class:"",disable:false ,target:"/intranet/roles"},
-        { id:"4", caption:"Catalogos", icon:"mdi-playlist-edit",class:"",disable:true ,target:"/catalogos"},
+        { id:"4", caption:"Catalogos", icon:"mdi-playlist-edit",class:"",disable:false ,target:"/catalogos"},
         { id:"5", caption:"Det.Catlogos", icon:"mdi-text-box-edit-outline",class:"",disable:true ,target:"/intranet/detalleroles"},
         { id:"6", caption:"Horarios", icon:"mdi-clock-outline",class:"",disable:true ,target:"/horarios"},
         { id:"7", caption:"Esp.Curriculares", icon:"mdi-application-array-outline",class:"",disable:true ,target:"/espacioscurriculares"},

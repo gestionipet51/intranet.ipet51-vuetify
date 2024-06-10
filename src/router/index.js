@@ -9,6 +9,7 @@ import TecnicoMecanico from "@/components/intranet/especialidades/TecnicoMecanic
 import TecnicoCarpinteria from "@/components/intranet/especialidades/TecnicoCarpinteria.vue";
 import PanelHome from "@/components/PanelHome.vue";
 import Roles from '@/components/intranet/roles/Roles.vue'
+import Catalogos from '@/components/catalogos/Catalogos.vue'
 
 
 const routes = [
@@ -22,6 +23,7 @@ const routes = [
     { path:'/intranet/especialidades/mecanico',component:TecnicoMecanico },
     { path:'/intranet/especialidades/automotores', component:TecnicoAutomotores },
     { path:'/intranet/especialidades/carpinteria' , component:TecnicoCarpinteria },
+    { path:'/catalogos', component:Catalogos },
 ];
 
 
