@@ -10,12 +10,12 @@
             <v-col cols="8">
                 <v-data-table 
                     :headers="headers"
-                    :items="roles"
-                v-model:items-per-page="itemsPerPage"
-                :items-length="totalCatalogos"
-                :loading="loading"
-                item-value="id"
-                :search="search"
+                    :items="catalogos"
+                    v-model:items-per-page="itemsPerPage"
+                    :items-length="totalCatalogos"
+                    :loading="loading"
+                    item-value="id"
+                    :search="search"
                 >
                     <template v-slot:top>
                         <v-toolbar flat>
@@ -79,11 +79,28 @@
                                     </v-card>
                             </v-dialog>
 
+                            <v-dialog v-model="dialogItems" max-width="600px">
+                                    <v-card color="">
+                                        <v-card-title class="text-h6">
+                                            <v-icon color="red-accent-4">mdi-help-circle</v-icon> <span class="red-accent-4">Nuevo Item de Catalogo - {{  itemCatalogo.catalogo }}</span>
+                                        </v-card-title>
+                                        <v-card-text>
+                                            <v-data-table :headers="headersItems"></v-data-table>
+                                        </v-card-text>
+                                        <v-card-actions>
+                                        <v-spacer></v-spacer>
+                                        <v-btn color="red-accent-4"  variant="text" @click="closeDialog" icon="mdi-close-thick"></v-btn>
+                                        <v-btn color="blue-darken-1" variant="text" @click="saveItem" icon="mdi-content-save"></v-btn>
+                                        <v-spacer></v-spacer>
+                                        </v-card-actions>
+                                    </v-card>
+                            </v-dialog>
                         </v-toolbar>
                     </template>
-                    <template v-slot:item.acciones="{ item }">
-                        <v-icon class="me-2" size="small" color="green-darken-4" @click="updateRol(item)">mdi-pencil </v-icon>
-                        <v-icon class="me-2" size="small" color="red-accent-4"   @click="deleteRol(item)">mdi-delete </v-icon>
+                    <template v-slot:item.actions="{ item }">
+                        <v-icon class="me-2" size="small" color="warning"        @click="viewItems(item)">mdi-eye </v-icon>
+                        <v-icon class="me-2" size="small" color="green-darken-4" @click="updateCatalogo(item)">mdi-pencil </v-icon>
+                        <v-icon class="me-2" size="small" color="red-accent-4"   @click="deleteCatalogo(item)">mdi-delete </v-icon>
                     </template>
                 </v-data-table>
             </v-col>
@@ -96,14 +113,23 @@
 import { db } from '../../firebaseConfig';
 import { collection ,addDoc,getDocs,doc,deleteDoc,updateDoc, getPersistentCacheIndexManager } from 'firebase/firestore';
 
+
 const tblHeader =[
-        { align:'center',sortable:false,key:'id'  , title:'Cat.Id'},
-        { align:'center',sortable:false,key:'catalog'  , title:'Catalogo'},
+        { align:'center',sortable:false,key:'id' , title:'Cat.Id'},
+        { align:'center',sortable:false,key:'catalogo'  , title:'Catalogo'},
         { align:'center',sortable:false,key:'description' , title:'Descripción'},
-        { align:'center',sortable:false,kay:'status' ,title:'Estado'},
+        { align:'center',sortable:false,key:'status' ,title:'Estado'},
         { align:'center',sortable:false,key:'actions'  , title:'Acciones'},
 ];
 
+
+const tblHeaderItems = [
+            {title:'ItemId',key:'itemid'},
+            {title:'Item',key:'itemid'},
+            {title:'Descripcion',key:'itemid'},
+            {title:'Estado',key:'status'},
+            {title:'Acciones',key:'actions'}
+        ];
 const estados = [
     { id:'AC',caption:'Activo'},
     { id:'IN',caption:'Inactivo'},
@@ -112,6 +138,7 @@ const estados = [
 export default {
     data :() => ({
         headers: tblHeader,
+        headersItems :tblHeaderItems,
         catalogos:[],
         itemsPerPage:10,
         search:'',
@@ -121,6 +148,7 @@ export default {
         singleSelect:false,
         dialog:false,
         dialogDelete:false,
+        dialogItems:false,
         editedIndex: -1,
         editedCatalogo:{
                 id:'',
@@ -133,11 +161,19 @@ export default {
             id:'',
             caption:''
         },
+        itemSel:[],
+        itemCatalogo:{
+            catalogo:'',
+            id:'',
+            name:'',
+            description:'',
+            status:''
+        }
 
     }),
     methods:{
-        init(){
-            this.fetchCatalogos();
+        async init(){
+            await this.fetchCatalogos();
         },
         close(){
             this.dialog = false;
@@ -146,9 +182,13 @@ export default {
                     this.editedIndex = -1;
                 })
         },
-        fetchCatalogos: async function (){
+        viewItems(item){
+            this.itemCatalogo.catalogo = item.catalogo;
+            this.dialogItems = true;
+        },
+        async fetchCatalogos(){
                 const querySnapshot = await getDocs(collection(db,"catalogos"));
-                this.cursos = querySnapshot.docs
+                this.catalogos = querySnapshot.docs
                                     .map(doc => ({ id:doc.id, ...doc.data() }))
                 this.loading = false;
         },
@@ -184,7 +224,18 @@ export default {
         setEstado(){
             this.editedCatalogo.status = this.estadoSel.id;
         }
-    }
+    },
+    watch: {
+          dialog (val) {
+            val || this.close()
+          },
+          dialogDelete (val) {
+            val || this.closeDelete()
+          },
+          dialogItem(val) {
+            val || this.closeDialog()
+          }
+        },
 }
 
 </script>
