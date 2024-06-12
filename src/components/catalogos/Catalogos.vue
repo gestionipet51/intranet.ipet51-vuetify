@@ -16,6 +16,7 @@
                     :loading="loading"
                     item-value="id"
                     :search="search"
+                    show-expand
                 >
                     <template v-slot:top>
                         <v-toolbar flat>
@@ -79,26 +80,51 @@
                                     </v-card>
                             </v-dialog>
 
-                            <v-dialog v-model="dialogItems" max-width="600px">
-                                    <v-card color="">
-                                        <v-card-title class="text-h6">
-                                            <v-icon color="red-accent-4">mdi-help-circle</v-icon> <span class="red-accent-4">Nuevo Item de Catalogo - {{  itemCatalogo.catalogo }}</span>
-                                        </v-card-title>
-                                        <v-card-text>
-                                            <v-data-table :headers="headersItems"></v-data-table>
-                                        </v-card-text>
-                                        <v-card-actions>
-                                        <v-spacer></v-spacer>
-                                        <v-btn color="red-accent-4"  variant="text" @click="closeDialog" icon="mdi-close-thick"></v-btn>
-                                        <v-btn color="blue-darken-1" variant="text" @click="saveItem" icon="mdi-content-save"></v-btn>
-                                        <v-spacer></v-spacer>
-                                        </v-card-actions>
-                                    </v-card>
-                            </v-dialog>
+                            
                         </v-toolbar>
                     </template>
+                    <template v-slot:expanded-row="{ columns, item }">
+                       <tr>
+                            <td :colspan="columns.length">
+                                <v-toolbar>
+                                    <v-icon color="red-accent-4">mdi-playlist-star</v-icon> <span class="red-accent-4">Items del Catalogo</span>
+                                    <v-divider class="mx-8" inset vertical ></v-divider>
+                                    <v-dialog v-model="dialogItems" max-width="800px">
+                                        <template v-slot:activator="{ props }">
+                                            <v-btn class="mb-2" color="primary" variant="tonal" v-bind="props" density="comfortable" icon="mdi-plus" size="large"></v-btn>
+                                        </template>
+                                        <v-card>
+                                            <v-card-title class="text-h6">
+                                            </v-card-title>
+                                            
+                                            <v-card-text>
+
+                                            </v-card-text>
+                                            
+                                            <v-card-actions>
+                                                <v-spacer></v-spacer>
+                                                    <v-btn color="red-accent-4"  variant="text" @click="closeDialog" icon="mdi-close-thick"></v-btn>
+                                                    <v-btn color="green-darken-1" variant="text" @click="saveItem" icon="mdi-content-save"></v-btn>
+                                                <v-spacer></v-spacer>
+                                            </v-card-actions>
+                                        </v-card>
+                                                
+
+                                    </v-dialog>
+                                    </v-toolbar>
+                                    <v-data-table :headers="headersItems" color="blue-darken-1" :items-per-page="5">
+                                        <template v-slot:item.actions="{ item }">
+                                            <!-- v-icon class="me-2" size="small" color="warning"        @click="viewItems(item)">mdi-eye </v-icon-->
+                                            <v-icon class="me-2" size="small" color="green-darken-4" @click="updateCatalogo(item)">mdi-pencil </v-icon>
+                                            <v-icon class="me-2" size="small" color="red-accent-4"   @click="deleteCatalogo(item)">mdi-delete </v-icon>
+                                        </template>
+                                    </v-data-table>
+                         
+                            </td>
+                        </tr>
+                    </template>     
                     <template v-slot:item.actions="{ item }">
-                        <v-icon class="me-2" size="small" color="warning"        @click="viewItems(item)">mdi-eye </v-icon>
+                        <!-- v-icon class="me-2" size="small" color="warning"        @click="viewItems(item)">mdi-eye </v-icon-->
                         <v-icon class="me-2" size="small" color="green-darken-4" @click="updateCatalogo(item)">mdi-pencil </v-icon>
                         <v-icon class="me-2" size="small" color="red-accent-4"   @click="deleteCatalogo(item)">mdi-delete </v-icon>
                     </template>
@@ -122,6 +148,13 @@ const tblHeader =[
         { align:'center',sortable:false,key:'actions'  , title:'Acciones'},
 ];
 
+const hdrMap = {
+    id : { text:'Cat.Id',value:'id',class:'d-none'},
+    catalogo:{ text:'Catalogo',value:'catalogo'},
+    description:{text:'Descripción',value:'description'},
+    status:{ text:'Estado',value:'status'},
+    actions:{ text:'Acciones',value:'actions'}
+}
 
 const tblHeaderItems = [
             {title:'ItemId',key:'itemid'},
@@ -130,6 +163,7 @@ const tblHeaderItems = [
             {title:'Estado',key:'status'},
             {title:'Acciones',key:'actions'}
         ];
+
 const estados = [
     { id:'AC',caption:'Activo'},
     { id:'IN',caption:'Inactivo'},
