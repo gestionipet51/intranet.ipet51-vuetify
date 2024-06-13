@@ -56,6 +56,10 @@ const anios = [
 ];
 
 
+const estados = [
+    {id:1,caption:'Activo',key:'AC'},
+    {id:2,caption:'Inactivo',key:'IN'}
+]
 const divisiones =  [ {id:1,division:'A'},{id:2,division:'B'},{id:3,division:'C'},{id:4,division:'D'}];
 
 // console.log(myCursos);
@@ -92,6 +96,7 @@ export default {
                 description:'',
                 oldkey:''
                 },
+            estados:estados
         }),
         methods:{
             initialize(){
