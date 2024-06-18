@@ -4,8 +4,10 @@
             <v-col cols="12">
                 <v-data-table 
                     :headers="headers"
-                    :items-per-page="5">
-                    <v-toolbar>
+                    :items-per-page="5"
+                    >
+                    <template v-slot:top>
+                        <v-toolbar flat>
                         <v-icon color="red-accent-4">mdi-playlist-star</v-icon> <span class="red-accent-4">Items del Catalogo</span>
                         <v-divider class="mx-8" inset vertical ></v-divider>
                         <v-text-field
@@ -50,6 +52,8 @@
                         </v-dialog>
                                     
                     </v-toolbar>
+                    </template>
+                    
 
 
                     <template v-slot:item.actions="{ item }">
@@ -73,8 +77,8 @@ const arrEstados = [
 
 
 const headerItems = [
+            {title:'Catalogo Id',key:'catalogoid',align:'center',class:'d-none'},
             {title:'ItemId',key:'itemid', align : 'center'},
-            {title:'Catalogo Id',key:'catalogoid',align:'center'},
             {title:'Item',key:'itemid',align: 'center'},
             {title:'Descripcion',key:'description', align: 'center'},
             {title:'Estado',key:'status',align : 'center'},
@@ -83,6 +87,7 @@ const headerItems = [
 
 
 export default {
+    props:['catalogoId'],
     data: () =>({
         headers:headerItems,
         itemsPerPage:5,
@@ -135,5 +140,8 @@ export default {
             val || this.closeDialogDEL()
           },
     },
+    created(){
+        console.log(this.catalogoId);
+    }
 }
 </script>

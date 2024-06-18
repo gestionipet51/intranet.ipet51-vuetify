@@ -41,8 +41,8 @@
                                             <span class="text-h5"> {{ formTitle }}</span>
                                     </v-card-title>
                                     <v-card-text>
-                                        <v-row>
-                                            <v-col cols="6"><v-text-field v-model="editedCatalogo.id" label="Catalogo Id" disabled> </v-text-field></v-col>
+                                        <v-row>editedCatalogo
+                                            <v-col cols="6"><v-text-field v-model=".id" label="Catalogo Id" disabled> </v-text-field></v-col>
                                         </v-row>
                                         <v-row> 
                                             <v-col cols="6"><v-text-field v-model="editedCatalogo.catalogo" label="Nombre"></v-text-field></v-col>
@@ -84,7 +84,7 @@
                     <template v-slot:expanded-row="{ columns, item }">
                        <tr>
                             <td :colspan="columns.length">
-                                   <DetCatalogos></DetCatalogos>
+                                   <DetCatalogos :catalogo-Id="editedCatalogo.id"></DetCatalogos>
                             </td>
                         </tr>
                     </template>
