@@ -41,7 +41,7 @@
                                             <span class="text-h5"> {{ formTitle }}</span>
                                     </v-card-title>
                                     <v-card-text>
-                                        <v-row>editedCatalogo
+                                        <v-row>
                                             <v-col cols="6"><v-text-field v-model=".id" label="Catalogo Id" disabled> </v-text-field></v-col>
                                         </v-row>
                                         <v-row> 
