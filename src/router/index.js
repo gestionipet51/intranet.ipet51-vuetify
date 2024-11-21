@@ -8,9 +8,10 @@ import TecnicoAutomotores from "@/components/intranet/especialidades/TecnicoAuto
 import TecnicoMecanico from "@/components/intranet/especialidades/TecnicoMecanico.vue";
 import TecnicoCarpinteria from "@/components/intranet/especialidades/TecnicoCarpinteria.vue";
 import PanelHome from "@/components/PanelHome.vue";
-import Roles from '@/components/intranet/roles/Roles.vue'
-import Catalogos from '@/components/catalogos/Catalogos.vue'
-import DetCatalogos from '@/components/catalogos/DetCatalogos.vue'
+import Roles from '@/components/intranet/roles/Roles.vue';
+import Catalogos from '@/components/catalogos/Catalogos.vue';
+import DetCatalogos from '@/components/catalogos/DetCatalogos.vue';
+import HojaDeRuta from '@/components/intranet/hojaderuta/HojaDeRuta.vue';
 
 
 const routes = [
@@ -25,7 +26,8 @@ const routes = [
     { path:'/intranet/especialidades/automotores', component:TecnicoAutomotores },
     { path:'/intranet/especialidades/carpinteria' , component:TecnicoCarpinteria },
     { path:'/catalogos', component:Catalogos },
-    { path:'/detalleCatalogos',component:DetCatalogos}
+    { path:'/catalogos/detalleCatalogos',component:DetCatalogos},
+    { path:'/intranet/hojaderuta/index',component:HojaDeRuta},
 ];
 
 

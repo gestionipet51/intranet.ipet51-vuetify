@@ -45,12 +45,13 @@
         { id:"2", caption:"Cursos",icon:"mdi-file-account-outline",class:"",disable:false ,target:"/intranet/cursos/index"},
         { id:"3", caption:"Roles" ,icon:"mdi-account-card-outline",class:"",disable:false ,target:"/intranet/roles"},
         { id:"4", caption:"Catalogos", icon:"mdi-playlist-edit",class:"",disable:false ,target:"/catalogos"},
-        { id:"5", caption:"Det.Catlogos", icon:"mdi-text-box-edit-outline",class:"",disable:true ,target:"/intranet/detalleroles"},
+        { id:"5", caption:"Det.Catalogos", icon:"mdi-text-box-edit-outline",class:"",disable:false ,target:"/detalleCatalogos"},
         { id:"6", caption:"Horarios", icon:"mdi-clock-outline",class:"",disable:true ,target:"/horarios"},
         { id:"7", caption:"Esp.Curriculares", icon:"mdi-application-array-outline",class:"",disable:true ,target:"/espacioscurriculares"},
         { id:"8", caption:"Areas", icon:"mdi-group",class:"",disable:true ,target:"/areas"},
         { id:"9", caption:"Departamentos", icon:"mdi-office-building-outline",class:"",disable:true ,target:"/departamentos"},
         { id:"10", caption:"Docentes", icon:"mdi-account-group-outline",class:"",disable:true ,target:"/docentes"},
+        { id:"11", caption:"Hoja de Ruta",icon:"mdi-routes",class:"",disabled:"false",target:"/intranet/hojaderuta/index"},
     ];
 
     export default {

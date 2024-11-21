@@ -8,7 +8,7 @@
                     >
                     <template v-slot:top>
                         <v-toolbar flat>
-                        <v-icon color="red-accent-4">mdi-playlist-star</v-icon> <span class="red-accent-4">Items del Catalogo</span>
+                        <v-icon color="red-accent-4">mdi-playlist-star</v-icon> <span class="red-accent-4">Detalle del Catalogo</span>
                         <v-divider class="mx-8" inset vertical ></v-divider>
                         <v-text-field
                             v-model="search"
@@ -28,13 +28,13 @@
                                 <v-card-title class="text-h6"> <span class="text-h5"> {{ formTitle }}</span></v-card-title>            
                                 <v-card-text>
                                     <v-row>
-                                        <v-col><v-text-field v-model="editedItem.catalogoid" label="Catalogo"></v-text-field></v-col>
-                                        <v-col><v-text-field v-model="editedItem.itemid" label="Item"></v-text-field></v-col>
+                                        <v-col><v-text-field v-model="editedItem.catalogoid" label="Catalogo Id" disabled></v-text-field></v-col>
+                                        <v-col><v-text-field v-model="editedItem.itemid" label="Item Id"></v-text-field></v-col>
                                     </v-row>
                                      <v-row>
-                                        <v-col><v-text-field v-model="editedItem.item" label="item"></v-text-field></v-col>
-                                        <v-col><v-text-field v-mode="editedItem.description" label="Descripción"></v-text-field></v-col>
-                                        <v-col>
+                                        <v-col cols="2"><v-text-field v-model="editedItem.item" label="item"></v-text-field></v-col>
+                                        <v-col cols="6"><v-text-field v-mode="editedItem.description" label="Descripción"></v-text-field></v-col>
+                                        <v-col cols="4">
                                             <v-select v-model="estadoSel.id" label="Seleccione" :items="estados" item-title="caption" item-value="id" @change="setEstado"></v-select>
                                             <v-text-field v-model="editedItem.status" label="Ciclo" v-show="false"></v-text-field>
 
@@ -87,7 +87,7 @@ const headerItems = [
 
 
 export default {
-    props:['catalogoId'],
+    props:['catalogo'],
     data: () =>({
         headers:headerItems,
         itemsPerPage:5,
@@ -121,6 +121,9 @@ export default {
             }
         },
     methods:{
+            async init(){
+                await this.fetchItemsCatalogo();
+            },  
             closeDialogCRU(){
                 this.dialogCRU = false;
                 this.$nextTick(() => {
@@ -130,6 +133,12 @@ export default {
             },
             closeDialogDEL(){
                 this.dialogDEL = false; 
+            },
+            async fetchItemsCatalogo(){
+                const querySnapshot = await getDocs(collection(db, "itemscatalogo"));
+                this.items = querySnapshot.docs
+                .map(doc => ({ id: doc.id, ...doc.data() }));
+                this.loading = false;
             }
         },
     watch: {
@@ -141,7 +150,8 @@ export default {
           },
     },
     created(){
-        console.log(this.catalogoId);
+        this.editedItem.catalogoid = this.catalogo.id;
+        // console.log(this.editedItem.catalogoid);
     }
 }
 </script>

@@ -42,7 +42,7 @@
                                     </v-card-title>
                                     <v-card-text>
                                         <v-row>
-                                            <v-col cols="6"><v-text-field v-model=".id" label="Catalogo Id" disabled> </v-text-field></v-col>
+                                            <v-col cols="6"><v-text-field v-model="editedCatalogo.id" label="Catalogo Id" disabled> </v-text-field></v-col>
                                         </v-row>
                                         <v-row> 
                                             <v-col cols="6"><v-text-field v-model="editedCatalogo.catalogo" label="Nombre"></v-text-field></v-col>
@@ -84,7 +84,7 @@
                     <template v-slot:expanded-row="{ columns, item }">
                        <tr>
                             <td :colspan="columns.length">
-                                   <DetCatalogos :catalogo-Id="editedCatalogo.id"></DetCatalogos>
+                                   <DetCatalogos :catalogo="item"></DetCatalogos>
                             </td>
                         </tr>
                     </template>
@@ -113,8 +113,6 @@ const tblHeader =[
         { align:'center',sortable:false,key:'status' ,title:'Estado'},
         { align:'center',sortable:false,key:'actions'  , title:'Acciones'},
 ];
-
-
 
 export default {
     data: () => ({
@@ -180,6 +178,17 @@ export default {
             this.catalogos.push(this.editedCatalogo);
             await addDoc(collection(db, "catalogos"), this.editedCatalogo);
         },
+        updateCatalogo: function (itm){
+                this.selected = itm,
+                this.editedIndex = this.catalogos.indexOf(item);
+                this.editedCatalogo = {...this.selected };
+                this.dialog = true;
+        },
+        deleteCatalogo(itm){
+                this.dialogDelete = false;
+                this.editedCatalogo = Object.assign({},itm);
+                this.dialogDelete = true;
+        }
     },
     created() {
         this.init();

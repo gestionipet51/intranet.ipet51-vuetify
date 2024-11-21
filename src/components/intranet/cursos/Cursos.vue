@@ -177,7 +177,18 @@ export default {
                        title: ciclo.caption,
                        value: ciclo.id
                     }
-            }
+            },
+            async update(){
+                // Update
+                Object.assign(this.cursos[this.editedIndex], this.editedCurso)
+                await updateDoc(doc(db,"cursos",this.selected),this.editedCurso)
+            },
+            async create(){
+                // create
+                this.editedCurso.id = crypto.randomUUID();
+                this.cursos.push(this.editedCurso)
+                await addDoc(collection(db,"cursos"),this.editedCurso);
+            },
 
         },
         computed: {
@@ -198,7 +209,7 @@ export default {
                     }
                 }
                 
-                console.log(this.editedCurso);
+                console.log(this.cicloSel);
             },
         },
         watch: {
