@@ -15,26 +15,24 @@
                                 Subir Archivo 
                             </v-btn>
                     </v-col>
-                </v-row>
+            </v-row>
         
-
-        <v-row>
-            <v-col cols="2"></v-col>
-            <v-col cols="6">
-                <v-select label="Seleccione Curso" 
-                          :items="cursos" 
-                          item-title="descripcion" 
-                          item-value ="id"        
-                          v-model="idCourseSelected"
-                          @change="onChange">
-                </v-select>
-            </v-col>
-            <v-col cols="1">
-                <v-btn color="blue-darken-3" @click="emitManualChange">
-                    Buscar
-                </v-btn>
-            </v-col>
-        </v-row>
+            <v-row>
+                <v-col cols="2"></v-col>
+                <v-col cols="6">
+                    <v-select label="Seleccione Curso" 
+                            :items="cursos" 
+                            item-title="descripcion" 
+                            item-value ="id"        
+                            v-model="idCourseSelected"
+                            @change="onChange">
+                    </v-select>
+                </v-col>
+                <v-col cols="1">
+                    <v-btn color="blue-darken-3" @click="emitManualChange" icon ="mdi-folder-search-outline" title="Buscar"> 
+                    </v-btn>
+                </v-col>    
+            </v-row>
         
         <v-row>
             <v-data-table :items="courseSelected" :headers="headers">
@@ -46,7 +44,9 @@
 
                         <v-dialog v-model="dialogFactory" max-width="500px">
                             <v-card>
-                                <v-card-title class="text-h5">{{ itemSelected.apellido }} , {{ itemSelected.nombre }} : Hoja de Ruta - Registro de Taller </v-card-title>
+                                <v-card-title class="text-h5" color="red-accent-4">Hoja de Ruta - Registro de Taller : {{ itemSelected.apellido }} , {{ itemSelected.nombre }} : 
+
+                                </v-card-title>
                                 <v-card-text>
                                     <v-row dense>
                                         <v-col cols="12" md="6" sm="6">
@@ -74,16 +74,19 @@
                                 </v-card-text>
                                 <v-card-actions>
                                     <v-spacer></v-spacer>
-                                        <v-btn color="red-accent-4" variant="text" @click="closeFactory" icon="mdi-arrow-u-left-top-bold"></v-btn>
-                                        <v-btn color="blue-darken-4" variant="text" @click="updateFactory" icon="mdi-content-save-settings"></v-btn>
+                                        <v-btn color="red-accent-4" variant="text" @click="closeFactory" 
+                                               icon="mdi-arrow-u-left-top-bold"></v-btn>
+                                        <v-btn color="blue-darken-4" variant="text" @click="saveFactory" icon="mdi-content-save-settings"></v-btn>
                                     <v-spacer></v-spacer>
                                 </v-card-actions>
                             </v-card>
-                            </v-dialog>
+                        </v-dialog>
 
-                            <v-dialog v-model="dialogBiblioteca" max-width="600px">
+                        <v-dialog v-model="dialogLibrary" max-width="600px">
                             <v-card>
-                                <v-card-title class="text-h5">{{ itemSelected.apellido }} , {{ itemSelected.nombre }} : Hoja de Ruta - Registro de Biblioteca</v-card-title>
+                                <v-card-title class="text-h5">
+                                    Hoja de Ruta - Registro de Biblioteca : {{ itemSelected.apellido }} , {{ itemSelected.nombre }}
+                                </v-card-title>
                                 <v-card-text>
                                     <v-row dense>
                                         <v-col cols="12" md="6" sm="6">
@@ -111,12 +114,94 @@
                                 </v-card-text>
                                 <v-card-actions>
                                     <v-spacer></v-spacer>
-                                        <v-btn color="red-accent-4" variant="text" @click="closeFactory" icon="mdi-arrow-u-left-top-bold"></v-btn>
-                                        <v-btn color="blue-darken-4" variant="text" @click="updateFactory" icon="mdi-content-save-settings"></v-btn>
+                                        <v-btn color="red-accent-4" variant="text" @click="closeLibrary" icon="mdi-arrow-u-left-top-bold"></v-btn>
+                                        <v-btn color="blue-darken-4" variant="text" @click="saveLibrary" icon="mdi-content-save-settings"></v-btn>
                                     <v-spacer></v-spacer>
                                 </v-card-actions>
                             </v-card>
-                            </v-dialog>
+                        </v-dialog>
+
+                        <v-dialog v-model="dialogCooperadora" max-width="700px">
+                            <v-card prepend-icon="mdi-account-cash-outline">
+                                <v-card-title class="text-h5">
+                                    Hoja de Ruta - Registro de Cooperadora : {{ itemSelected.apellido }} , {{ itemSelected.nombre }}
+                                </v-card-title>
+                                <v-card-text>
+                                    <v-row dense>
+                                        <v-col cols="12" md="6" sm="6">
+                                            <v-select
+                                                label="Responsable"
+                                                :items="blResponsables"
+                                                item-title="nombre" 
+                                                item-value ="id"        
+                                                v-model="itemSelected.bl_responsable"
+                                                required
+                                            ></v-select>
+                                        </v-col>
+
+                                        <v-col cols="12" md="3" sm="3">
+                                            <v-select
+                                                label="Condición"
+                                                :items="opEstados"
+                                                item-title="tag" 
+                                                item-value ="id"        
+                                                v-model="itemSelected.bl_condicion"
+                                                required
+                                            ></v-select>
+                                        </v-col>
+
+                                        <v-col cols="12" md="3" sm="3">
+                                            <v-text-field label="Cuotas Pendientes"></v-text-field>
+                                        </v-col>
+                                    </v-row>
+                                </v-card-text>
+                                <v-card-actions>
+                                    <v-spacer></v-spacer>
+                                        <v-btn color="red-accent-4" variant="text" @click="closeCooperadora" icon="mdi-arrow-u-left-top-bold"></v-btn>
+                                        <v-btn color="blue-darken-4" variant="text" @click="saveCooperadora" icon="mdi-content-save-settings"></v-btn>
+                                    <v-spacer></v-spacer>
+                                </v-card-actions>
+                            </v-card>
+                        </v-dialog>
+
+                        <v-dialog v-model="dialogInternado" max-width="600px">
+                            <v-card>
+                                <v-card-title class="text-h5">
+                                    Hoja de Ruta - Registro de Internado : {{ itemSelected.apellido }} , {{ itemSelected.nombre }}
+                                </v-card-title>
+                                <v-card-text>
+                                    <v-row dense>
+                                        <v-col cols="12" md="6" sm="6">
+                                            <v-select
+                                                label="Responsable"
+                                                :items="blResponsables"
+                                                item-title="nombre" 
+                                                item-value ="id"        
+                                                v-model="itemSelected.bl_responsable"
+                                                required
+                                            ></v-select>
+                                        </v-col>
+
+                                        <v-col cols="12" md="6" sm="6">
+                                            <v-select
+                                                label="Condición"
+                                                :items="opEstados"
+                                                item-title="tag" 
+                                                item-value ="id"        
+                                                v-model="itemSelected.bl_condicion"
+                                                required
+                                            ></v-select>
+                                        </v-col>
+                                    </v-row>
+                                </v-card-text>
+                                <v-card-actions>
+                                    <v-spacer></v-spacer>
+                                        <v-btn color="red-accent-4" variant="text" @click="closeInternado" icon="mdi-arrow-u-left-top-bold"></v-btn>
+                                        <v-btn color="blue-darken-4" variant="text" @click="saveInternado" icon="mdi-content-save-settings"></v-btn>
+                                    <v-spacer></v-spacer>
+                                </v-card-actions>
+                            </v-card>
+                        </v-dialog>
 
                     </v-toolbar>
                 </template>
@@ -126,32 +211,28 @@
                         size="small"
                         color="blue-darken-4"
                         @click="editFactory(item)"
-                    >
-                        mdi-factory
+                        title="Taller">mdi-factory
                     </v-icon>
                     <v-icon
                         class="me-2"
                         size="small"
                         color="teal-darken-3"
-                        @click="editBiblioteca(item)"
-                    >
-                        mdi-library
+                        @click="editLibrary(item)"
+                        title="Biblioteca">mdi-library
                     </v-icon>
                     <v-icon
                         class="me-2"
                         size="small"
                         color="red-accent-4"
                         @click="editCooperadora(item)"
-                        >
-                        mdi-currency-usd
+                        title="Cooperadora">mdi-account-cash-outline
                     </v-icon>
                     <v-icon
                             class="me-2"
                             size="small"
                             color="deep-purple-accent-3"
                             @click="editInternado(item)"
-                            >
-                            mdi-bed-single-outline
+                            title="Internado">mdi-bed-single-outline
                     </v-icon>
                 </template>
             </v-data-table>            
@@ -200,8 +281,8 @@
                 itemsPerPage:10,
                 dialogFactory:false,
                 dialogLibrary:false,
-                dialogPaid:false,
-                dialogBedroom:false,
+                dialogCooperadora:false,
+                dialogInternado:false,
                 loadfile: false,
                 opEstados:[],
                 tlResponsables:[],
@@ -209,6 +290,8 @@
                 blResponsables:[],
                 intResponsables:[],
                 itemSelected:{},
+                editedIndex:0,
+                editedMatricula:{},
                 headers:[
                     { title:'Id',align:'start',sortable:false,key:'id' },
                     { title:'IdHex',align:'center',sortable:false,key:'idhex'},
@@ -298,6 +381,17 @@
 
                 console.log(value);
             },
+            async saveFactory() {
+                if (this.editedIndex > -1) {
+                    await this.updateFactory();
+                }
+                else {
+                    // await this.create();
+                    console.log("Create");
+                }
+                this.close();
+                await this.fetchMatriculas();
+            },
             emitManualChange() {
                 const newValue = this.idCourseSelected;
                 // this.selectedOption = newValue; // Actualizar el modelo
@@ -309,41 +403,118 @@
             editFactory(item){
                 console.log(item);
                 this.itemSelected = item;
+                this.editedIndex = this.matriculas.indexOf(item);
+                this.editedMatricula = {...this.itemSelected};
                 this.dialogFactory = true;
 
             },
+            async updateFactory(){
+                // Update
+                //  console.log(this.itemSelected);
+                // console.log(this.editedIndex);
+                // console.log(this.editedMatricula);
+                
+                Object.assign(this.matriculas[this.editedIndex], this.itemSelected);
+                await updateDoc(doc(db,"matriculas",this.editedMatricula),this.itemSelected);
+            
+                this.closeFactory();
+            },
             closeFactory(){
-                this.itemSelected = null;
                 this.dialogFactory = false;
             },
-            editBiblioteca(item){
+            async saveLibrary(){
+                if (this.editedIndex > -1) {
+                    await this.updateLibrary();
+                    this.closeLibrary();
+                }
+                else {
+                    // await this.create();
+                    console.log("Create Library");
+                }
+                this.close();
+                await this.fetchMatriculas();
+            },
+            editLibrary(item){
                 this.itemSelected = item;
-                this.dialogBiblioteca = true;
+                this.editedIndex = this.matriculas.indexOf(item);
+                this.editedMatricula = {...this.itemSelected};
+                this.dialogLibrary = true;
             },
-            closeBiblioteca(){
-                this.itemSelected = null;
-                this.dialogBiblioteca = false;
+            async updateLibrary(){
+                // Update
+                console.log(this.itemSelected);
+                Object.assign(this.matriculas[this.editedIndex], this.editedMatricula);
+                await updateDoc(doc(db,"matriculas",this.itemSelected),this.editedMatricula);
             },
+
+            closeLibrary(){
+                this.dialogLibrary = false;
+            },
+
+            async saveCooperadora(){
+                if (this.editedIndex > -1) {
+                    await this.updateCooperadora();
+                    this.closeCooperadora();
+                }
+                else {
+                    // await this.create();
+                    console.log("Create Cooperadora");
+                }
+                this.close();
+                await this.fetchMatriculas();
+            },
+
+            async updateCooperadora(){
+                // Update
+                console.log(this.itemSelected);
+                Object.assign(this.matriculas[this.editedIndex], this.editedMatricula);
+                await updateDoc(doc(db,"matriculas",this.itemSelected),this.editedMatricula);
+            },
+
             editCooperadora(item){
                 this.itemSelected = item;
                 this.dialogCooperadora = true;
             },
             closeCooperadora(){
-                this.itemSelected = null;
                 this.dialogCooperadora = false;
             },
+
+            async saveInternado(){
+                if (this.editedIndex > -1) {
+                    await this.updateInternado();
+                    this.closeInternado()();
+                }
+                else {
+                    // await this.create();
+                    console.log("Create Internado");
+                }
+                this.close();
+                await this.fetchMatriculas();
+            },
+
+            async updateInternado(){
+                // Update
+                console.log(this.itemSelected);
+                Object.assign(this.matriculas[this.editedIndex], this.editedMatricula);
+                await updateDoc(doc(db,"matriculas",this.itemSelected),this.editedMatricula);
+            },
+
             editInternado(item){
                 this.itemSelected = item;
                 this.dialogInternado = true;
             },
             closeInternado(){
-                this.itemSelected = null;
                 this.dialogInternado = false;
             }
         },
         created(){
             this.initialize();
         },
+        computed : {
+            alumno(){
+                return this.itemSelected.apellido + " , " + this.itemSelected.nombre;
+            }
+        }
     }
 </script>
 
