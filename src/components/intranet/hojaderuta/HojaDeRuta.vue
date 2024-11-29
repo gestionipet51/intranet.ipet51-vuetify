@@ -122,7 +122,7 @@
                         </v-dialog>
 
                         <v-dialog v-model="dialogCooperadora" max-width="700px">
-                            <v-card prepend-icon="mdi-account-cash-outline">
+                            <v-card>
                                 <v-card-title class="text-h5">
                                     Hoja de Ruta - Registro de Cooperadora : {{ itemSelected.apellido }} , {{ itemSelected.nombre }}
                                 </v-card-title>
