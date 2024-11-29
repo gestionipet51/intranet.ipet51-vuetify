@@ -131,7 +131,7 @@
                                         <v-col cols="12" md="6" sm="6">
                                             <v-select
                                                 label="Responsable"
-                                                :items="blResponsables"
+                                                :items="cpResponsables"
                                                 item-title="nombre" 
                                                 item-value ="id"        
                                                 v-model="itemSelected.bl_responsable"
@@ -174,7 +174,7 @@
                                         <v-col cols="12" md="6" sm="6">
                                             <v-select
                                                 label="Responsable"
-                                                :items="blResponsables"
+                                                :items="intResponsables"
                                                 item-title="nombre" 
                                                 item-value ="id"        
                                                 v-model="itemSelected.bl_responsable"
@@ -251,7 +251,7 @@
     import Papa from "papaparse"; // Importar PapaParse para procesar CSV
     import axios from "axios"; // Axios para enviar datos al backend    
 
-    const vEstados = [{id:1,tag:"Completo",key:"COMPLETO"},{id:2,tag:"Pendiente",key:"PENDIENTE"},{id:3,tag:"NO CORRESPONDE",key:"NC"}];
+    const vEstados = [{id:1,tag:"COMPLETO",key:"CO"},{id:2,tag:"PENDIENTE",key:"PE"},{id:3,tag:"NO CORRESPONDE",key:"NC"}];
 
     
     const vResponsables = [{id:1,grupo:"COOPERADORA",nombre:"PERALTA,FLORENCIA"},
@@ -263,9 +263,9 @@
                           {id:7,grupo:"TALLER",nombre:"CAROSSIA,GUSTAVO"},
                           {id:8,grupo:"BIBLIOTECA",nombre:"PERIN,CLAUDIA"},
                           {id:9,grupo:"BIBLIOTECA",nombre:"PLEVANI,ANGELICA"},
-                          {id:10,grupo:"INTERNADO",nombre:"RODRIGUE,ALEX"},
+                          {id:10,grupo:"INTERNADO",nombre:"RODRIGUEZ,ALEX"},
                           {id:11,grupo:"INTERNADO",nombre:"CAYUELA,NICOLAS"},
-                          {id:12,grupo:"INTERNADO",nombre:"MARCANTONIO;GERMAN"},
+                          {id:12,grupo:"INTERNADO",nombre:"MARCANTONIO,GERMAN"},
                           {id:13,grupo:"INTERNADO",nombre:"LAMBERTUCCI,FRANCISCO"},
                         ];
     
