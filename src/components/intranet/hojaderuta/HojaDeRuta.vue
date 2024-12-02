@@ -75,7 +75,7 @@
                                 <v-card-actions>
                                     <v-spacer></v-spacer>
                                         <v-btn color="red-accent-4" variant="text" @click="closeFactory" 
-                                               icon="mdi-arrow-u-left-top-bold"></v-btn>
+                                               icon="mdi-close-circle-outline"></v-btn>
                                         <v-btn color="blue-darken-4" variant="text" @click="saveFactory" icon="mdi-content-save-settings"></v-btn>
                                     <v-spacer></v-spacer>
                                 </v-card-actions>
@@ -114,7 +114,7 @@
                                 </v-card-text>
                                 <v-card-actions>
                                     <v-spacer></v-spacer>
-                                        <v-btn color="red-accent-4" variant="text" @click="closeLibrary" icon="mdi-arrow-u-left-top-bold"></v-btn>
+                                        <v-btn color="red-accent-4" variant="text" @click="closeLibrary" icon="mdi-close-circle-outline"></v-btn>
                                         <v-btn color="blue-darken-4" variant="text" @click="saveLibrary" icon="mdi-content-save-settings"></v-btn>
                                     <v-spacer></v-spacer>
                                 </v-card-actions>
@@ -157,7 +157,7 @@
                                 </v-card-text>
                                 <v-card-actions>
                                     <v-spacer></v-spacer>
-                                        <v-btn color="red-accent-4" variant="text" @click="closeCooperadora" icon="mdi-arrow-u-left-top-bold"></v-btn>
+                                        <v-btn color="red-accent-4" variant="text" @click="closeCooperadora" icon="mdi-close-circle-outline"></v-btn>
                                         <v-btn color="blue-darken-4" variant="text" @click="saveCooperadora" icon="mdi-content-save-settings"></v-btn>
                                     <v-spacer></v-spacer>
                                 </v-card-actions>
@@ -196,7 +196,7 @@
                                 </v-card-text>
                                 <v-card-actions>
                                     <v-spacer></v-spacer>
-                                        <v-btn color="red-accent-4" variant="text" @click="closeInternado" icon="mdi-arrow-u-left-top-bold"></v-btn>
+                                        <v-btn color="red-accent-4" variant="text" @click="closeInternado" icon="mdi-close-circle-outline"></v-btn>
                                         <v-btn color="blue-darken-4" variant="text" @click="saveInternado" icon="mdi-content-save-settings"></v-btn>
                                     <v-spacer></v-spacer>
                                 </v-card-actions>
@@ -329,7 +329,6 @@
                 const querySnapshot = await getDocs(collection(db,"cursos"));
                 this.cursos = querySnapshot.docs
                                     .map(doc => ({ id:doc.id, ...doc.data() }))
-                                    // .sort((a,b) => a.anio.localCompare(b.anio));
                 this.loading = false;
             },
             fetchMatriculas:async function(){
@@ -378,10 +377,17 @@
             },
             onChange(value){
                 // 
-
                 console.log(value);
             },
+            emitManualChange() {
+                const newValue = this.idCourseSelected;
+                console.log('Cambio manual emitido:', newValue);
+                this.courseSelected = this.matriculas.filter(elem => elem.curidhex == newValue)
+                console.log(this.courseSelected);
+            },
+
             async saveFactory() {
+
                 if (this.editedIndex > -1) {
                     await this.updateFactory();
                 }
@@ -389,35 +395,29 @@
                     // await this.create();
                     console.log("Create");
                 }
-                this.close();
+                this.closeFactory();
                 await this.fetchMatriculas();
             },
-            emitManualChange() {
-                const newValue = this.idCourseSelected;
-                // this.selectedOption = newValue; // Actualizar el modelo
-                // this.$emit('change', newValue); // Emitir el evento manualmente
-                console.log('Cambio manual emitido:', newValue);
-                this.courseSelected = this.matriculas.filter(elem => elem.curidhex == newValue)
-                console.log(this.courseSelected);
-            },
+
             editFactory(item){
-                console.log(item);
+                console.log("Edit Factory:");
+                console.log(item.tl_responsable + "-" + item.tl_condicion);
                 this.itemSelected = item;
                 this.editedIndex = this.matriculas.indexOf(item);
-                this.editedMatricula = {...this.itemSelected};
                 this.dialogFactory = true;
-
             },
             async updateFactory(){
                 // Update
-                //  console.log(this.itemSelected);
-                // console.log(this.editedIndex);
-                // console.log(this.editedMatricula);
-                
-                Object.assign(this.matriculas[this.editedIndex], this.itemSelected);
-                await updateDoc(doc(db,"matriculas",this.editedMatricula),this.itemSelected);
-            
-                this.closeFactory();
+                try {
+                    this.editedMatricula = {...this.itemSelected};
+                    Object.assign(this.matriculas[this.editedIndex], this.itemSelected);
+                    const matricula = doc(db,"matriculas",this.itemSelected);
+                    await updateDoc(matricula , { tl_condicion:this.itemSelected.tl_condicion,tl_responsable:this.itemSelected.tl_responsable });
+                    return true;                    
+                } catch (error) {
+                    console.log(error);
+                    return false;
+                }
             },
             closeFactory(){
                 this.dialogFactory = false;
@@ -425,26 +425,34 @@
             async saveLibrary(){
                 if (this.editedIndex > -1) {
                     await this.updateLibrary();
-                    this.closeLibrary();
                 }
                 else {
                     // await this.create();
                     console.log("Create Library");
                 }
-                this.close();
+                this.closeLibrary();
                 await this.fetchMatriculas();
             },
             editLibrary(item){
                 this.itemSelected = item;
                 this.editedIndex = this.matriculas.indexOf(item);
-                this.editedMatricula = {...this.itemSelected};
                 this.dialogLibrary = true;
             },
             async updateLibrary(){
                 // Update
-                console.log(this.itemSelected);
-                Object.assign(this.matriculas[this.editedIndex], this.editedMatricula);
-                await updateDoc(doc(db,"matriculas",this.itemSelected),this.editedMatricula);
+
+                try {
+                    console.log(this.itemSelected);
+                    this.editedMatricula = {...this.itemSelected};
+                    Object.assign(this.matriculas[this.editedIndex], this.editedMatricula);
+                    const matricula = doc(db,"matriculas",this.itemSelected);
+                    await updateDoc(matricula , { bl_condicion:this.itemSelected.bl_condicion,bl_responsable:this.itemSelected.bl_responsable });
+                    return true;
+                    
+                } catch (error) {
+                    console.log(error);
+                    return false;
+                }
             },
 
             closeLibrary(){
@@ -454,25 +462,34 @@
             async saveCooperadora(){
                 if (this.editedIndex > -1) {
                     await this.updateCooperadora();
-                    this.closeCooperadora();
                 }
                 else {
                     // await this.create();
                     console.log("Create Cooperadora");
                 }
-                this.close();
+                
+                this.closeCooperadora();
                 await this.fetchMatriculas();
             },
 
             async updateCooperadora(){
                 // Update
-                console.log(this.itemSelected);
-                Object.assign(this.matriculas[this.editedIndex], this.editedMatricula);
-                await updateDoc(doc(db,"matriculas",this.itemSelected),this.editedMatricula);
+                try {
+                    console.log(this.itemSelected);
+                    Object.assign(this.matriculas[this.editedIndex], this.editedMatricula);
+                    const matricula = doc(db,"matriculas",this.itemSelected);
+                    await updateDoc(matricula , { coop_condicion:this.itemSelected.coop_condicion,coop_responsable:this.itemSelected.coop_responsable });
+                    return true;
+                    
+                } catch (error) {
+                    console.log(error);
+                    return false;
+                }
             },
 
             editCooperadora(item){
                 this.itemSelected = item;
+                this.editedIndex = this.matriculas.indexOf(item);
                 this.dialogCooperadora = true;
             },
             closeCooperadora(){
@@ -482,21 +499,27 @@
             async saveInternado(){
                 if (this.editedIndex > -1) {
                     await this.updateInternado();
-                    this.closeInternado()();
                 }
                 else {
                     // await this.create();
                     console.log("Create Internado");
                 }
-                this.close();
+                this.closeInternado();
                 await this.fetchMatriculas();
             },
 
             async updateInternado(){
+                try {
+                    console.log(this.itemSelected);
+                    Object.assign(this.matriculas[this.editedIndex], this.editedMatricula);
+                    await updateDoc(matricula , { int_condicion:this.itemSelected.int_condicion,int_responsable:this.itemSelected.int_responsable });
+
+                    return true;
+                    
+                } catch (error) {
+                    
+                }
                 // Update
-                console.log(this.itemSelected);
-                Object.assign(this.matriculas[this.editedIndex], this.editedMatricula);
-                await updateDoc(doc(db,"matriculas",this.itemSelected),this.editedMatricula);
             },
 
             editInternado(item){
