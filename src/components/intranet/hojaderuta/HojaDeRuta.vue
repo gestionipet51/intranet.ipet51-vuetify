@@ -44,7 +44,7 @@
 
                         <v-dialog v-model="dialogFactory" max-width="500px">
                             <v-card>
-                                <v-card-title class="text-h5" color="red-accent-4">Hoja de Ruta - Registro de Taller : {{ itemSelected.apellido }} , {{ itemSelected.nombre }} : 
+                                <v-card-title class="text-h5" color="red-accent-4">Hoja de Ruta - Registro de Taller : {{ matriculaEdited.apellido }} , {{ matriculaEdited.nombre }} 
 
                                 </v-card-title>
                                 <v-card-text>
@@ -55,7 +55,7 @@
                                                 :items="tlResponsables"
                                                 item-title="nombre" 
                                                 item-value ="id"        
-                                                v-model="itemSelected.tl_responsable"
+                                                v-model="matriculaEdited.tl_responsable"
                                                 required
                                             ></v-select>
                                         </v-col>
@@ -66,7 +66,7 @@
                                                 :items="opEstados"
                                                 item-title="tag" 
                                                 item-value ="id"        
-                                                v-model="itemSelected.tl_condicion"
+                                                v-model="matriculaEdited.tl_condicion"
                                                 required
                                             ></v-select>
                                         </v-col>
@@ -85,7 +85,7 @@
                         <v-dialog v-model="dialogLibrary" max-width="600px">
                             <v-card>
                                 <v-card-title class="text-h5">
-                                    Hoja de Ruta - Registro de Biblioteca : {{ itemSelected.apellido }} , {{ itemSelected.nombre }}
+                                    Hoja de Ruta - Registro de Biblioteca : {{ matriculaEdited.apellido }} , {{ matriculaEdited.nombre }} 
                                 </v-card-title>
                                 <v-card-text>
                                     <v-row dense>
@@ -95,7 +95,7 @@
                                                 :items="blResponsables"
                                                 item-title="nombre" 
                                                 item-value ="id"        
-                                                v-model="itemSelected.bl_responsable"
+                                                v-model="matriculaEdited.bl_responsable"
                                                 required
                                             ></v-select>
                                         </v-col>
@@ -106,7 +106,7 @@
                                                 :items="opEstados"
                                                 item-title="tag" 
                                                 item-value ="id"        
-                                                v-model="itemSelected.bl_condicion"
+                                                v-model="matriculaEdited.bl_condicion"
                                                 required
                                             ></v-select>
                                         </v-col>
@@ -124,7 +124,7 @@
                         <v-dialog v-model="dialogCooperadora" max-width="700px">
                             <v-card>
                                 <v-card-title class="text-h5">
-                                    Hoja de Ruta - Registro de Cooperadora : {{ itemSelected.apellido }} , {{ itemSelected.nombre }}
+                                    Hoja de Ruta - Registro de Cooperadora : {{ matriculaEdited.apellido }} , {{ matriculaEdited.nombre }} 
                                 </v-card-title>
                                 <v-card-text>
                                     <v-row dense>
@@ -134,7 +134,7 @@
                                                 :items="cpResponsables"
                                                 item-title="nombre" 
                                                 item-value ="id"        
-                                                v-model="itemSelected.bl_responsable"
+                                                v-model="matriculaEdited.coop_responsable"
                                                 required
                                             ></v-select>
                                         </v-col>
@@ -145,13 +145,13 @@
                                                 :items="opEstados"
                                                 item-title="tag" 
                                                 item-value ="id"        
-                                                v-model="itemSelected.bl_condicion"
+                                                v-model="matriculaEdited.coop_condicion"
                                                 required
                                             ></v-select>
                                         </v-col>
 
                                         <v-col cols="12" md="3" sm="3">
-                                            <v-text-field label="Cuotas Pendientes"></v-text-field>
+                                            <v-text-field label="Cuotas Pendientes" v-model="matriculaEdited.coop_cuotas"></v-text-field>
                                         </v-col>
                                     </v-row>
                                 </v-card-text>
@@ -167,7 +167,7 @@
                         <v-dialog v-model="dialogInternado" max-width="600px">
                             <v-card>
                                 <v-card-title class="text-h5">
-                                    Hoja de Ruta - Registro de Internado : {{ itemSelected.apellido }} , {{ itemSelected.nombre }}
+                                    Hoja de Ruta - Registro de Internado : {{ matriculaEdited.apellido }} , {{ matriculaEdited.nombre }} 
                                 </v-card-title>
                                 <v-card-text>
                                     <v-row dense>
@@ -177,7 +177,7 @@
                                                 :items="intResponsables"
                                                 item-title="nombre" 
                                                 item-value ="id"        
-                                                v-model="itemSelected.bl_responsable"
+                                                v-model="matriculaEdited.int_responsable"
                                                 required
                                             ></v-select>
                                         </v-col>
@@ -188,7 +188,7 @@
                                                 :items="opEstados"
                                                 item-title="tag" 
                                                 item-value ="id"        
-                                                v-model="itemSelected.bl_condicion"
+                                                v-model="matriculaEdited.int_condicion"
                                                 required
                                             ></v-select>
                                         </v-col>
@@ -210,21 +210,21 @@
                         class="me-2"
                         size="small"
                         color="blue-darken-4"
-                        @click="editFactory(item)"
+                        @click="editFactory(item.id)"
                         title="Taller">mdi-factory
                     </v-icon>
                     <v-icon
                         class="me-2"
                         size="small"
                         color="teal-darken-3"
-                        @click="editLibrary(item)"
+                        @click="editLibrary(item.id)"
                         title="Biblioteca">mdi-library
                     </v-icon>
                     <v-icon
                         class="me-2"
                         size="small"
                         color="red-accent-4"
-                        @click="editCooperadora(item)"
+                        @click="editCooperadora(item.id)"
                         title="Cooperadora">mdi-account-cash-outline
                     </v-icon>
                     <v-icon
@@ -289,9 +289,9 @@
                 cpResponsables:[],
                 blResponsables:[],
                 intResponsables:[],
-                itemSelected:{},
+                matriculaSelected:{},
                 editedIndex:0,
-                editedMatricula:{},
+                matriculaEdited:{},
                 headers:[
                     { title:'Id',align:'start',sortable:false,key:'id' },
                     { title:'IdHex',align:'center',sortable:false,key:'idhex'},
@@ -323,7 +323,7 @@
                 this.blResponsables = vResponsables.filter(elem => elem.grupo == "BIBLIOTECA");
                 this.intResponsables = vResponsables.filter(elem => elem.grupo == "INTERNADO");
 
-                console.log(this.matriculas);
+                // console.log(this.matriculas);
              },
             fetchCursos: async function (){
                 const querySnapshot = await getDocs(collection(db,"cursos"));
@@ -386,9 +386,20 @@
                 console.log(this.courseSelected);
             },
 
+            editFactory(id){
+                /**
+                 * Se invoca desde el icono factory del datatable: selecciona el registro actual[item]
+                 */
+                console.log("Edit Factory:");
+                const matricula  = this.matriculas.find(x => x.id === id );
+                this.matriculaSelected = this.matriculas.findIndex(x => x.id === id );
+                this.matriculaEdited = {...matricula};
+                this.dialogFactory = true;
+            },
+
             async saveFactory() {
 
-                if (this.editedIndex > -1) {
+                if (this.matriculaSelected  > -1) {
                     await this.updateFactory();
                 }
                 else {
@@ -399,20 +410,13 @@
                 await this.fetchMatriculas();
             },
 
-            editFactory(item){
-                console.log("Edit Factory:");
-                console.log(item.tl_responsable + "-" + item.tl_condicion);
-                this.itemSelected = item;
-                this.editedIndex = this.matriculas.indexOf(item);
-                this.dialogFactory = true;
-            },
+
             async updateFactory(){
                 // Update
                 try {
-                    this.editedMatricula = {...this.itemSelected};
-                    Object.assign(this.matriculas[this.editedIndex], this.itemSelected);
-                    const matricula = doc(db,"matriculas",this.itemSelected);
-                    await updateDoc(matricula , { tl_condicion:this.itemSelected.tl_condicion,tl_responsable:this.itemSelected.tl_responsable });
+                    console.log("Responsable:" + this.matriculaEdited.tl_responsable + " - Condicion:" + this.matriculaEdited.tl_condicion);
+                    Object.assign(this.matriculas[this.matriculaSelected], this.matriculaEdited);
+                    await updateDoc(doc(db,"matriculas", this.matriculaSelected) , this.matriculaEdited );
                     return true;                    
                 } catch (error) {
                     console.log(error);
@@ -423,7 +427,7 @@
                 this.dialogFactory = false;
             },
             async saveLibrary(){
-                if (this.editedIndex > -1) {
+                if (this.editedIndex > -1) {localhosrt
                     await this.updateLibrary();
                 }
                 else {
@@ -433,8 +437,8 @@
                 this.closeLibrary();
                 await this.fetchMatriculas();
             },
-            editLibrary(item){
-                this.itemSelected = item;
+            editLibrary(id){
+                this.matriculaSelected = item;
                 this.editedIndex = this.matriculas.indexOf(item);
                 this.dialogLibrary = true;
             },
@@ -442,11 +446,11 @@
                 // Update
 
                 try {
-                    console.log(this.itemSelected);
-                    this.editedMatricula = {...this.itemSelected};
-                    Object.assign(this.matriculas[this.editedIndex], this.editedMatricula);
-                    const matricula = doc(db,"matriculas",this.itemSelected);
-                    await updateDoc(matricula , { bl_condicion:this.itemSelected.bl_condicion,bl_responsable:this.itemSelected.bl_responsable });
+                    console.log(this.matriculaSelected);
+                    this.matriculaEdited = {...this.matriculaSelected};
+                    Object.assign(this.matriculas[this.editedIndex], this.matriculaEdited);
+                    const matricula = doc(db,"matriculas",this.matriculaSelected.id);
+                    await updateDoc(matricula , { bl_condicion:this.matriculaSelected.bl_condicion,bl_responsable:this.matriculaSelected.bl_responsable });
                     return true;
                     
                 } catch (error) {
@@ -475,10 +479,10 @@
             async updateCooperadora(){
                 // Update
                 try {
-                    console.log(this.itemSelected);
-                    Object.assign(this.matriculas[this.editedIndex], this.editedMatricula);
-                    const matricula = doc(db,"matriculas",this.itemSelected);
-                    await updateDoc(matricula , { coop_condicion:this.itemSelected.coop_condicion,coop_responsable:this.itemSelected.coop_responsable });
+                    console.log(this.matriculaSelected);
+                    Object.assign(this.matriculas[this.editedIndex], this.matriculaEdited);
+                    const matricula = doc(db,"matriculas",this.matriculaSelected);
+                    await updateDoc(matricula , { coop_condicion:this.matriculaSelected.coop_condicion,coop_responsable:this.matriculaSelected.coop_responsable });
                     return true;
                     
                 } catch (error) {
@@ -487,8 +491,8 @@
                 }
             },
 
-            editCooperadora(item){
-                this.itemSelected = item;
+            editCooperadora(id){
+                this.matriculaSelected = item;
                 this.editedIndex = this.matriculas.indexOf(item);
                 this.dialogCooperadora = true;
             },
@@ -510,9 +514,9 @@
 
             async updateInternado(){
                 try {
-                    console.log(this.itemSelected);
-                    Object.assign(this.matriculas[this.editedIndex], this.editedMatricula);
-                    await updateDoc(matricula , { int_condicion:this.itemSelected.int_condicion,int_responsable:this.itemSelected.int_responsable });
+                    console.log(this.matriculaSelected);
+                    Object.assign(this.matriculas[this.editedIndex], this.matriculaEdited);
+                    await updateDoc(matricula , { int_condicion:this.matriculaSelected.int_condicion,int_responsable:this.matriculaSelected.int_responsable });
 
                     return true;
                     
@@ -522,8 +526,8 @@
                 // Update
             },
 
-            editInternado(item){
-                this.itemSelected = item;
+            editInternado(id){
+                this.matriculaSelected = item;
                 this.dialogInternado = true;
             },
             closeInternado(){
@@ -535,10 +539,11 @@
         },
         computed : {
             alumno(){
-                return this.itemSelected.apellido + " , " + this.itemSelected.nombre;
+                return this.matriculaSelected.apellido + " , " + this.matriculaSelected.nombre;
             }
         }
     }
+
 </script>
 
 <style scoped>

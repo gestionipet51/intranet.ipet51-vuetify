@@ -180,8 +180,15 @@ export default {
             },
             async update(){
                 // Update
-                Object.assign(this.cursos[this.editedIndex], this.editedCurso)
-                await updateDoc(doc(db,"cursos",this.selected),this.editedCurso)
+                
+                try{
+                    Object.assign(this.cursos[this.editedIndex], this.editedCurso)
+                    await updateDoc(doc(db,"cursos",this.selected.id),this.editedCurso)
+
+                }
+                catch(error){
+                    console.log(error);
+                }
             },
             async create(){
                 // create
