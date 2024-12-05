@@ -42,7 +42,7 @@
                         <v-divider class="mx-4" inset vertical></v-divider>
                         <v-spacer></v-spacer>
 
-                        <v-dialog v-model="dialogFactory" max-width="500px">
+                        <v-dialog v-model="dialogFactory" max-width="600px">
                             <v-card>
                                 <v-card-title class="text-h5" color="red-accent-4">Hoja de Ruta - Registro de Taller : {{ matriculaEdited.apellido }} , {{ matriculaEdited.nombre }} 
 
@@ -210,21 +210,21 @@
                         class="me-2"
                         size="small"
                         color="blue-darken-4"
-                        @click="editFactory(item.id)"
+                        @click="editFactory(item)"
                         title="Taller">mdi-factory
                     </v-icon>
                     <v-icon
                         class="me-2"
                         size="small"
                         color="teal-darken-3"
-                        @click="editLibrary(item.id)"
+                        @click="editLibrary(item)"
                         title="Biblioteca">mdi-library
                     </v-icon>
                     <v-icon
                         class="me-2"
                         size="small"
                         color="red-accent-4"
-                        @click="editCooperadora(item.id)"
+                        @click="editCooperadora(item)"
                         title="Cooperadora">mdi-account-cash-outline
                     </v-icon>
                     <v-icon
@@ -386,13 +386,13 @@
                 console.log(this.courseSelected);
             },
 
-            editFactory(id){
+            editFactory(item){
                 /**
                  * Se invoca desde el icono factory del datatable: selecciona el registro actual[item]
                  */
                 console.log("Edit Factory:");
-                const matricula  = this.matriculas.find(x => x.id === id );
-                this.matriculaSelected = this.matriculas.findIndex(x => x.id === id );
+                let matricula  = this.matriculas.find(x => x.matriculaid === item.matriculaid );
+                this.matriculaSelected = this.matriculas.findIndex(x => x.matriculaid === item.matriculaid );
                 this.matriculaEdited = {...matricula};
                 this.dialogFactory = true;
             },
@@ -414,9 +414,8 @@
             async updateFactory(){
                 // Update
                 try {
-                    console.log("Responsable:" + this.matriculaEdited.tl_responsable + " - Condicion:" + this.matriculaEdited.tl_condicion);
                     Object.assign(this.matriculas[this.matriculaSelected], this.matriculaEdited);
-                    await updateDoc(doc(db,"matriculas", this.matriculaSelected) , this.matriculaEdited );
+                    await updateDoc(doc(db,"matriculas", this.matriculaEdited.id) , this.matriculaEdited );
                     return true;                    
                 } catch (error) {
                     console.log(error);
@@ -427,7 +426,7 @@
                 this.dialogFactory = false;
             },
             async saveLibrary(){
-                if (this.editedIndex > -1) {localhosrt
+                if (this.editedIndex > -1) {
                     await this.updateLibrary();
                 }
                 else {
@@ -437,21 +436,20 @@
                 this.closeLibrary();
                 await this.fetchMatriculas();
             },
-            editLibrary(id){
-                this.matriculaSelected = item;
-                this.editedIndex = this.matriculas.indexOf(item);
+            editLibrary(item){
+                console.log("Edit Library:");
+                let matricula  = this.matriculas.find(x => x.matriculaid === item.matriculaid );
+                this.matriculaSelected = this.matriculas.findIndex(x => x.matriculaid === item.matriculaid );
+                this.matriculaEdited = {...matricula};
                 this.dialogLibrary = true;
             },
             async updateLibrary(){
                 // Update
 
                 try {
-                    console.log(this.matriculaSelected);
-                    this.matriculaEdited = {...this.matriculaSelected};
-                    Object.assign(this.matriculas[this.editedIndex], this.matriculaEdited);
-                    const matricula = doc(db,"matriculas",this.matriculaSelected.id);
-                    await updateDoc(matricula , { bl_condicion:this.matriculaSelected.bl_condicion,bl_responsable:this.matriculaSelected.bl_responsable });
-                    return true;
+                    Object.assign(this.matriculas[this.matriculaSelected], this.matriculaEdited);
+                    await updateDoc(doc(db,"matriculas", this.matriculaEdited.id) , this.matriculaEdited );
+                    return true; 
                     
                 } catch (error) {
                     console.log(error);
@@ -479,21 +477,23 @@
             async updateCooperadora(){
                 // Update
                 try {
-                    console.log(this.matriculaSelected);
-                    Object.assign(this.matriculas[this.editedIndex], this.matriculaEdited);
-                    const matricula = doc(db,"matriculas",this.matriculaSelected);
-                    await updateDoc(matricula , { coop_condicion:this.matriculaSelected.coop_condicion,coop_responsable:this.matriculaSelected.coop_responsable });
-                    return true;
-                    
+                    Object.assign(this.matriculas[this.matriculaSelected], this.matriculaEdited);
+                    await updateDoc(doc(db,"matriculas", this.matriculaEdited.id) , this.matriculaEdited );
+                    return true;                    
                 } catch (error) {
                     console.log(error);
                     return false;
                 }
             },
 
-            editCooperadora(id){
-                this.matriculaSelected = item;
-                this.editedIndex = this.matriculas.indexOf(item);
+            editCooperadora(item){
+                /**
+                 * Se invoca desde el icono factory del datatable: selecciona el registro actual[item]
+                 */
+                 console.log("Edit Cooperadora:");
+                let matricula  = this.matriculas.find(x => x.matriculaid === item.matriculaid );
+                this.matriculaSelected = this.matriculas.findIndex(x => x.matriculaid === item.matriculaid );
+                this.matriculaEdited = {...matricula};
                 this.dialogCooperadora = true;
             },
             closeCooperadora(){
@@ -513,21 +513,22 @@
             },
 
             async updateInternado(){
-                try {
-                    console.log(this.matriculaSelected);
-                    Object.assign(this.matriculas[this.editedIndex], this.matriculaEdited);
-                    await updateDoc(matricula , { int_condicion:this.matriculaSelected.int_condicion,int_responsable:this.matriculaSelected.int_responsable });
-
-                    return true;
-                    
-                } catch (error) {
-                    
-                }
                 // Update
-            },
+                try {
+                    Object.assign(this.matriculas[this.matriculaSelected], this.matriculaEdited);
+                    await updateDoc(doc(db,"matriculas", this.matriculaEdited.id) , this.matriculaEdited );
+                    return true;                    
+                } catch (error) {
+                    console.log(error);
+                    return fa
+                }
+            },   
 
-            editInternado(id){
-                this.matriculaSelected = item;
+            editInternado(item){
+                console.log("Edit Internado:");
+                let matricula  = this.matriculas.find(x => x.matriculaid === item.matriculaid );
+                this.matriculaSelected = this.matriculas.findIndex(x => x.matriculaid === item.matriculaid );
+                this.matriculaEdited = {...matricula};
                 this.dialogInternado = true;
             },
             closeInternado(){
