@@ -82,7 +82,7 @@ export default {
             dialogDelete:false,
             editedIndex: -1,
             editedCurso:{
-                id:'',
+                cursoid:'',
                 ciclo:'',
                 anio:'',
                 division:'',
@@ -90,7 +90,7 @@ export default {
             },
             ciclos:[],
             cicloSel:{
-                id:'',
+                cursoid:'',
                 key:'',
                 caption:'',
                 description:'',
@@ -108,7 +108,9 @@ export default {
                 const querySnapshot = await getDocs(collection(db,"cursos"));
                 this.cursos = querySnapshot.docs
                                     .map(doc => ({ id:doc.id, ...doc.data() }))
-                                    // .sort((a,b) => a.anio.localCompare(b.anio));
+                                    .sort((a,b) => a.anio - b.anio);
+
+                console.log(this.cursos);
                 this.loading = false;
             },
             sendData(){
@@ -146,14 +148,14 @@ export default {
             close () {
                 this.dialog = false;
                 this.$nextTick(() => {
-                    this.editedCurso =  { id:0,ciclo:'',anio:0,division:'',descripcion:''}
+                    this.editedCurso =  { cursoid:0,ciclo:'',anio:0,division:'',descripcion:''}
                     this.editedIndex = -1;
                 })
             },
             closeDelete () {
                 this.dialogDelete = false
                 this.$nextTick(() => {
-                this.editedCurso = Object.assign({}, { id:0,ciclo:'',anio:0,division:'',descripcion:''} )
+                this.editedCurso = Object.assign({}, { cursoid:0,ciclo:'',anio:0,division:'',descripcion:''} )
                 this.editedIndex = -1;
                 })
             },
@@ -247,7 +249,7 @@ export default {
                 v-model:items-per-page="itemsPerPage"
                 :items-length="totalCursos"
                 :loading="loading"
-                item-value="id"
+                item-value="cursoid"
                 :search="search"
                 :single-select="singleSelect"
                 >

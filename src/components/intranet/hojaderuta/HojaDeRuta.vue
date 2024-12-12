@@ -54,7 +54,7 @@
                                                 label="Responsable"
                                                 :items="tlResponsables"
                                                 item-title="nombre" 
-                                                item-value ="id"        
+                                                item-value ="cursoid"        
                                                 v-model="matriculaEdited.tl_responsable"
                                                 required
                                             ></v-select>
@@ -293,7 +293,7 @@
                 editedIndex:0,
                 matriculaEdited:{},
                 headers:[
-                    { title:'Id',align:'start',sortable:false,key:'id' },
+                    { title:'Id',align:'start',sortable:false,key:'cursoid' },
                     { title:'IdHex',align:'center',sortable:false,key:'idhex'},
                     { title:'Año', align:'center',sortable:false,key:'Año'},
                     { title:'Division',align:'center',sortable:false,key:'División'},
@@ -339,7 +339,7 @@
             },
             cursosProps(item){
                 return {
-                    id : item.id ,
+                    id : item.cursoid ,
                     ciclo: item.ciclo,
                     division: item.division,
                     anio : item.anio,
