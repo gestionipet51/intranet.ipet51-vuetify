@@ -12,6 +12,7 @@ import Roles from '@/components/intranet/roles/Roles.vue';
 import Catalogos from '@/components/catalogos/Catalogos.vue';
 import DetCatalogos from '@/components/catalogos/DetCatalogos.vue';
 import HojaDeRuta from '@/components/intranet/hojaderuta/HojaDeRuta.vue';
+import Departamentos from "@/components/intranet/departamentos/Departamentos.vue";
 
 
 const routes = [
@@ -28,6 +29,7 @@ const routes = [
     { path:'/catalogos', component:Catalogos },
     { path:'/catalogos/detalleCatalogos',component:DetCatalogos},
     { path:'/intranet/hojaderuta/index',component:HojaDeRuta},
+    { path:'/intranet/departamentos', component:Departamentos}
 ];
 
 

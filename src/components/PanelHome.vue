@@ -49,8 +49,8 @@
         { id:"6", caption:"Horarios", icon:"mdi-clock-outline",class:"",disable:true ,target:"/horarios"},
         { id:"7", caption:"Esp.Curriculares", icon:"mdi-application-array-outline",class:"",disable:true ,target:"/espacioscurriculares"},
         { id:"8", caption:"Areas", icon:"mdi-group",class:"",disable:true ,target:"/areas"},
-        { id:"9", caption:"Departamentos", icon:"mdi-office-building-outline",class:"",disable:true ,target:"/departamentos"},
-        { id:"10", caption:"Docentes", icon:"mdi-account-group-outline",class:"",disable:true ,target:"/docentes"},
+        { id:"9", caption:"Departamentos", icon:"mdi-office-building-outline",class:"",disable:false ,target:"/intranet/departamentos"},
+        { id:"10", caption:"Docentes", icon:"mdi-account-group-outline",class:"",disable:false ,target:"/docentes"},
         { id:"11", caption:"Hoja de Ruta",icon:"mdi-routes",class:"",disabled:"false",target:"/intranet/hojaderuta/index"},
     ];
 
