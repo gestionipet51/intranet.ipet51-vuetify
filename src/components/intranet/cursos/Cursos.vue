@@ -60,6 +60,7 @@ const estados = [
     {id:1,caption:'Activo',key:'AC'},
     {id:2,caption:'Inactivo',key:'IN'}
 ]
+
 const divisiones =  [ {id:1,division:'A'},{id:2,division:'B'},{id:3,division:'C'},{id:4,division:'D'}];
 
 // console.log(myCursos);
@@ -239,7 +240,10 @@ export default {
 <!--   @update:options="loadItems" -->
 <template>
     <v-container>
-        <v-app-bar :elevation="2" title="Cursos" color="deep-purple-darken-4"></v-app-bar>
+        <v-app-bar :elevation="2" color="deep-purple-darken-4">
+            <v-app-bar-nav-icon icon="mdi-file-account-outline"></v-app-bar-nav-icon>
+            <v-toolbar-title>Cursos</v-toolbar-title>
+        </v-app-bar>
         <v-row no-gutters>
           <v-col cols="2"></v-col>
           <v-col cols="6">
@@ -269,7 +273,7 @@ export default {
                                 <v-divider class="mx-8" inset vertical ></v-divider>
                                 <v-dialog v-model="dialog" max-width="800px">
                                     <template v-slot:activator="{ props }">
-                                        <v-btn class="mb-2" color="primary" variant="elevated" v-bind="props"><v-icon>mdi-plus</v-icon></v-btn>
+                                        <v-btn class="mb-2" color="success" variant="elevated" v-bind="props" icon="mdi-plus"></v-btn>
                                     </template>
                                     <v-card>
                                         <v-card-title>
@@ -301,7 +305,7 @@ export default {
                                         </v-card-text>
                                         <v-card-actions>
                                             <v-spacer></v-spacer>
-                                            <v-btn color="red-accent-4" variant="text" @click="close" icon="mdi-arrow-u-left-top-bold"></v-btn>
+                                            <v-btn color="red-accent-4" variant="text" @click="close" icon="mdi-close-thick"></v-btn>
                                             <v-btn color="green-darken-4" variant="text" @click="save" icon="mdi-content-save-settings"></v-btn>
                                         </v-card-actions>
                                     </v-card>
@@ -323,7 +327,7 @@ export default {
                         </v-toolbar>
                     </template>
                     <template v-slot:item.actions="{ item }">
-                        <v-icon class="me-2" size="small" color="green-darken-4" @click="updateCurso(item)">mdi-pencil </v-icon>
+                        <v-icon class="me-2" size="small" color="orange-darken-4" @click="updateCurso(item)">mdi-pencil </v-icon>
                         <v-icon class="me-2" size="small" color="red-accent-4"   @click="deleteCurso(item)">mdi-delete </v-icon>
                     </template>
                     <template v-slot:no-data>
