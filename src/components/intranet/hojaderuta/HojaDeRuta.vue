@@ -293,8 +293,8 @@
                 editedIndex:0,
                 matriculaEdited:{},
                 headers:[
-                    { title:'Id',align:'start',sortable:false,key:'cursoid' },
-                    { title:'IdHex',align:'center',sortable:false,key:'idhex'},
+                    { title:'Id',align:'start',sortable:false,key:'id' },
+                    { title:'Curso',align:'center',sortable:false,key:'curidhex'},
                     { title:'Año', align:'center',sortable:false,key:'Año'},
                     { title:'Division',align:'center',sortable:false,key:'División'},
                     { title:'Curso',align:'center',sortable:true,key:'Curso'},
@@ -329,12 +329,14 @@
                 const querySnapshot = await getDocs(collection(db,"cursos"));
                 this.cursos = querySnapshot.docs
                                     .map(doc => ({ id:doc.id, ...doc.data() }))
+                                    .sort((a,b) => a.anio - b.anio)
                 this.loading = false;
             },
             fetchMatriculas:async function(){
                 const qrySnapshot = await getDocs(collection(db,"matriculas"));
                 this.matriculas = qrySnapshot.docs
-                                 .map(doc => ({id:doc.id ,...doc.data()}));
+                                 .map(doc => ({id:doc.id ,...doc.data()}))
+                                 .sort((a,b)=> a.matriculaid - b.matriculaid );
                 this.loading = false;
             },
             cursosProps(item){
@@ -381,8 +383,9 @@
             },
             emitManualChange() {
                 const newValue = this.idCourseSelected;
+                const index = this.cursos.findIndex(x => x.id == newValue);
                 console.log('Cambio manual emitido:', newValue);
-                this.courseSelected = this.matriculas.filter(elem => elem.curidhex == newValue)
+                this.courseSelected = this.matriculas.filter(elem => elem.curidhex == this.cursos[index].cursoid);
                 console.log(this.courseSelected);
             },
 

@@ -13,6 +13,8 @@ import Catalogos from '@/components/catalogos/Catalogos.vue';
 import DetCatalogos from '@/components/catalogos/DetCatalogos.vue';
 import HojaDeRuta from '@/components/intranet/hojaderuta/HojaDeRuta.vue';
 import Departamentos from "@/components/intranet/departamentos/Departamentos.vue";
+import Docentes from "@/components/intranet/docentes/Docentes.vue";
+import LoadData from "@/components/intranet/loaddata/LoadData.vue";
 
 
 const routes = [
@@ -29,7 +31,9 @@ const routes = [
     { path:'/catalogos', component:Catalogos },
     { path:'/catalogos/detalleCatalogos',component:DetCatalogos},
     { path:'/intranet/hojaderuta/index',component:HojaDeRuta},
-    { path:'/intranet/departamentos', component:Departamentos}
+    { path:'/intranet/departamentos', component:Departamentos},
+    { path:'/intranet/loaddata/index',component:LoadData},
+    { path:'/intranet/docentes/index',component:Docentes},
 ];
 
 
