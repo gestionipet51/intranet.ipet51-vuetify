@@ -14,7 +14,6 @@
                     v-model:items-per-page="itemsPerPage"
                     :items-length="totalCatalogos"
                     :loading="loading"
-                    item-value="id"
                     :search="search"
                     show-expand
                 >
@@ -42,7 +41,7 @@
                                     </v-card-title>
                                     <v-card-text>
                                         <v-row>
-                                            <v-col cols="6"><v-text-field v-model="editedCatalogo.id" label="Catalogo Id" disabled> </v-text-field></v-col>
+                                            <v-col cols="3"><v-text-field v-model="editedCatalogo.id" label="Catalogo Id" disabled> </v-text-field></v-col>
                                         </v-row>
                                         <v-row> 
                                             <v-col cols="6"><v-text-field v-model="editedCatalogo.catalogo" label="Nombre"></v-text-field></v-col>
@@ -52,7 +51,7 @@
                                         </v-row>
                                         <v-row>
                                             <v-col cols="3">
-                                                <v-select v-model="estadoSel.id" label="Seleccione" :items="estados" item-title="caption" item-value="id" @change="setEstado"></v-select>
+                                                <v-select v-model="estadoSel.id" label="Seleccione" :items="estados" item-title="caption" item-value="key" @change="setEstado"></v-select>
                                                 <v-text-field v-model="editedCatalogo.status" label="Ciclo" v-show="false"></v-text-field>
                                             </v-col>
                                         </v-row>
@@ -89,7 +88,6 @@
                         </tr>
                     </template>
                     <template v-slot:item.actions="{ item }">
-                        <!-- v-icon class="me-2" size="small" color="warning"        @click="viewItems(item)">mdi-eye </v-icon-->
                         <v-icon class="me-2" size="small" color="green-darken-4" @click="updateCatalogo(item)">mdi-pencil </v-icon>
                         <v-icon class="me-2" size="small" color="red-accent-4"   @click="deleteCatalogo(item)">mdi-delete </v-icon>
                     </template>
@@ -114,11 +112,24 @@ const tblHeader =[
         { align:'center',sortable:false,key:'actions'  , title:'Acciones'},
 ];
 
+
+
+const arrEstados = [
+    {id:1,caption:'Activo',key:'AC'},
+    {id:2,caption:'Inactivo',key:'IN'}
+];
+
 export default {
     data: () => ({
         headers: tblHeader,
         catalogos: [],
         itemsPerPage: 10,
+        estados:[],
+        estadoSel:{
+            id:'',
+            caption:'',
+            key:''
+        },
         search: "",
         loading: false,
         selected: [],
@@ -139,13 +150,21 @@ export default {
     methods: {
         async init() {
             await this.fetchCatalogos();
+            this.estados =arrEstados;
         },
         close() {
             this.dialog = false;
             this.$nextTick(() => {
-                this.editedCatalogo = { id: "", catalog: "", description: "", status: "" };
+                this.editedCatalogo = { catid: "", catalog: "", description: "", status: "" };
                 this.editedIndex = -1;
-            });
+            })
+        },
+        closeDelete() {
+            this.dialog = false;
+            this.$nextTick(() => {
+                this.editedCatalogo = { catid: "", catalog: "", description: "", status: "" };
+                this.editedIndex = -1;
+            })
         },
         viewItems(item) {
             this.itemCatalogo.catalogo = item.catalogo;
@@ -154,7 +173,7 @@ export default {
         async fetchCatalogos() {
             const querySnapshot = await getDocs(collection(db, "catalogos"));
             this.catalogos = querySnapshot.docs
-                .map(doc => ({ id: doc.id, ...doc.data() }));
+                .map(doc => ({ id:doc.id, ...doc.data() }));
             this.loading = false;
         },
         async save() {
@@ -180,13 +199,17 @@ export default {
         },
         updateCatalogo: function (item){
                 this.selected = item;
+<<<<<<< HEAD
                 this.editedIndex = this.catalogos.indexOf(item);
+=======
+                this.editedIndex = this.catalogos.indexOf(item.id);
+>>>>>>> eab94cdd8891316be9ab4fbe9b865d0931107249
                 this.editedCatalogo = {...this.selected };
                 this.dialog = true;
         },
-        deleteCatalogo(itm){
-                this.dialogDelete = false;
-                this.editedCatalogo = Object.assign({},itm);
+        deleteCatalogo(item){
+                // this.dialogDelete = false;
+                this.editedCatalogo = Object.assign({},item);
                 this.dialogDelete = true;
         }
     },
