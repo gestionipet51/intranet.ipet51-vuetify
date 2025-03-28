@@ -223,16 +223,23 @@
                     <v-icon
                         class="me-2"
                         size="small"
-                        color="red-accent-4"
+                        color="light-green-lighten-1"
                         @click="editCooperadora(item)"
                         title="Cooperadora">mdi-account-cash-outline
                     </v-icon>
                     <v-icon
                             class="me-2"
                             size="small"
-                            color="deep-purple-accent-3"
+                            color="orange-lighten-1"
                             @click="editInternado(item)"
                             title="Internado">mdi-bed-single-outline
+                    </v-icon>
+                    <v-icon
+                            class="me-2"
+                            size="small"
+                            color="red-darken-4"
+                            @click="generarPDF(item)"
+                            title="PDF">mdi mdi-file-pdf-box
                     </v-icon>
                 </template>
             </v-data-table>            
@@ -250,6 +257,21 @@
 
     import Papa from "papaparse"; // Importar PapaParse para procesar CSV
     import axios from "axios"; // Axios para enviar datos al backend    
+
+
+    import { ref, onMounted } from "vue";
+    import { loadGapiInsideDOM } from "gapi-script";
+
+
+    import html2canvas from 'html2canvas';
+    import jsPDF from 'jspdf';
+
+    // https://docs.google.com/document/d/e/2PACX-1vRhKY50abb9H7-dgso1zNIaXoHc5Ic3OZwK8HK73yhwAMaBpPzJezOiZoiiQpQVGQ9ydBFf_xzshUBH/pub
+
+    const apiKey = "AIzaSyB9UMV9jED6CbZSRNF4JSv4mYaPiTH7Elg";
+    const templateId = "https://docs.google.com/document/d/1nY4WpKm79l-4hhuTY2AuHw7hkWSdLLYV36qJqHCDZ4o";
+    const contenido = ref("");
+
 
     const vEstados = [{id:1,tag:"COMPLETO",key:"CO"},{id:2,tag:"PENDIENTE",key:"PE"},{id:3,tag:"NO CORRESPONDE",key:"NC"}];
 
@@ -536,10 +558,61 @@
             },
             closeInternado(){
                 this.dialogInternado = false;
-            }
+            },
+            async generatePDF() {      
+                const element = document.getElementById('content');      
+                const canvas = await html2canvas(element);      
+                const imgData = canvas.toDataURL('image/png');      
+                const pdf = new jsPDF();      // Ajusta el tamaño del PDF a la imagen      
+                const imgWidth = 190; // Ancho del PDF      
+                const pageHeight = pdf.internal.pageSize.height;      
+                const imgHeight = (canvas.height * imgWidth) / canvas.width;   
+
+                let heightLeft = imgHeight;      
+                let position = 0;      
+                pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);      
+                heightLeft -= pageHeight;      
+
+                while (heightLeft >= 0) {        
+                    position = heightLeft - imgHeight;        
+                    pdf.addPage();        
+                    pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);        
+                    heightLeft -= pageHeight;      
+                }      
+                
+                pdf.save('documento.pdf');    
+            },
+
+            async cargarDocumento()  {
+                try {
+                    await loadGapiInsideDOM();
+                    const gapi = window.gapi;
+                    gapi.load("client", async () => {
+                    await gapi.client.init({
+                        apiKey,
+                        discoveryDocs: [
+                                        "https://docs.googleapis.com/$discovery/rest?version=v1",
+                                        ],
+                    });
+
+                    const response = await gapi.client.docs.documents.get({
+                        templateId,
+                    });
+
+                    const textoExtraido = response.result.body.content
+                        .map((block) => block.paragraph?.elements?.map((el) => el.textRun?.content).join("") || "")
+                        .join("\n");
+
+                    contenido.value = textoExtraido;
+                    });
+                } catch (error) {
+                    console.error("Error al cargar el documento:", error);
+                }
+            } ,
         },
         created(){
             this.initialize();
+            this.cargarDocumento();
         },
         computed : {
             alumno(){

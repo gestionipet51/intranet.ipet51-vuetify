@@ -4,16 +4,16 @@
             <v-app-bar-nav-icon icon="mdi-account-group-outline"></v-app-bar-nav-icon>
             <v-toolbar-title>Docentes</v-toolbar-title>
         </v-app-bar>
-        <!-- 
+        
             <v-row>
                 <v-col cols="2"></v-col>
                 <v-col cols="6">
                     <v-data-table   
                         :headers="headers" 
-                        :items="departamentos">
+                        :items="docentes">
                         <template v-slot:top>
                             <v-toolbar flat>
-                                    <v-toolbar-title>CRUD - Departamentos </v-toolbar-title>
+                                    <v-toolbar-title>CRUD - Docentes </v-toolbar-title>
                                     <v-text-field
                                         v-model="search"
                                         label="Buscar"
@@ -84,11 +84,48 @@
                     </v-data-table>
                 </v-col>
             </v-row>
-        -->
+        
     </v-container>
 </template>
 <script>
+
+    const tblHeaders=[
+        { align:'center',sortable:false,key:'id'  , title:'Id' },
+        { align:'center',sortable:false,key:'docenteid'  , title:'Docente Id' },
+        { align:'center',sortable:false,key:'apellido'  , title:'Apellido'},
+        { align:'center',sortable:false,key:'nombres'  , title:'Nombres'},
+        { align:'center',sortable:false,key:'dni'  , title:'DNI'},
+        { align:'center',sortable:false,key:'sexo'  , title:'Sexo'},
+        { align:'center',sortable:false,key:'fechanac'  , title:'Fecha Nac.' },
+        { align:'center',sortable:false,key:'acciones'  , title:'Acciones'}
+
+    ];
+
     export default{
-       
+        data :() => ({
+        headers:tblHeaders,
+        roles:[],
+        itemsPerPage:10,
+        search:'',
+        loading:false,
+        selected:[],
+        totalRoles: 0,
+        singleSelect:false,
+        dialog:false,
+        dialogDelete:false,
+        editedIndex: -1,
+        editedDocente:{
+            id:'',
+            docenteid:'',
+            apellido:'',
+            nombres:'',
+            dni:'',
+            sexo:'',
+            fechanac:'',
+        },
+    }),
+    methods:{
+
     }
+}
 </script>

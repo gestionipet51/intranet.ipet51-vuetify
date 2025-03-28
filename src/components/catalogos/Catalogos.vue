@@ -178,8 +178,8 @@ export default {
             this.catalogos.push(this.editedCatalogo);
             await addDoc(collection(db, "catalogos"), this.editedCatalogo);
         },
-        updateCatalogo: function (itm){
-                this.selected = itm,
+        updateCatalogo: function (item){
+                this.selected = item;
                 this.editedIndex = this.catalogos.indexOf(item);
                 this.editedCatalogo = {...this.selected };
                 this.dialog = true;
