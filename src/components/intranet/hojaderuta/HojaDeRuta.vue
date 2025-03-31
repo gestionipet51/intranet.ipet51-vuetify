@@ -238,7 +238,7 @@
                             class="me-2"
                             size="small"
                             color="red-darken-4"
-                            @click="generarPDF(item)"
+                            @click="generarInforme_hdr(item)"
                             title="PDF">mdi mdi-file-pdf-box
                     </v-icon>
                 </template>
@@ -269,7 +269,7 @@
     // https://docs.google.com/document/d/e/2PACX-1vRhKY50abb9H7-dgso1zNIaXoHc5Ic3OZwK8HK73yhwAMaBpPzJezOiZoiiQpQVGQ9ydBFf_xzshUBH/pub
 
     const apiKey = "AIzaSyB9UMV9jED6CbZSRNF4JSv4mYaPiTH7Elg";
-    const templateId = "https://docs.google.com/document/d/1nY4WpKm79l-4hhuTY2AuHw7hkWSdLLYV36qJqHCDZ4o";
+    const templateId = "1nY4WpKm79l-4hhuTY2AuHw7hkWSdLLYV36qJqHCDZ4o";
     const contenido = ref("");
 
 
@@ -559,7 +559,15 @@
             closeInternado(){
                 this.dialogInternado = false;
             },
+
+            generarInforme_hdr(item){
+                console.log('GenInforme_hdr!!!')
+                // console.log(item)
+                this.cargarDocumento();
+            },
+
             async generatePDF() {      
+
                 const element = document.getElementById('content');      
                 const canvas = await html2canvas(element);      
                 const imgData = canvas.toDataURL('image/png');      

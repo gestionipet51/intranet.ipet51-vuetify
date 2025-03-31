@@ -199,11 +199,7 @@ export default {
         },
         updateCatalogo: function (item){
                 this.selected = item;
-<<<<<<< HEAD
-                this.editedIndex = this.catalogos.indexOf(item);
-=======
                 this.editedIndex = this.catalogos.indexOf(item.id);
->>>>>>> eab94cdd8891316be9ab4fbe9b865d0931107249
                 this.editedCatalogo = {...this.selected };
                 this.dialog = true;
         },
