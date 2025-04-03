@@ -260,17 +260,26 @@
 
 
     import { ref, onMounted } from "vue";
-    import { loadGapiInsideDOM } from "gapi-script";
+    import html2pdf from "html2pdf.js";
+    
+    /* 
+        import { loadGapiInsideDOM } from "gapi-script";
+        import html2canvas from 'html2canvas';
+        import jsPDF from 'jspdf';
 
+        // https://docs.google.com/document/d/e/2PACX-1vRhKY50abb9H7-dgso1zNIaXoHc5Ic3OZwK8HK73yhwAMaBpPzJezOiZoiiQpQVGQ9ydBFf_xzshUBH/pub
 
-    import html2canvas from 'html2canvas';
-    import jsPDF from 'jspdf';
+        const CLIENT_ID = "911892646464-2hcu7egk7dkk2kl8u7glk7b8gt8ojtpu.apps.googleusercontent.com";
+        const API_KEY = "AIzaSyB9UMV9jED6CbZSRNF4JSv4mYaPiTH7Elg";
+        const templateId = "1nY4WpKm79l-4hhuTY2AuHw7hkWSdLLYV36qJqHCDZ4o";
+        const contenido = ref("");
+        const SCOPES = "https://www.googleapis.com/auth/documents";
+        const isAuthenticated = ref(false);
+        const documentId = ref(""); // ID del documento de Google Docs
+        const documentContent = ref("");
 
-    // https://docs.google.com/document/d/e/2PACX-1vRhKY50abb9H7-dgso1zNIaXoHc5Ic3OZwK8HK73yhwAMaBpPzJezOiZoiiQpQVGQ9ydBFf_xzshUBH/pub
-
-    const apiKey = "AIzaSyB9UMV9jED6CbZSRNF4JSv4mYaPiTH7Elg";
-    const templateId = "1nY4WpKm79l-4hhuTY2AuHw7hkWSdLLYV36qJqHCDZ4o";
-    const contenido = ref("");
+        //  https://docs.google.com/document/d/1nY4WpKm79l-4hhuTY2AuHw7hkWSdLLYV36qJqHCDZ4o/edit?usp=sharing
+    */
 
 
     const vEstados = [{id:1,tag:"COMPLETO",key:"CO"},{id:2,tag:"PENDIENTE",key:"PE"},{id:3,tag:"NO CORRESPONDE",key:"NC"}];
@@ -592,35 +601,69 @@
             },
 
             async cargarDocumento()  {
-                try {
-                    await loadGapiInsideDOM();
-                    const gapi = window.gapi;
-                    gapi.load("client", async () => {
-                    await gapi.client.init({
-                        apiKey,
-                        discoveryDocs: [
-                                        "https://docs.googleapis.com/$discovery/rest?version=v1",
-                                        ],
-                    });
+                
+                    this.signIn();
+                    this.initClient();
+                    this.signOut();
 
-                    const response = await gapi.client.docs.documents.get({
-                        templateId,
-                    });
+                /*
+                    try {
+                        await loadGapiInsideDOM();
+                        const gapi = window.gapi;
+                        gapi.load("client", async () => {
+                        await gapi.client.init({
+                            apiKey,
+                            discoveryDocs: [
+                                            "https://docs.googleapis.com/$discovery/rest?version=v1",
+                                            ],
+                        });
 
-                    const textoExtraido = response.result.body.content
-                        .map((block) => block.paragraph?.elements?.map((el) => el.textRun?.content).join("") || "")
-                        .join("\n");
+                        const response = await gapi.client.docs.documents.get({
+                            templateId,
+                        });
 
-                    contenido.value = textoExtraido;
-                    });
-                } catch (error) {
-                    console.error("Error al cargar el documento:", error);
-                }
+                        const textoExtraido = response.result.body.content
+                            .map((block) => block.paragraph?.elements?.map((el) => el.textRun?.content).join("") || "")
+                            .join("\n");
+
+                        contenido.value = textoExtraido;
+                        });
+                    } catch (error) {
+                        console.error("Error al cargar el documento:", error);
+                    }
+                */
             } ,
+
+            async initClient(){
+                gapi.load("client:auth2", async () => {
+                    await gapi.client.init({
+                    apiKey: API_KEY,
+                    clientId: CLIENT_ID,
+                    scope: SCOPES,
+                    discoveryDocs: ["https://docs.googleapis.com/$discovery/rest?version=v1"],
+                    });
+
+                    const authInstance = gapi.auth2.getAuthInstance();
+                    isAuthenticated.value = authInstance.isSignedIn.get();
+                    authInstance.isSignedIn.listen((status) => {
+                    isAuthenticated.value = status;
+                    });
+                });
+            },
+            // Iniciar sesión con Google
+            async signIn(){
+                await gapi.auth2.getAuthInstance().signIn();
+            },
+
+            // Cerrar sesión
+            signOut (){
+                gapi.auth2.getAuthInstance().signOut();
+                isAuthenticated.value = false;
+            },
+
         },
         created(){
             this.initialize();
-            this.cargarDocumento();
         },
         computed : {
             alumno(){
