@@ -238,7 +238,7 @@
                             class="me-2"
                             size="small"
                             color="red-darken-4"
-                            @click="generarInforme_hdr(item)"
+                            @click="generarHtmlDatos(item)"
                             title="PDF">mdi mdi-file-pdf-box
                     </v-icon>
                 </template>
@@ -261,6 +261,9 @@
 
     import { ref, onMounted } from "vue";
     import html2pdf from "html2pdf.js";
+
+    import plantillaHTML from '@/assets/plantillas/hoja_de_ruta.html?raw';
+
     
     /* 
         import { loadGapiInsideDOM } from "gapi-script";
@@ -337,7 +340,9 @@
                     { title:'Apellido',align:'left',sortable:true,key:'apellido'},
                     { title:'Nombres',align:'left',sortable:false,key:'nombre'},
                     { title: 'Actions', key: 'actions', sortable: false },
-                ]
+                ],
+                // plantillaHTML:'',
+                userData: null,
 
             }
         },
@@ -443,7 +448,6 @@
                 this.closeFactory();
                 await this.fetchMatriculas();
             },
-
 
             async updateFactory(){
                 // Update
@@ -569,6 +573,22 @@
                 this.dialogInternado = false;
             },
 
+            generarHtmlDatos(item){
+
+                console.log(item)
+                const htmlConDatos = this.plantillaHTML
+                    .replace('{{ ALUMNO }}',data.apellido)
+                    .replace('{{ NOMBRES }}', data.nombre)
+                    .replace('{{ CURSO }}', data.Curso )
+                    .replace('{{ CONDICION }}', 'Regular')
+                    .replace('{{ CICLO }}', (data.Año < 4) ? "Primer Ciclo": "Segundo Ciclo" )
+                    .replace('{{ ESPECIALIDAD }}', data.plan_estudio )
+                    .replace('{{ COOP_E }}' ,data.coop_condicion )
+                    .replace('{{ FECHA }}',data.fecha)
+                    // ... y así sucesivamente ...
+                this.generarPDF(htmlConDatos);
+            },
+
             generarInforme_hdr(item){
                 console.log('GenInforme_hdr!!!')
                 // console.log(item)
@@ -669,6 +689,9 @@
             alumno(){
                 return this.matriculaSelected.apellido + " , " + this.matriculaSelected.nombre;
             }
+        },
+        mounted(){
+            // console.log(plantillaHTML);
         }
     }
 
