@@ -4,36 +4,36 @@
             <v-app-bar-nav-icon icon="mdi-playlist-edit"></v-app-bar-nav-icon>
             <v-toolbar-title class="ml-2 text-h6 text-md-h5">Hoja de Ruta</v-toolbar-title>
         </v-app-bar>
-        
+
             <v-row v-if="loadfile == true ">
-                
+
                     <v-col cols="6">
                         <v-file-input  accept=".csv" label="Subir CSV a Firebase" @change="procesarArchivo"></v-file-input>
                     </v-col>
                         <v-col cols="3">
                             <v-btn :disabled="!datosCSV.length" rounded="lg" @click="enviarDatos" color="indigo-darken-3">
-                                Subir Archivo 
+                                Subir Archivo
                             </v-btn>
                     </v-col>
             </v-row>
-        
+
             <v-row>
                 <v-col cols="2"></v-col>
                 <v-col cols="6">
-                    <v-select label="Seleccione Curso" 
-                            :items="cursos" 
-                            item-title="descripcion" 
-                            item-value ="id"        
+                    <v-select label="Seleccione Curso"
+                            :items="cursos"
+                            item-title="descripcion"
+                            item-value ="id"
                             v-model="idCourseSelected"
                             @change="onChange">
                     </v-select>
                 </v-col>
                 <v-col cols="1">
-                    <v-btn color="blue-darken-3" @click="emitManualChange" icon ="mdi-folder-search-outline" title="Buscar"> 
+                    <v-btn color="blue-darken-3" @click="emitManualChange" icon ="mdi-folder-search-outline" title="Buscar">
                     </v-btn>
-                </v-col>    
+                </v-col>
             </v-row>
-        
+
         <v-row>
             <v-data-table :items="courseSelected" :headers="headers">
                 <template v-slot:top>
@@ -44,7 +44,7 @@
 
                         <v-dialog v-model="dialogFactory" max-width="600px">
                             <v-card>
-                                <v-card-title class="text-h5" color="red-accent-4">Hoja de Ruta - Registro de Taller : {{ matriculaEdited.apellido }} , {{ matriculaEdited.nombre }} 
+                                <v-card-title class="text-h5" color="red-accent-4">Hoja de Ruta - Registro de Taller : {{ matriculaEdited.apellido }} , {{ matriculaEdited.nombre }}
 
                                 </v-card-title>
                                 <v-card-text>
@@ -53,8 +53,8 @@
                                             <v-select
                                                 label="Responsable"
                                                 :items="tlResponsables"
-                                                item-title="nombre" 
-                                                item-value ="cursoid"        
+                                                item-title="nombre"
+                                                item-value ="cursoid"
                                                 v-model="matriculaEdited.tl_responsable"
                                                 required
                                             ></v-select>
@@ -64,8 +64,8 @@
                                             <v-select
                                                 label="Condición"
                                                 :items="opEstados"
-                                                item-title="tag" 
-                                                item-value ="id"        
+                                                item-title="tag"
+                                                item-value ="id"
                                                 v-model="matriculaEdited.tl_condicion"
                                                 required
                                             ></v-select>
@@ -74,7 +74,7 @@
                                 </v-card-text>
                                 <v-card-actions>
                                     <v-spacer></v-spacer>
-                                        <v-btn color="red-accent-4" variant="text" @click="closeFactory" 
+                                        <v-btn color="red-accent-4" variant="text" @click="closeFactory"
                                                icon="mdi-close-circle-outline"></v-btn>
                                         <v-btn color="blue-darken-4" variant="text" @click="saveFactory" icon="mdi-content-save-settings"></v-btn>
                                     <v-spacer></v-spacer>
@@ -85,7 +85,7 @@
                         <v-dialog v-model="dialogLibrary" max-width="600px">
                             <v-card>
                                 <v-card-title class="text-h5">
-                                    Hoja de Ruta - Registro de Biblioteca : {{ matriculaEdited.apellido }} , {{ matriculaEdited.nombre }} 
+                                    Hoja de Ruta - Registro de Biblioteca : {{ matriculaEdited.apellido }} , {{ matriculaEdited.nombre }}
                                 </v-card-title>
                                 <v-card-text>
                                     <v-row dense>
@@ -93,8 +93,8 @@
                                             <v-select
                                                 label="Responsable"
                                                 :items="blResponsables"
-                                                item-title="nombre" 
-                                                item-value ="id"        
+                                                item-title="nombre"
+                                                item-value ="id"
                                                 v-model="matriculaEdited.bl_responsable"
                                                 required
                                             ></v-select>
@@ -104,8 +104,8 @@
                                             <v-select
                                                 label="Condición"
                                                 :items="opEstados"
-                                                item-title="tag" 
-                                                item-value ="id"        
+                                                item-title="tag"
+                                                item-value ="id"
                                                 v-model="matriculaEdited.bl_condicion"
                                                 required
                                             ></v-select>
@@ -124,7 +124,7 @@
                         <v-dialog v-model="dialogCooperadora" max-width="700px">
                             <v-card>
                                 <v-card-title class="text-h5">
-                                    Hoja de Ruta - Registro de Cooperadora : {{ matriculaEdited.apellido }} , {{ matriculaEdited.nombre }} 
+                                    Hoja de Ruta - Registro de Cooperadora : {{ matriculaEdited.apellido }} , {{ matriculaEdited.nombre }}
                                 </v-card-title>
                                 <v-card-text>
                                     <v-row dense>
@@ -132,8 +132,8 @@
                                             <v-select
                                                 label="Responsable"
                                                 :items="cpResponsables"
-                                                item-title="nombre" 
-                                                item-value ="id"        
+                                                item-title="nombre"
+                                                item-value ="id"
                                                 v-model="matriculaEdited.coop_responsable"
                                                 required
                                             ></v-select>
@@ -143,8 +143,8 @@
                                             <v-select
                                                 label="Condición"
                                                 :items="opEstados"
-                                                item-title="tag" 
-                                                item-value ="id"        
+                                                item-title="tag"
+                                                item-value ="id"
                                                 v-model="matriculaEdited.coop_condicion"
                                                 required
                                             ></v-select>
@@ -167,7 +167,7 @@
                         <v-dialog v-model="dialogInternado" max-width="600px">
                             <v-card>
                                 <v-card-title class="text-h5">
-                                    Hoja de Ruta - Registro de Internado : {{ matriculaEdited.apellido }} , {{ matriculaEdited.nombre }} 
+                                    Hoja de Ruta - Registro de Internado : {{ matriculaEdited.apellido }} , {{ matriculaEdited.nombre }}
                                 </v-card-title>
                                 <v-card-text>
                                     <v-row dense>
@@ -175,8 +175,8 @@
                                             <v-select
                                                 label="Responsable"
                                                 :items="intResponsables"
-                                                item-title="nombre" 
-                                                item-value ="id"        
+                                                item-title="nombre"
+                                                item-value ="id"
                                                 v-model="matriculaEdited.int_responsable"
                                                 required
                                             ></v-select>
@@ -186,8 +186,8 @@
                                             <v-select
                                                 label="Condición"
                                                 :items="opEstados"
-                                                item-title="tag" 
-                                                item-value ="id"        
+                                                item-title="tag"
+                                                item-value ="id"
                                                 v-model="matriculaEdited.int_condicion"
                                                 required
                                             ></v-select>
@@ -242,7 +242,7 @@
                             title="PDF">mdi mdi-file-pdf-box
                     </v-icon>
                 </template>
-            </v-data-table>            
+            </v-data-table>
         </v-row>
 
     </v-container>
@@ -256,7 +256,7 @@
     import { collection ,addDoc,getDocs,doc,deleteDoc,updateDoc, getPersistentCacheIndexManager } from 'firebase/firestore';
 
     import Papa from "papaparse"; // Importar PapaParse para procesar CSV
-    import axios from "axios"; // Axios para enviar datos al backend    
+    import axios from "axios"; // Axios para enviar datos al backend
 
 
     import { ref, onMounted } from "vue";
@@ -264,8 +264,9 @@
 
     import plantillaHTML from '@/assets/plantillas/hoja_de_ruta.html?raw';
 
-    
-    /* 
+
+
+    /*
         import { loadGapiInsideDOM } from "gapi-script";
         import html2canvas from 'html2canvas';
         import jsPDF from 'jspdf';
@@ -287,7 +288,7 @@
 
     const vEstados = [{id:1,tag:"COMPLETO",key:"CO"},{id:2,tag:"PENDIENTE",key:"PE"},{id:3,tag:"NO CORRESPONDE",key:"NC"}];
 
-    
+
     const vResponsables = [{id:1,grupo:"COOPERADORA",nombre:"PERALTA,FLORENCIA"},
                           {id:2,grupo:"TALLER",nombre:"LAZZARO MATAR,CARLOS"},
                           {id:3,grupo:"TALLER",nombre:"GOROCITO,WALTER"},
@@ -302,7 +303,7 @@
                           {id:12,grupo:"INTERNADO",nombre:"MARCANTONIO,GERMAN"},
                           {id:13,grupo:"INTERNADO",nombre:"LAMBERTUCCI,FRANCISCO"},
                         ];
-    
+
     export default {
         data(){
             return {
@@ -348,7 +349,7 @@
         },
         methods:{
             async initialize(){
-               
+
                 // this.ciclos = myCiclos;
                 this.loading = true;
                 await this.fetchCursos();
@@ -402,11 +403,11 @@
             enviarDatos() {
                 try {
                     // const respuesta = await axios.post("http://localhost:3000/subir-csv", this.datosCSV);
-                    this.datosCSV.forEach((elemento) => { 
-                            addDoc(collection(db,"matriculas"),elemento);  
+                    this.datosCSV.forEach((elemento) => {
+                            addDoc(collection(db,"matriculas"),elemento);
                             console.log("=>" + elemento.idhex );
-                        
-                    }) 
+
+                    })
                     alert("Datos subidos con éxito: " + respuesta.data.message);
                 } catch (error) {
                     console.error("Error al subir datos:", error);
@@ -414,7 +415,7 @@
                 }
             },
             onChange(value){
-                // 
+                //
                 console.log(value);
             },
             emitManualChange() {
@@ -454,7 +455,7 @@
                 try {
                     Object.assign(this.matriculas[this.matriculaSelected], this.matriculaEdited);
                     await updateDoc(doc(db,"matriculas", this.matriculaEdited.id) , this.matriculaEdited );
-                    return true;                    
+                    return true;
                 } catch (error) {
                     console.log(error);
                     return false;
@@ -487,8 +488,8 @@
                 try {
                     Object.assign(this.matriculas[this.matriculaSelected], this.matriculaEdited);
                     await updateDoc(doc(db,"matriculas", this.matriculaEdited.id) , this.matriculaEdited );
-                    return true; 
-                    
+                    return true;
+
                 } catch (error) {
                     console.log(error);
                     return false;
@@ -507,7 +508,7 @@
                     // await this.create();
                     console.log("Create Cooperadora");
                 }
-                
+
                 this.closeCooperadora();
                 await this.fetchMatriculas();
             },
@@ -517,7 +518,7 @@
                 try {
                     Object.assign(this.matriculas[this.matriculaSelected], this.matriculaEdited);
                     await updateDoc(doc(db,"matriculas", this.matriculaEdited.id) , this.matriculaEdited );
-                    return true;                    
+                    return true;
                 } catch (error) {
                     console.log(error);
                     return false;
@@ -555,12 +556,12 @@
                 try {
                     Object.assign(this.matriculas[this.matriculaSelected], this.matriculaEdited);
                     await updateDoc(doc(db,"matriculas", this.matriculaEdited.id) , this.matriculaEdited );
-                    return true;                    
+                    return true;
                 } catch (error) {
                     console.log(error);
                     return fa
                 }
-            },   
+            },
 
             editInternado(item){
                 console.log("Edit Internado:");
@@ -575,53 +576,63 @@
 
             generarHtmlDatos(item){
 
-                console.log(item)
+                  /*
                 const htmlConDatos = this.plantillaHTML
-                    .replace('{{ ALUMNO }}',data.apellido)
-                    .replace('{{ NOMBRES }}', data.nombre)
-                    .replace('{{ CURSO }}', data.Curso )
-                    .replace('{{ CONDICION }}', 'Regular')
-                    .replace('{{ CICLO }}', (data.Año < 4) ? "Primer Ciclo": "Segundo Ciclo" )
-                    .replace('{{ ESPECIALIDAD }}', data.plan_estudio )
-                    .replace('{{ COOP_E }}' ,data.coop_condicion )
-                    .replace('{{ FECHA }}',data.fecha)
+                                          .replace('{{ ALUMNO }}',item.apellido)
+                                          .replace('{{ NOMBRES }}', item.nombre)
+                                          .replace('{{ CURSO }}', item.Curso )
+                                          .replace('{{ CONDICION }}', 'Regular')
+                                          .replace('{{ CICLO }}', (item.Año < 4) ? "Primer Ciclo": "Segundo Ciclo" )
+                                          .replace('{{ ESPECIALIDAD }}', item.plan_estudio )
+                                          .replace('{{ COOP_E }}' ,item.coop_condicion )
+                                          .replace('{{ FECHA }}',item.fecha)
+                 */
                     // ... y así sucesivamente ...
-                this.generarPDF(htmlConDatos);
+                //  this.generarPDF(htmlConDatos);
+
+                console.log("generarHtmlDatos:");
+                let matricula  = this.matriculas.find(x => x.matriculaid === item.matriculaid );
+                this.matriculaSelected = this.matriculas.findIndex(x => x.matriculaid === item.matriculaid );
+                this.matriculaEdited = {...matricula};
+
+                console.log(this.plantillaHTML);
+
+                //  this.generarInforme_hdr(htmlConDatos);
             },
 
             generarInforme_hdr(item){
                 console.log('GenInforme_hdr!!!')
-                // console.log(item)
-                this.cargarDocumento();
+                console.log(item)
+                //  this.cargarDocumento();
             },
 
-            async generatePDF() {      
+            async generatePDF() {
 
-                const element = document.getElementById('content');      
-                const canvas = await html2canvas(element);      
-                const imgData = canvas.toDataURL('image/png');      
-                const pdf = new jsPDF();      // Ajusta el tamaño del PDF a la imagen      
-                const imgWidth = 190; // Ancho del PDF      
-                const pageHeight = pdf.internal.pageSize.height;      
-                const imgHeight = (canvas.height * imgWidth) / canvas.width;   
+                const element = document.getElementById('content');
+                const canvas = await html2canvas(element);
+                const imgData = canvas.toDataURL('image/png');
+                const pdf = new jsPDF();      // Ajusta el tamaño del PDF a la imagen
+                const imgWidth = 190; // Ancho del PDF
+                const pageHeight = pdf.internal.pageSize.height;
+                const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
-                let heightLeft = imgHeight;      
-                let position = 0;      
-                pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);      
-                heightLeft -= pageHeight;      
+                let heightLeft = imgHeight;
+                let position = 0;
+                pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
+                heightLeft -= pageHeight;
 
-                while (heightLeft >= 0) {        
-                    position = heightLeft - imgHeight;        
-                    pdf.addPage();        
-                    pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);        
-                    heightLeft -= pageHeight;      
-                }      
-                
-                pdf.save('documento.pdf');    
+                while (heightLeft >= 0) {
+                    position = heightLeft - imgHeight;
+                    pdf.addPage();
+                    pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
+                    heightLeft -= pageHeight;
+                }
+
+                pdf.save('documento.pdf');
             },
 
             async cargarDocumento()  {
-                
+
                     this.signIn();
                     this.initClient();
                     this.signOut();
@@ -691,7 +702,7 @@
             }
         },
         mounted(){
-            // console.log(plantillaHTML);
+          console.log(plantillaHTML);
         }
     }
 
