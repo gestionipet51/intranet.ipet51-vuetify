@@ -244,7 +244,6 @@
                 </template>
             </v-data-table>
         </v-row>
-
     </v-container>
 
 </template>
@@ -342,7 +341,7 @@
                     { title:'Nombres',align:'left',sortable:false,key:'nombre'},
                     { title: 'Actions', key: 'actions', sortable: false },
                 ],
-                // plantillaHTML:'',
+                HTML_template :'',
                 userData: null,
 
             }
@@ -359,6 +358,7 @@
                 this.cpResponsables = vResponsables.filter(elem => elem.grupo == "COOPERADORA");
                 this.blResponsables = vResponsables.filter(elem => elem.grupo == "BIBLIOTECA");
                 this.intResponsables = vResponsables.filter(elem => elem.grupo == "INTERNADO");
+                this.HTML_template = plantillaHTML;
 
                 // console.log(this.matriculas);
              },
@@ -576,27 +576,38 @@
 
             generarHtmlDatos(item){
 
-                  /*
-                const htmlConDatos = this.plantillaHTML
-                                          .replace('{{ ALUMNO }}',item.apellido)
-                                          .replace('{{ NOMBRES }}', item.nombre)
-                                          .replace('{{ CURSO }}', item.Curso )
-                                          .replace('{{ CONDICION }}', 'Regular')
-                                          .replace('{{ CICLO }}', (item.Año < 4) ? "Primer Ciclo": "Segundo Ciclo" )
-                                          .replace('{{ ESPECIALIDAD }}', item.plan_estudio )
-                                          .replace('{{ COOP_E }}' ,item.coop_condicion )
-                                          .replace('{{ FECHA }}',item.fecha)
-                 */
-                    // ... y así sucesivamente ...
-                //  this.generarPDF(htmlConDatos);
-
                 console.log("generarHtmlDatos:");
+                // console.log(this.HTML_template);
+                let templateHTML = this.HTML_template; 
+
+                templateHTML = templateHTML.replace(`{{ALUMNO}}`,item.apellido)
+                                            .replace(`{{NOMBRES}}`, item.nombre)
+                                            .replace(`{{CURSO}}`, item.Curso )
+                                            .replace(`{{CONDICION}}`, 'Regular')
+                                            .replace(`{{CICLO}}`, (item.Año < 4) ? "Primer Ciclo": "Segundo Ciclo" )
+                                            .replace(`{{ESPECIALIDAD}}`, item.plan_estudio )
+                                            .replace(`{{COOP_E}}` ,item.coop_condicion )
+                                            .replace(`{{COOP_C}}`,item.coop_cuotas)
+                                            .replace(`{{COOP_R}}`,item.coop_responsable)
+                                            .replace(`{{TL_E}}` ,item.tl_condicion )
+                                            .replace(`{{TL_R}}`,item.tl_responsable)
+                                            .replace(`{{INT_E}}` ,item.int_condicion )
+                                            .replace(`{{INT_R}}`,item.int_responsable)
+                                            .replace(`{{BIBLIO_E}}` ,item.bl_condicion )
+                                            .replace(`{{BIBLIO_R}}`,item.bl_responsable)
+                                            .replace(`{{FECHA}}`,item.fecha);
+                 
+                    // ... y así sucesivamente ...
+                console.log(templateHTML);
+
+  
+              /*
                 let matricula  = this.matriculas.find(x => x.matriculaid === item.matriculaid );
                 this.matriculaSelected = this.matriculas.findIndex(x => x.matriculaid === item.matriculaid );
                 this.matriculaEdited = {...matricula};
 
                 console.log(this.plantillaHTML);
-
+              */
                 //  this.generarInforme_hdr(htmlConDatos);
             },
 
@@ -702,7 +713,8 @@
             }
         },
         mounted(){
-          console.log(plantillaHTML);
+
+       
         }
     }
 
