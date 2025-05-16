@@ -578,7 +578,7 @@
 
                 console.log("generarHtmlDatos:");
                 // console.log(this.HTML_template);
-                let templateHTML = this.HTML_template; 
+                let templateHTML = this.HTML_template;
 
                 templateHTML = templateHTML.replace(`{{ALUMNO}}`,item.apellido)
                                             .replace(`{{NOMBRES}}`, item.nombre)
@@ -596,11 +596,11 @@
                                             .replace(`{{BIBLIO_E}}` ,item.bl_condicion )
                                             .replace(`{{BIBLIO_R}}`,item.bl_responsable)
                                             .replace(`{{FECHA}}`,item.fecha);
-                 
+
                     // ... y así sucesivamente ...
                 console.log(templateHTML);
 
-  
+
               /*
                 let matricula  = this.matriculas.find(x => x.matriculaid === item.matriculaid );
                 this.matriculaSelected = this.matriculas.findIndex(x => x.matriculaid === item.matriculaid );
@@ -714,7 +714,7 @@
         },
         mounted(){
 
-       
+
         }
     }
 
