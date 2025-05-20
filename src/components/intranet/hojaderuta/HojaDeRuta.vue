@@ -34,216 +34,216 @@
                 </v-col>
             </v-row>
 
-        <v-row>
-            <v-data-table :items="courseSelected" :headers="headers">
-                <template v-slot:top>
-                    <v-toolbar flat>
-                        <v-toolbar-title>Hoja de Ruta</v-toolbar-title>
-                        <v-divider class="mx-4" inset vertical></v-divider>
-                        <v-spacer></v-spacer>
+            <v-row>
+                <v-data-table :items="courseSelected" :headers="headers">
+                    <template v-slot:top>
+                        <v-toolbar flat>
+                            <v-toolbar-title>Hoja de Ruta</v-toolbar-title>
+                            <v-divider class="mx-4" inset vertical></v-divider>
+                            <v-spacer></v-spacer>
 
-                        <v-dialog v-model="dialogFactory" max-width="600px">
-                            <v-card>
-                                <v-card-title class="text-h5" color="red-accent-4">Hoja de Ruta - Registro de Taller : {{ matriculaEdited.apellido }} , {{ matriculaEdited.nombre }}
+                            <v-dialog v-model="dialogFactory" max-width="600px">
+                                <v-card>
+                                    <v-card-title class="text-h5" color="red-accent-4">Hoja de Ruta - Registro de Taller : {{ matriculaEdited.apellido }} , {{ matriculaEdited.nombre }}
 
-                                </v-card-title>
-                                <v-card-text>
-                                    <v-row dense>
-                                        <v-col cols="12" md="6" sm="6">
-                                            <v-select
-                                                label="Responsable"
-                                                :items="tlResponsables"
-                                                item-title="nombre"
-                                                item-value ="cursoid"
-                                                v-model="matriculaEdited.tl_responsable"
-                                                required
-                                            ></v-select>
-                                        </v-col>
+                                    </v-card-title>
+                                    <v-card-text>
+                                        <v-row dense>
+                                            <v-col cols="12" md="6" sm="6">
+                                                <v-select
+                                                    label="Responsable"
+                                                    :items="tlResponsables"
+                                                    item-title="nombre"
+                                                    item-value ="cursoid"
+                                                    v-model="matriculaEdited.tl_responsable"
+                                                    required
+                                                ></v-select>
+                                            </v-col>
 
-                                        <v-col cols="12" md="6" sm="6">
-                                            <v-select
-                                                label="Condición"
-                                                :items="opEstados"
-                                                item-title="tag"
-                                                item-value ="id"
-                                                v-model="matriculaEdited.tl_condicion"
-                                                required
-                                            ></v-select>
-                                        </v-col>
-                                    </v-row>
-                                </v-card-text>
-                                <v-card-actions>
-                                    <v-spacer></v-spacer>
-                                        <v-btn color="red-accent-4" variant="text" @click="closeFactory"
-                                               icon="mdi-close-circle-outline"></v-btn>
-                                        <v-btn color="blue-darken-4" variant="text" @click="saveFactory" icon="mdi-content-save-settings"></v-btn>
-                                    <v-spacer></v-spacer>
-                                </v-card-actions>
-                            </v-card>
-                        </v-dialog>
+                                            <v-col cols="12" md="6" sm="6">
+                                                <v-select
+                                                    label="Condición"
+                                                    :items="opEstados"
+                                                    item-title="tag"
+                                                    item-value ="id"
+                                                    v-model="matriculaEdited.tl_condicion"
+                                                    required
+                                                ></v-select>
+                                            </v-col>
+                                        </v-row>
+                                    </v-card-text>
+                                    <v-card-actions>
+                                        <v-spacer></v-spacer>
+                                            <v-btn color="red-accent-4" variant="text" @click="closeFactory"
+                                                icon="mdi-close-circle-outline"></v-btn>
+                                            <v-btn color="blue-darken-4" variant="text" @click="saveFactory" icon="mdi-content-save-settings"></v-btn>
+                                        <v-spacer></v-spacer>
+                                    </v-card-actions>
+                                </v-card>
+                            </v-dialog>
 
-                        <v-dialog v-model="dialogLibrary" max-width="600px">
-                            <v-card>
-                                <v-card-title class="text-h5">
-                                    Hoja de Ruta - Registro de Biblioteca : {{ matriculaEdited.apellido }} , {{ matriculaEdited.nombre }}
-                                </v-card-title>
-                                <v-card-text>
-                                    <v-row dense>
-                                        <v-col cols="12" md="6" sm="6">
-                                            <v-select
-                                                label="Responsable"
-                                                :items="blResponsables"
-                                                item-title="nombre"
-                                                item-value ="id"
-                                                v-model="matriculaEdited.bl_responsable"
-                                                required
-                                            ></v-select>
-                                        </v-col>
+                            <v-dialog v-model="dialogLibrary" max-width="600px">
+                                <v-card>
+                                    <v-card-title class="text-h5">
+                                        Hoja de Ruta - Registro de Biblioteca : {{ matriculaEdited.apellido }} , {{ matriculaEdited.nombre }}
+                                    </v-card-title>
+                                    <v-card-text>
+                                        <v-row dense>
+                                            <v-col cols="12" md="6" sm="6">
+                                                <v-select
+                                                    label="Responsable"
+                                                    :items="blResponsables"
+                                                    item-title="nombre"
+                                                    item-value ="id"
+                                                    v-model="matriculaEdited.bl_responsable"
+                                                    required
+                                                ></v-select>
+                                            </v-col>
 
-                                        <v-col cols="12" md="6" sm="6">
-                                            <v-select
-                                                label="Condición"
-                                                :items="opEstados"
-                                                item-title="tag"
-                                                item-value ="id"
-                                                v-model="matriculaEdited.bl_condicion"
-                                                required
-                                            ></v-select>
-                                        </v-col>
-                                    </v-row>
-                                </v-card-text>
-                                <v-card-actions>
-                                    <v-spacer></v-spacer>
-                                        <v-btn color="red-accent-4" variant="text" @click="closeLibrary" icon="mdi-close-circle-outline"></v-btn>
-                                        <v-btn color="blue-darken-4" variant="text" @click="saveLibrary" icon="mdi-content-save-settings"></v-btn>
-                                    <v-spacer></v-spacer>
-                                </v-card-actions>
-                            </v-card>
-                        </v-dialog>
+                                            <v-col cols="12" md="6" sm="6">
+                                                <v-select
+                                                    label="Condición"
+                                                    :items="opEstados"
+                                                    item-title="tag"
+                                                    item-value ="id"
+                                                    v-model="matriculaEdited.bl_condicion"
+                                                    required
+                                                ></v-select>
+                                            </v-col>
+                                        </v-row>
+                                    </v-card-text>
+                                    <v-card-actions>
+                                        <v-spacer></v-spacer>
+                                            <v-btn color="red-accent-4" variant="text" @click="closeLibrary" icon="mdi-close-circle-outline"></v-btn>
+                                            <v-btn color="blue-darken-4" variant="text" @click="saveLibrary" icon="mdi-content-save-settings"></v-btn>
+                                        <v-spacer></v-spacer>
+                                    </v-card-actions>
+                                </v-card>
+                            </v-dialog>
 
-                        <v-dialog v-model="dialogCooperadora" max-width="700px">
-                            <v-card>
-                                <v-card-title class="text-h5">
-                                    Hoja de Ruta - Registro de Cooperadora : {{ matriculaEdited.apellido }} , {{ matriculaEdited.nombre }}
-                                </v-card-title>
-                                <v-card-text>
-                                    <v-row dense>
-                                        <v-col cols="12" md="6" sm="6">
-                                            <v-select
-                                                label="Responsable"
-                                                :items="cpResponsables"
-                                                item-title="nombre"
-                                                item-value ="id"
-                                                v-model="matriculaEdited.coop_responsable"
-                                                required
-                                            ></v-select>
-                                        </v-col>
+                            <v-dialog v-model="dialogCooperadora" max-width="700px">
+                                <v-card>
+                                    <v-card-title class="text-h5">
+                                        Hoja de Ruta - Registro de Cooperadora : {{ matriculaEdited.apellido }} , {{ matriculaEdited.nombre }}
+                                    </v-card-title>
+                                    <v-card-text>
+                                        <v-row dense>
+                                            <v-col cols="12" md="6" sm="6">
+                                                <v-select
+                                                    label="Responsable"
+                                                    :items="cpResponsables"
+                                                    item-title="nombre"
+                                                    item-value ="id"
+                                                    v-model="matriculaEdited.coop_responsable"
+                                                    required
+                                                ></v-select>
+                                            </v-col>
 
-                                        <v-col cols="12" md="3" sm="3">
-                                            <v-select
-                                                label="Condición"
-                                                :items="opEstados"
-                                                item-title="tag"
-                                                item-value ="id"
-                                                v-model="matriculaEdited.coop_condicion"
-                                                required
-                                            ></v-select>
-                                        </v-col>
+                                            <v-col cols="12" md="3" sm="3">
+                                                <v-select
+                                                    label="Condición"
+                                                    :items="opEstados"
+                                                    item-title="tag"
+                                                    item-value ="id"
+                                                    v-model="matriculaEdited.coop_condicion"
+                                                    required
+                                                ></v-select>
+                                            </v-col>
 
-                                        <v-col cols="12" md="3" sm="3">
-                                            <v-text-field label="Cuotas Pendientes" v-model="matriculaEdited.coop_cuotas"></v-text-field>
-                                        </v-col>
-                                    </v-row>
-                                </v-card-text>
-                                <v-card-actions>
-                                    <v-spacer></v-spacer>
-                                        <v-btn color="red-accent-4" variant="text" @click="closeCooperadora" icon="mdi-close-circle-outline"></v-btn>
-                                        <v-btn color="blue-darken-4" variant="text" @click="saveCooperadora" icon="mdi-content-save-settings"></v-btn>
-                                    <v-spacer></v-spacer>
-                                </v-card-actions>
-                            </v-card>
-                        </v-dialog>
+                                            <v-col cols="12" md="3" sm="3">
+                                                <v-text-field label="Cuotas Pendientes" v-model="matriculaEdited.coop_cuotas"></v-text-field>
+                                            </v-col>
+                                        </v-row>
+                                    </v-card-text>
+                                    <v-card-actions>
+                                        <v-spacer></v-spacer>
+                                            <v-btn color="red-accent-4" variant="text" @click="closeCooperadora" icon="mdi-close-circle-outline"></v-btn>
+                                            <v-btn color="blue-darken-4" variant="text" @click="saveCooperadora" icon="mdi-content-save-settings"></v-btn>
+                                        <v-spacer></v-spacer>
+                                    </v-card-actions>
+                                </v-card>
+                            </v-dialog>
 
-                        <v-dialog v-model="dialogInternado" max-width="600px">
-                            <v-card>
-                                <v-card-title class="text-h5">
-                                    Hoja de Ruta - Registro de Internado : {{ matriculaEdited.apellido }} , {{ matriculaEdited.nombre }}
-                                </v-card-title>
-                                <v-card-text>
-                                    <v-row dense>
-                                        <v-col cols="12" md="6" sm="6">
-                                            <v-select
-                                                label="Responsable"
-                                                :items="intResponsables"
-                                                item-title="nombre"
-                                                item-value ="id"
-                                                v-model="matriculaEdited.int_responsable"
-                                                required
-                                            ></v-select>
-                                        </v-col>
+                            <v-dialog v-model="dialogInternado" max-width="600px">
+                                <v-card>
+                                    <v-card-title class="text-h5">
+                                        Hoja de Ruta - Registro de Internado : {{ matriculaEdited.apellido }} , {{ matriculaEdited.nombre }}
+                                    </v-card-title>
+                                    <v-card-text>
+                                        <v-row dense>
+                                            <v-col cols="12" md="6" sm="6">
+                                                <v-select
+                                                    label="Responsable"
+                                                    :items="intResponsables"
+                                                    item-title="nombre"
+                                                    item-value ="id"
+                                                    v-model="matriculaEdited.int_responsable"
+                                                    required
+                                                ></v-select>
+                                            </v-col>
 
-                                        <v-col cols="12" md="6" sm="6">
-                                            <v-select
-                                                label="Condición"
-                                                :items="opEstados"
-                                                item-title="tag"
-                                                item-value ="id"
-                                                v-model="matriculaEdited.int_condicion"
-                                                required
-                                            ></v-select>
-                                        </v-col>
-                                    </v-row>
-                                </v-card-text>
-                                <v-card-actions>
-                                    <v-spacer></v-spacer>
-                                        <v-btn color="red-accent-4" variant="text" @click="closeInternado" icon="mdi-close-circle-outline"></v-btn>
-                                        <v-btn color="blue-darken-4" variant="text" @click="saveInternado" icon="mdi-content-save-settings"></v-btn>
-                                    <v-spacer></v-spacer>
-                                </v-card-actions>
-                            </v-card>
-                        </v-dialog>
+                                            <v-col cols="12" md="6" sm="6">
+                                                <v-select
+                                                    label="Condición"
+                                                    :items="opEstados"
+                                                    item-title="tag"
+                                                    item-value ="id"
+                                                    v-model="matriculaEdited.int_condicion"
+                                                    required
+                                                ></v-select>
+                                            </v-col>
+                                        </v-row>
+                                    </v-card-text>
+                                    <v-card-actions>
+                                        <v-spacer></v-spacer>
+                                            <v-btn color="red-accent-4" variant="text" @click="closeInternado" icon="mdi-close-circle-outline"></v-btn>
+                                            <v-btn color="blue-darken-4" variant="text" @click="saveInternado" icon="mdi-content-save-settings"></v-btn>
+                                        <v-spacer></v-spacer>
+                                    </v-card-actions>
+                                </v-card>
+                            </v-dialog>
 
-                    </v-toolbar>
-                </template>
-                <template v-slot:item.actions="{ item }">
-                    <v-icon
-                        class="me-2"
-                        size="small"
-                        color="blue-darken-4"
-                        @click="editFactory(item)"
-                        title="Taller">mdi-factory
-                    </v-icon>
-                    <v-icon
-                        class="me-2"
-                        size="small"
-                        color="teal-darken-3"
-                        @click="editLibrary(item)"
-                        title="Biblioteca">mdi-library
-                    </v-icon>
-                    <v-icon
-                        class="me-2"
-                        size="small"
-                        color="light-green-lighten-1"
-                        @click="editCooperadora(item)"
-                        title="Cooperadora">mdi-account-cash-outline
-                    </v-icon>
-                    <v-icon
+                        </v-toolbar>
+                    </template>
+                    <template v-slot:item.actions="{ item }">
+                        <v-icon
                             class="me-2"
                             size="small"
-                            color="orange-lighten-1"
-                            @click="editInternado(item)"
-                            title="Internado">mdi-bed-single-outline
-                    </v-icon>
-                    <v-icon
+                            color="blue-darken-4"
+                            @click="editFactory(item)"
+                            title="Taller">mdi-factory
+                        </v-icon>
+                        <v-icon
                             class="me-2"
                             size="small"
-                            color="red-darken-4"
-                            @click="generarHtmlDatos(item)"
-                            title="PDF">mdi mdi-file-pdf-box
-                    </v-icon>
-                </template>
-            </v-data-table>
-        </v-row>
+                            color="teal-darken-3"
+                            @click="editLibrary(item)"
+                            title="Biblioteca">mdi-library
+                        </v-icon>
+                        <v-icon
+                            class="me-2"
+                            size="small"
+                            color="light-green-lighten-1"
+                            @click="editCooperadora(item)"
+                            title="Cooperadora">mdi-account-cash-outline
+                        </v-icon>
+                        <v-icon
+                                class="me-2"
+                                size="small"
+                                color="orange-lighten-1"
+                                @click="editInternado(item)"
+                                title="Internado">mdi-bed-single-outline
+                        </v-icon>
+                        <v-icon
+                                class="me-2"
+                                size="small"
+                                color="red-darken-4"
+                                @click="generarHtmlDatos(item)"
+                                title="PDF">mdi mdi-file-pdf-box
+                        </v-icon>
+                    </template>
+                </v-data-table>
+            </v-row>
     </v-container>
 
 </template>
@@ -260,30 +260,36 @@
 
     import { ref, onMounted } from "vue";
     import html2pdf from "html2pdf.js";
+    import { jsPDF } from "jspdf";
+    import html2canvas from 'html2canvas';
 
-    import plantillaHTML from '@/assets/plantillas/hoja_de_ruta.html?raw';
 
+    // import plantillaHTML from '@/assets/plantillas/hoja_de_ruta.html?raw';
 
-
-    /*
-        import { loadGapiInsideDOM } from "gapi-script";
-        import html2canvas from 'html2canvas';
-        import jsPDF from 'jspdf';
-
-        // https://docs.google.com/document/d/e/2PACX-1vRhKY50abb9H7-dgso1zNIaXoHc5Ic3OZwK8HK73yhwAMaBpPzJezOiZoiiQpQVGQ9ydBFf_xzshUBH/pub
-
-        const CLIENT_ID = "911892646464-2hcu7egk7dkk2kl8u7glk7b8gt8ojtpu.apps.googleusercontent.com";
-        const API_KEY = "AIzaSyB9UMV9jED6CbZSRNF4JSv4mYaPiTH7Elg";
-        const templateId = "1nY4WpKm79l-4hhuTY2AuHw7hkWSdLLYV36qJqHCDZ4o";
-        const contenido = ref("");
-        const SCOPES = "https://www.googleapis.com/auth/documents";
-        const isAuthenticated = ref(false);
-        const documentId = ref(""); // ID del documento de Google Docs
-        const documentContent = ref("");
-
-        //  https://docs.google.com/document/d/1nY4WpKm79l-4hhuTY2AuHw7hkWSdLLYV36qJqHCDZ4o/edit?usp=sharing
-    */
-
+    const plantillaHTML =  `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Plantilla PDF</title>
+                    <style>
+                    body { font-family: sans-serif; margin: 0; padding: 0; }
+                    .container { margin: 20px; border: 1px solid #ccc; padding: 20px; }
+                    h1 { color: #333; }
+                    .info { margin-bottom: 10px; color: #555; }
+                    </style>
+                </head>
+                <body>
+                    <div class="container">
+                    <h1>Informe Personal</h1>
+                    <p>Este es un informe generado automáticamente.</p>
+                    <div class="info">Nombre: <strong>{{NOMBRE}}</strong></div>
+                    <div class="info">Email: <strong>{{APELLIDO}}</strong></div>
+                    <div class="info">Mensaje: <em>{{CURSO}}</em></div>
+                    <p>Fecha de generación: ${new Date().toLocaleDateString()}</p>
+                    </div>
+                </body>
+                </html>
+                `;
 
     const vEstados = [{id:1,tag:"COMPLETO",key:"CO"},{id:2,tag:"PENDIENTE",key:"PE"},{id:3,tag:"NO CORRESPONDE",key:"NC"}];
 
@@ -578,9 +584,10 @@
 
                 console.log("generarHtmlDatos:");
                 // console.log(this.HTML_template);
-                let templateHTML = this.HTML_template;
+                let templateHDR = this.HTML_template;
+                var fecha = new Date();
 
-                templateHTML = templateHTML.replace(`{{ALUMNO}}`,item.apellido)
+                templateHDR = templateHDR.replace(`{{ALUMNO}}`,item.apellido)
                                             .replace(`{{NOMBRES}}`, item.nombre)
                                             .replace(`{{CURSO}}`, item.Curso )
                                             .replace(`{{CONDICION}}`, 'Regular')
@@ -595,10 +602,14 @@
                                             .replace(`{{INT_R}}`,item.int_responsable)
                                             .replace(`{{BIBLIO_E}}` ,item.bl_condicion )
                                             .replace(`{{BIBLIO_R}}`,item.bl_responsable)
-                                            .replace(`{{FECHA}}`,item.fecha);
+                                            .replace(`{{FECHA}}`,item.fecha)
+                                            .replace(`{{DIA}}`,fecha.getDate())
+                                            .replace(`{{MES}}`,fecha.getMonth()+1)
+                                            .replace(`{{ANIO}}`,fecha.getFullYear());
 
                     // ... y así sucesivamente ...
-                console.log(templateHTML);
+                // console.log(templateHTML);
+                this.generatePDF(templateHDR);
 
 
               /*
@@ -608,38 +619,39 @@
 
                 console.log(this.plantillaHTML);
               */
-                //  this.generarInforme_hdr(htmlConDatos);
             },
 
-            generarInforme_hdr(item){
-                console.log('GenInforme_hdr!!!')
-                console.log(item)
-                //  this.cargarDocumento();
-            },
 
-            async generatePDF() {
+            async generatePDF(contenido) {
 
-                const element = document.getElementById('content');
-                const canvas = await html2canvas(element);
-                const imgData = canvas.toDataURL('image/png');
-                const pdf = new jsPDF();      // Ajusta el tamaño del PDF a la imagen
-                const imgWidth = 190; // Ancho del PDF
-                const pageHeight = pdf.internal.pageSize.height;
-                const imgHeight = (canvas.height * imgWidth) / canvas.width;
+                // console.log(contenido);
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = contenido;
+                document.body.appendChild(tempDiv);
 
-                let heightLeft = imgHeight;
-                let position = 0;
-                pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
-                heightLeft -= pageHeight;
+                console.log(tempDiv);
 
-                while (heightLeft >= 0) {
-                    position = heightLeft - imgHeight;
-                    pdf.addPage();
-                    pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
-                    heightLeft -= pageHeight;
-                }
+                html2canvas(tempDiv, { // <--- html2canvas ahora apunta al div con el contenido
+                    foreignObjectRendering: true,
+                    width: 800,
+                    height: 600,
+                }).then(canvas => {
+                    // ... (código para generar el PDF)
+                    const pdf = new jsPDF('l', 'mm', 'a4');
+                    const imgData = canvas.toDataURL('image/png');
+                    const imgProps = pdf.getImageProperties(imgData);
+                    const pdfWidth = pdf.internal.pageSize.getWidth();
+                    const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
 
-                pdf.save('documento.pdf');
+                    pdf.addImage(imgData, 'PNG', 0, 15, pdfWidth, pdfHeight);
+                    pdf.save('hdr.pdf');
+                    alert("Se ha generado la hoja de ruta");
+                    
+                    document.body.removeChild(tempDiv); // <--- Eliminar el div temporal después de usarlo
+                }).catch(error => {
+                    console.error('Error al generar el PDF:', error);
+                    document.body.removeChild(tempDiv); // Asegurarse de eliminarlo incluso si hay error
+                });             
             },
 
             async cargarDocumento()  {
