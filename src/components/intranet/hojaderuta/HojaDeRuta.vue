@@ -203,6 +203,22 @@
                                 </v-card>
                             </v-dialog>
 
+                            <v-dialog v-model="dialogHdr" max-width="1096px">
+                                <v-card>
+                                    <v-card-title class="text-h5">
+                                        Hoja de Ruta
+                                    </v-card-title>
+                                    <v-card-text>
+                                        <TemplateHdr></TemplateHdr>
+                                    </v-card-text>
+                                    <v-card-actions>
+                                        <v-spacer></v-spacer>
+                                                <v-btn color="red-accent-4" variant="text" @click="closeHdr" icon="mdi-close-circle-outline"></v-btn>
+                                                <v-btn color="blue-darken-4" variant="text" @click="printHdr" icon="mdi-printer-outline"></v-btn>
+                                            <v-spacer></v-spacer>
+                                    </v-card-actions>
+                                </v-card>
+                            </v-dialog>
                         </v-toolbar>
                     </template>
                     <template v-slot:item.actions="{ item }">
@@ -238,7 +254,7 @@
                                 class="me-2"
                                 size="small"
                                 color="red-darken-4"
-                                @click="generarHtmlDatos(item)"
+                                @click="showHojaDeRuta(item)"
                                 title="PDF">mdi mdi-file-pdf-box
                         </v-icon>
                     </template>
@@ -263,33 +279,10 @@
     import { jsPDF } from "jspdf";
     import html2canvas from 'html2canvas';
 
+    import { templateHdr } from '@/components/intranet/hojaderuta/TemplateHdr.vue';
 
-    // import plantillaHTML from '@/assets/plantillas/hoja_de_ruta.html?raw';
-
-    const plantillaHTML =  `
-                <!DOCTYPE html>
-                <html>
-                <head>
-                    <title>Plantilla PDF</title>
-                    <style>
-                    body { font-family: sans-serif; margin: 0; padding: 0; }
-                    .container { margin: 20px; border: 1px solid #ccc; padding: 20px; }
-                    h1 { color: #333; }
-                    .info { margin-bottom: 10px; color: #555; }
-                    </style>
-                </head>
-                <body>
-                    <div class="container">
-                    <h1>Informe Personal</h1>
-                    <p>Este es un informe generado automáticamente.</p>
-                    <div class="info">Nombre: <strong>{{NOMBRE}}</strong></div>
-                    <div class="info">Email: <strong>{{APELLIDO}}</strong></div>
-                    <div class="info">Mensaje: <em>{{CURSO}}</em></div>
-                    <p>Fecha de generación: ${new Date().toLocaleDateString()}</p>
-                    </div>
-                </body>
-                </html>
-                `;
+    import plantillaHTML from '@/assets/plantillas/hdr.html?raw';
+import TemplateHdr from './TemplateHdr.vue';
 
     const vEstados = [{id:1,tag:"COMPLETO",key:"CO"},{id:2,tag:"PENDIENTE",key:"PE"},{id:3,tag:"NO CORRESPONDE",key:"NC"}];
 
@@ -310,91 +303,89 @@
                         ];
 
     export default {
-        data(){
-            return {
-                cursos:'',
-                loading:false,
-                datosCSV:[],
-                matriculas:[],
-                courseSelected:[],
-                idCourseSelected:'',
-                itemsPerPage:10,
-                dialogFactory:false,
-                dialogLibrary:false,
-                dialogCooperadora:false,
-                dialogInternado:false,
-                loadfile: false,
-                opEstados:[],
-                tlResponsables:[],
-                cpResponsables:[],
-                blResponsables:[],
-                intResponsables:[],
-                matriculaSelected:{},
-                editedIndex:0,
-                matriculaEdited:{},
-                headers:[
-                    { title:'Id',align:'start',sortable:false,key:'id' },
-                    { title:'Curso',align:'center',sortable:false,key:'curidhex'},
-                    { title:'Año', align:'center',sortable:false,key:'Año'},
-                    { title:'Division',align:'center',sortable:false,key:'División'},
-                    { title:'Curso',align:'center',sortable:true,key:'Curso'},
-                    // { title:'Curso Id hex',align:'center',sortable:false,key:'curidhex' ,class:'hidden' },
-                    // { title:'Cod.Plan Est.',align:'left',sortable:false,key:'Código Plan de Estudio'},
-                    // { title:'Plan Estudio',align:'left',sortable:false,key:'Plan de Estudio'},
-                    { title:'Orden',align:'center',sortable:false,key:'orden'},
-                    { title:'Nro.Doc.',align:'center',sortable:false,key:'nro_documento'},
-                    { title:'Apellido',align:'left',sortable:true,key:'apellido'},
-                    { title:'Nombres',align:'left',sortable:false,key:'nombre'},
-                    { title: 'Actions', key: 'actions', sortable: false },
-                ],
-                HTML_template :'',
-                userData: null,
-
-            }
+    data() {
+        return {
+            cursos: "",
+            loading: false,
+            datosCSV: [],
+            matriculas: [],
+            courseSelected: [],
+            idCourseSelected: "",
+            itemsPerPage: 10,
+            dialogFactory: false,
+            dialogLibrary: false,
+            dialogCooperadora: false,
+            dialogInternado: false,
+            dialogHdr: false,
+            loadfile: false,
+            opEstados: [],
+            tlResponsables: [],
+            cpResponsables: [],
+            blResponsables: [],
+            intResponsables: [],
+            matriculaSelected: {},
+            editedIndex: 0,
+            matriculaEdited: {},
+            headers: [
+                { title: "Id", align: "start", sortable: false, key: "id" },
+                { title: "Curso", align: "center", sortable: false, key: "curidhex" },
+                { title: "Año", align: "center", sortable: false, key: "Año" },
+                { title: "Division", align: "center", sortable: false, key: "División" },
+                { title: "Curso", align: "center", sortable: true, key: "Curso" },
+                // { title:'Curso Id hex',align:'center',sortable:false,key:'curidhex' ,class:'hidden' },
+                // { title:'Cod.Plan Est.',align:'left',sortable:false,key:'Código Plan de Estudio'},
+                // { title:'Plan Estudio',align:'left',sortable:false,key:'Plan de Estudio'},
+                { title: "Orden", align: "center", sortable: false, key: "orden" },
+                { title: "Nro.Doc.", align: "center", sortable: false, key: "nro_documento" },
+                { title: "Apellido", align: "left", sortable: true, key: "apellido" },
+                { title: "Nombres", align: "left", sortable: false, key: "nombre" },
+                { title: "Actions", key: "actions", sortable: false },
+            ],
+            HTML_template: "",
+            userData: null,
+        };
+    },
+    methods: {
+        async initialize() {
+            // this.ciclos = myCiclos;
+            this.loading = true;
+            await this.fetchCursos();
+            await this.fetchMatriculas();
+            this.opEstados = vEstados;
+            this.tlResponsables = vResponsables.filter(elem => elem.grupo == "TALLER");
+            this.cpResponsables = vResponsables.filter(elem => elem.grupo == "COOPERADORA");
+            this.blResponsables = vResponsables.filter(elem => elem.grupo == "BIBLIOTECA");
+            this.intResponsables = vResponsables.filter(elem => elem.grupo == "INTERNADO");
+            this.HTML_template = plantillaHTML;
+            // console.log(this.matriculas);
         },
-        methods:{
-            async initialize(){
-
-                // this.ciclos = myCiclos;
-                this.loading = true;
-                await this.fetchCursos();
-                await this.fetchMatriculas();
-                this.opEstados = vEstados;
-                this.tlResponsables = vResponsables.filter(elem => elem.grupo == "TALLER");
-                this.cpResponsables = vResponsables.filter(elem => elem.grupo == "COOPERADORA");
-                this.blResponsables = vResponsables.filter(elem => elem.grupo == "BIBLIOTECA");
-                this.intResponsables = vResponsables.filter(elem => elem.grupo == "INTERNADO");
-                this.HTML_template = plantillaHTML;
-
-                // console.log(this.matriculas);
-             },
-            fetchCursos: async function (){
-                const querySnapshot = await getDocs(collection(db,"cursos"));
-                this.cursos = querySnapshot.docs
-                                    .map(doc => ({ id:doc.id, ...doc.data() }))
-                                    .sort((a,b) => a.anio - b.anio)
-                this.loading = false;
-            },
-            fetchMatriculas:async function(){
-                const qrySnapshot = await getDocs(collection(db,"matriculas"));
-                this.matriculas = qrySnapshot.docs
-                                 .map(doc => ({id:doc.id ,...doc.data()}))
-                                 .sort((a,b)=> a.matriculaid - b.matriculaid );
-                this.loading = false;
-            },
-            cursosProps(item){
-                return {
-                    id : item.cursoid ,
-                    ciclo: item.ciclo,
-                    division: item.division,
-                    anio : item.anio,
-                    descripcion: item.descripcion,
-                }
-            },
-            procesarArchivo(event) {
-                const archivo = event.target.files[0];
-                if (archivo) {
-                    Papa.parse(archivo, {
+        fetchCursos: async function () {
+            const querySnapshot = await getDocs(collection(db, "cursos"));
+            this.cursos = querySnapshot.docs
+                .map(doc => ({ id: doc.id, ...doc.data() }))
+                .sort((a, b) => a.anio - b.anio);
+            this.loading = false;
+        },
+        fetchMatriculas: async function () {
+            const qrySnapshot = await getDocs(collection(db, "matriculas"));
+            this.matriculas = qrySnapshot.docs
+                .map(doc => ({ id: doc.id, ...doc.data() }))
+                .sort((a, b) => a.matriculaid - b.matriculaid);
+            this.loading = false;
+        },
+        cursosProps(item) {
+            return {
+                id: item.cursoid,
+                ciclo: item.ciclo,
+                division: item.division,
+                anio: item.anio,
+                descripcion: item.descripcion,
+            };
+        },
+        procesarArchivo(event) {
+            const archivo = event.target.files[0];
+            if (archivo) {
+                Papa.parse(archivo, {
                     header: true, // Usa la primera fila como encabezado
                     complete: (resultados) => {
                         this.datosCSV = resultados.data; // Guardar los datos procesados
@@ -403,332 +394,315 @@
                     error: (error) => {
                         console.error("Error al procesar el archivo:", error);
                     }
-                    });
-                }
-            },
-            enviarDatos() {
+                });
+            }
+        },
+        enviarDatos() {
+            try {
+                // const respuesta = await axios.post("http://localhost:3000/subir-csv", this.datosCSV);
+                this.datosCSV.forEach((elemento) => {
+                    addDoc(collection(db, "matriculas"), elemento);
+                    console.log("=>" + elemento.idhex);
+                });
+                alert("Datos subidos con éxito: " + respuesta.data.message);
+            }
+            catch (error) {
+                console.error("Error al subir datos:", error);
+                alert("Error al subir los datos.");
+            }
+        },
+        onChange(value) {
+            //
+            console.log(value);
+        },
+        emitManualChange() {
+            const newValue = this.idCourseSelected;
+            const index = this.cursos.findIndex(x => x.id == newValue);
+            console.log("Cambio manual emitido:", newValue);
+            this.courseSelected = this.matriculas.filter(elem => elem.curidhex == this.cursos[index].cursoid);
+            console.log(this.courseSelected);
+        },
+        editFactory(item) {
+            /**
+             * Se invoca desde el icono factory del datatable: selecciona el registro actual[item]
+             */
+            console.log("Edit Factory:");
+            let matricula = this.matriculas.find(x => x.matriculaid === item.matriculaid);
+            this.matriculaSelected = this.matriculas.findIndex(x => x.matriculaid === item.matriculaid);
+            this.matriculaEdited = { ...matricula };
+            this.dialogFactory = true;
+        },
+        async saveFactory() {
+            if (this.matriculaSelected > -1) {
+                await this.updateFactory();
+            }
+            else {
+                // await this.create();
+                console.log("Create");
+            }
+            this.closeFactory();
+            await this.fetchMatriculas();
+        },
+        async updateFactory() {
+            // Update
+            try {
+                Object.assign(this.matriculas[this.matriculaSelected], this.matriculaEdited);
+                await updateDoc(doc(db, "matriculas", this.matriculaEdited.id), this.matriculaEdited);
+                return true;
+            }
+            catch (error) {
+                console.log(error);
+                return false;
+            }
+        },
+        closeFactory() {
+            this.dialogFactory = false;
+        },
+        async saveLibrary() {
+            if (this.editedIndex > -1) {
+                await this.updateLibrary();
+            }
+            else {
+                // await this.create();
+                console.log("Create Library");
+            }
+            this.closeLibrary();
+            await this.fetchMatriculas();
+        },
+        editLibrary(item) {
+            console.log("Edit Library:");
+            let matricula = this.matriculas.find(x => x.matriculaid === item.matriculaid);
+            this.matriculaSelected = this.matriculas.findIndex(x => x.matriculaid === item.matriculaid);
+            this.matriculaEdited = { ...matricula };
+            this.dialogLibrary = true;
+        },
+        async updateLibrary() {
+            // Update
+            try {
+                Object.assign(this.matriculas[this.matriculaSelected], this.matriculaEdited);
+                await updateDoc(doc(db, "matriculas", this.matriculaEdited.id), this.matriculaEdited);
+                return true;
+            }
+            catch (error) {
+                console.log(error);
+                return false;
+            }
+        },
+        closeLibrary() {
+            this.dialogLibrary = false;
+        },
+        async saveCooperadora() {
+            if (this.editedIndex > -1) {
+                await this.updateCooperadora();
+            }
+            else {
+                // await this.create();
+                console.log("Create Cooperadora");
+            }
+            this.closeCooperadora();
+            await this.fetchMatriculas();
+        },
+        async updateCooperadora() {
+            // Update
+            try {
+                Object.assign(this.matriculas[this.matriculaSelected], this.matriculaEdited);
+                await updateDoc(doc(db, "matriculas", this.matriculaEdited.id), this.matriculaEdited);
+                return true;
+            }
+            catch (error) {
+                console.log(error);
+                return false;
+            }
+        },
+        editCooperadora(item) {
+            /**
+             * Se invoca desde el icono factory del datatable: selecciona el registro actual[item]
+             */
+            console.log("Edit Cooperadora:");
+            let matricula = this.matriculas.find(x => x.matriculaid === item.matriculaid);
+            this.matriculaSelected = this.matriculas.findIndex(x => x.matriculaid === item.matriculaid);
+            this.matriculaEdited = { ...matricula };
+            this.dialogCooperadora = true;
+        },
+        closeCooperadora() {
+            this.dialogCooperadora = false;
+        },
+        async saveInternado() {
+            if (this.editedIndex > -1) {
+                await this.updateInternado();
+            }
+            else {
+                // await this.create();
+                console.log("Create Internado");
+            }
+            this.closeInternado();
+            await this.fetchMatriculas();
+        },
+        async updateInternado() {
+            // Update
+            try {
+                Object.assign(this.matriculas[this.matriculaSelected], this.matriculaEdited);
+                await updateDoc(doc(db, "matriculas", this.matriculaEdited.id), this.matriculaEdited);
+                return true;
+            }
+            catch (error) {
+                console.log(error);
+                return fa;
+            }
+        },
+        editInternado(item) {
+            console.log("Edit Internado:");
+            let matricula = this.matriculas.find(x => x.matriculaid === item.matriculaid);
+            this.matriculaSelected = this.matriculas.findIndex(x => x.matriculaid === item.matriculaid);
+            this.matriculaEdited = { ...matricula };
+            this.dialogInternado = true;
+        },
+        closeInternado() {
+            this.dialogInternado = false;
+        },
+        showHojaDeRuta(item) {
+            console.log("Show Dialogo Hoja De Ruta");
+            let matricula = this.matriculas.find(x => x.matriculaid === item.matriculaid);
+            this.matriculaSelected = this.matriculas.findIndex(x => x.matriculaid === item.matriculaid);
+            this.matriculaEdited = { ...matricula };
+            this.dialogHdr = true;
+        },
+        closeHdr() {
+            this.dialogHdr = false;
+        },
+        printHdr(item) {
+            this.generarHtmlDatos(item);
+        },
+        generarHtmlDatos(item) {
+            console.log("generarHtmlDatos:");
+            // console.log(this.HTML_template);
+            let templateHDR = this.HTML_template;
+            var fecha = new Date();
+            templateHDR = templateHDR.replace(`{{APELLIDO}}`, item.apellido)
+                .replace(`{{NOMBRES}}`, item.nombre)
+                .replace(`{{CURSO}}`, item.Curso)
+                .replace(`{{CONDICION}}`, "Regular")
+                .replace(`{{CICLO}}`, (item.Año < 4) ? "Primer Ciclo" : "Segundo Ciclo")
+                .replace(`{{ESPECIALIDAD}}`, item.plan_estudio)
+                .replace(`{{COOP_E}}`, item.coop_condicion)
+                .replace(`{{COOP_C}}`, item.coop_cuotas)
+                .replace(`{{COOP_R}}`, item.coop_responsable)
+                .replace(`{{TL_E}}`, item.tl_condicion)
+                .replace(`{{TL_R}}`, item.tl_responsable)
+                .replace(`{{INT_E}}`, item.int_condicion)
+                .replace(`{{INT_R}}`, item.int_responsable)
+                .replace(`{{BIBLIO_E}}`, item.bl_condicion)
+                .replace(`{{BIBLIO_R}}`, item.bl_responsable)
+                .replace(`{{FECHA}}`, item.fecha)
+                .replace(`{{DIA}}`, fecha.getDate())
+                .replace(`{{MES}}`, fecha.getMonth() + 1)
+                .replace(`{{ANIO}}`, fecha.getFullYear());
+            // ... y así sucesivamente ...
+            // console.log(templateHTML);
+            this.generatePDF(templateHDR);
+            /*
+              let matricula  = this.matriculas.find(x => x.matriculaid === item.matriculaid );
+              this.matriculaSelected = this.matriculas.findIndex(x => x.matriculaid === item.matriculaid );
+              this.matriculaEdited = {...matricula};
+
+              console.log(this.plantillaHTML);
+            */
+        },
+        async generatePDF(contenido) {
+            // console.log(contenido);
+            let doc = document.implementation.createHTMLDocument("New Document");
+            const tempDiv = doc.createElement("div");
+            tempDiv.innerHTML = contenido;
+            document.body.appendChild(tempDiv);
+            console.log(tempDiv);
+            html2canvas(tempDiv, {
+                foreignObjectRendering: true,
+                width: 800,
+                height: 600,
+            }).then(canvas => {
+                // ... (código para generar el PDF)
+                const pdf = new jsPDF("l", "mm", "a4");
+                const imgData = canvas.toDataURL("image/png");
+                const imgProps = pdf.getImageProperties(imgData);
+                const pdfWidth = pdf.internal.pageSize.getWidth();
+                const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+                pdf.addImage(imgData, "PNG", 0, 15, pdfWidth, pdfHeight);
+                pdf.save("hdr.pdf");
+                alert("Se ha generado la hoja de ruta");
+                document.body.removeChild(tempDiv); // <--- Eliminar el div temporal después de usarlo
+            }).catch(error => {
+                console.error("Error al generar el PDF:", error);
+                document.body.removeChild(tempDiv); // Asegurarse de eliminarlo incluso si hay error
+            });
+        },
+        async cargarDocumento() {
+            this.signIn();
+            this.initClient();
+            this.signOut();
+            /*
                 try {
-                    // const respuesta = await axios.post("http://localhost:3000/subir-csv", this.datosCSV);
-                    this.datosCSV.forEach((elemento) => {
-                            addDoc(collection(db,"matriculas"),elemento);
-                            console.log("=>" + elemento.idhex );
-
-                    })
-                    alert("Datos subidos con éxito: " + respuesta.data.message);
-                } catch (error) {
-                    console.error("Error al subir datos:", error);
-                    alert("Error al subir los datos." );
-                }
-            },
-            onChange(value){
-                //
-                console.log(value);
-            },
-            emitManualChange() {
-                const newValue = this.idCourseSelected;
-                const index = this.cursos.findIndex(x => x.id == newValue);
-                console.log('Cambio manual emitido:', newValue);
-                this.courseSelected = this.matriculas.filter(elem => elem.curidhex == this.cursos[index].cursoid);
-                console.log(this.courseSelected);
-            },
-
-            editFactory(item){
-                /**
-                 * Se invoca desde el icono factory del datatable: selecciona el registro actual[item]
-                 */
-                console.log("Edit Factory:");
-                let matricula  = this.matriculas.find(x => x.matriculaid === item.matriculaid );
-                this.matriculaSelected = this.matriculas.findIndex(x => x.matriculaid === item.matriculaid );
-                this.matriculaEdited = {...matricula};
-                this.dialogFactory = true;
-            },
-
-            async saveFactory() {
-
-                if (this.matriculaSelected  > -1) {
-                    await this.updateFactory();
-                }
-                else {
-                    // await this.create();
-                    console.log("Create");
-                }
-                this.closeFactory();
-                await this.fetchMatriculas();
-            },
-
-            async updateFactory(){
-                // Update
-                try {
-                    Object.assign(this.matriculas[this.matriculaSelected], this.matriculaEdited);
-                    await updateDoc(doc(db,"matriculas", this.matriculaEdited.id) , this.matriculaEdited );
-                    return true;
-                } catch (error) {
-                    console.log(error);
-                    return false;
-                }
-            },
-            closeFactory(){
-                this.dialogFactory = false;
-            },
-            async saveLibrary(){
-                if (this.editedIndex > -1) {
-                    await this.updateLibrary();
-                }
-                else {
-                    // await this.create();
-                    console.log("Create Library");
-                }
-                this.closeLibrary();
-                await this.fetchMatriculas();
-            },
-            editLibrary(item){
-                console.log("Edit Library:");
-                let matricula  = this.matriculas.find(x => x.matriculaid === item.matriculaid );
-                this.matriculaSelected = this.matriculas.findIndex(x => x.matriculaid === item.matriculaid );
-                this.matriculaEdited = {...matricula};
-                this.dialogLibrary = true;
-            },
-            async updateLibrary(){
-                // Update
-
-                try {
-                    Object.assign(this.matriculas[this.matriculaSelected], this.matriculaEdited);
-                    await updateDoc(doc(db,"matriculas", this.matriculaEdited.id) , this.matriculaEdited );
-                    return true;
-
-                } catch (error) {
-                    console.log(error);
-                    return false;
-                }
-            },
-
-            closeLibrary(){
-                this.dialogLibrary = false;
-            },
-
-            async saveCooperadora(){
-                if (this.editedIndex > -1) {
-                    await this.updateCooperadora();
-                }
-                else {
-                    // await this.create();
-                    console.log("Create Cooperadora");
-                }
-
-                this.closeCooperadora();
-                await this.fetchMatriculas();
-            },
-
-            async updateCooperadora(){
-                // Update
-                try {
-                    Object.assign(this.matriculas[this.matriculaSelected], this.matriculaEdited);
-                    await updateDoc(doc(db,"matriculas", this.matriculaEdited.id) , this.matriculaEdited );
-                    return true;
-                } catch (error) {
-                    console.log(error);
-                    return false;
-                }
-            },
-
-            editCooperadora(item){
-                /**
-                 * Se invoca desde el icono factory del datatable: selecciona el registro actual[item]
-                 */
-                 console.log("Edit Cooperadora:");
-                let matricula  = this.matriculas.find(x => x.matriculaid === item.matriculaid );
-                this.matriculaSelected = this.matriculas.findIndex(x => x.matriculaid === item.matriculaid );
-                this.matriculaEdited = {...matricula};
-                this.dialogCooperadora = true;
-            },
-            closeCooperadora(){
-                this.dialogCooperadora = false;
-            },
-
-            async saveInternado(){
-                if (this.editedIndex > -1) {
-                    await this.updateInternado();
-                }
-                else {
-                    // await this.create();
-                    console.log("Create Internado");
-                }
-                this.closeInternado();
-                await this.fetchMatriculas();
-            },
-
-            async updateInternado(){
-                // Update
-                try {
-                    Object.assign(this.matriculas[this.matriculaSelected], this.matriculaEdited);
-                    await updateDoc(doc(db,"matriculas", this.matriculaEdited.id) , this.matriculaEdited );
-                    return true;
-                } catch (error) {
-                    console.log(error);
-                    return fa
-                }
-            },
-
-            editInternado(item){
-                console.log("Edit Internado:");
-                let matricula  = this.matriculas.find(x => x.matriculaid === item.matriculaid );
-                this.matriculaSelected = this.matriculas.findIndex(x => x.matriculaid === item.matriculaid );
-                this.matriculaEdited = {...matricula};
-                this.dialogInternado = true;
-            },
-            closeInternado(){
-                this.dialogInternado = false;
-            },
-
-            generarHtmlDatos(item){
-
-                console.log("generarHtmlDatos:");
-                // console.log(this.HTML_template);
-                let templateHDR = this.HTML_template;
-                var fecha = new Date();
-
-                templateHDR = templateHDR.replace(`{{ALUMNO}}`,item.apellido)
-                                            .replace(`{{NOMBRES}}`, item.nombre)
-                                            .replace(`{{CURSO}}`, item.Curso )
-                                            .replace(`{{CONDICION}}`, 'Regular')
-                                            .replace(`{{CICLO}}`, (item.Año < 4) ? "Primer Ciclo": "Segundo Ciclo" )
-                                            .replace(`{{ESPECIALIDAD}}`, item.plan_estudio )
-                                            .replace(`{{COOP_E}}` ,item.coop_condicion )
-                                            .replace(`{{COOP_C}}`,item.coop_cuotas)
-                                            .replace(`{{COOP_R}}`,item.coop_responsable)
-                                            .replace(`{{TL_E}}` ,item.tl_condicion )
-                                            .replace(`{{TL_R}}`,item.tl_responsable)
-                                            .replace(`{{INT_E}}` ,item.int_condicion )
-                                            .replace(`{{INT_R}}`,item.int_responsable)
-                                            .replace(`{{BIBLIO_E}}` ,item.bl_condicion )
-                                            .replace(`{{BIBLIO_R}}`,item.bl_responsable)
-                                            .replace(`{{FECHA}}`,item.fecha)
-                                            .replace(`{{DIA}}`,fecha.getDate())
-                                            .replace(`{{MES}}`,fecha.getMonth()+1)
-                                            .replace(`{{ANIO}}`,fecha.getFullYear());
-
-                    // ... y así sucesivamente ...
-                // console.log(templateHTML);
-                this.generatePDF(templateHDR);
-
-
-              /*
-                let matricula  = this.matriculas.find(x => x.matriculaid === item.matriculaid );
-                this.matriculaSelected = this.matriculas.findIndex(x => x.matriculaid === item.matriculaid );
-                this.matriculaEdited = {...matricula};
-
-                console.log(this.plantillaHTML);
-              */
-            },
-
-
-            async generatePDF(contenido) {
-
-                // console.log(contenido);
-                const tempDiv = document.createElement('div');
-                tempDiv.innerHTML = contenido;
-                document.body.appendChild(tempDiv);
-
-                console.log(tempDiv);
-
-                html2canvas(tempDiv, { // <--- html2canvas ahora apunta al div con el contenido
-                    foreignObjectRendering: true,
-                    width: 800,
-                    height: 600,
-                }).then(canvas => {
-                    // ... (código para generar el PDF)
-                    const pdf = new jsPDF('l', 'mm', 'a4');
-                    const imgData = canvas.toDataURL('image/png');
-                    const imgProps = pdf.getImageProperties(imgData);
-                    const pdfWidth = pdf.internal.pageSize.getWidth();
-                    const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-
-                    pdf.addImage(imgData, 'PNG', 0, 15, pdfWidth, pdfHeight);
-                    pdf.save('hdr.pdf');
-                    alert("Se ha generado la hoja de ruta");
-                    
-                    document.body.removeChild(tempDiv); // <--- Eliminar el div temporal después de usarlo
-                }).catch(error => {
-                    console.error('Error al generar el PDF:', error);
-                    document.body.removeChild(tempDiv); // Asegurarse de eliminarlo incluso si hay error
-                });             
-            },
-
-            async cargarDocumento()  {
-
-                    this.signIn();
-                    this.initClient();
-                    this.signOut();
-
-                /*
-                    try {
-                        await loadGapiInsideDOM();
-                        const gapi = window.gapi;
-                        gapi.load("client", async () => {
-                        await gapi.client.init({
-                            apiKey,
-                            discoveryDocs: [
-                                            "https://docs.googleapis.com/$discovery/rest?version=v1",
-                                            ],
-                        });
-
-                        const response = await gapi.client.docs.documents.get({
-                            templateId,
-                        });
-
-                        const textoExtraido = response.result.body.content
-                            .map((block) => block.paragraph?.elements?.map((el) => el.textRun?.content).join("") || "")
-                            .join("\n");
-
-                        contenido.value = textoExtraido;
-                        });
-                    } catch (error) {
-                        console.error("Error al cargar el documento:", error);
-                    }
-                */
-            } ,
-
-            async initClient(){
-                gapi.load("client:auth2", async () => {
+                    await loadGapiInsideDOM();
+                    const gapi = window.gapi;
+                    gapi.load("client", async () => {
                     await gapi.client.init({
+                        apiKey,
+                        discoveryDocs: [
+                                        "https://docs.googleapis.com/$discovery/rest?version=v1",
+                                        ],
+                    });
+
+                    const response = await gapi.client.docs.documents.get({
+                        templateId,
+                    });
+
+                    const textoExtraido = response.result.body.content
+                        .map((block) => block.paragraph?.elements?.map((el) => el.textRun?.content).join("") || "")
+                        .join("\n");
+
+                    contenido.value = textoExtraido;
+                    });
+                } catch (error) {
+                    console.error("Error al cargar el documento:", error);
+                }
+            */
+        },
+        async initClient() {
+            gapi.load("client:auth2", async () => {
+                await gapi.client.init({
                     apiKey: API_KEY,
                     clientId: CLIENT_ID,
                     scope: SCOPES,
                     discoveryDocs: ["https://docs.googleapis.com/$discovery/rest?version=v1"],
-                    });
-
-                    const authInstance = gapi.auth2.getAuthInstance();
-                    isAuthenticated.value = authInstance.isSignedIn.get();
-                    authInstance.isSignedIn.listen((status) => {
-                    isAuthenticated.value = status;
-                    });
                 });
-            },
-            // Iniciar sesión con Google
-            async signIn(){
-                await gapi.auth2.getAuthInstance().signIn();
-            },
-
-            // Cerrar sesión
-            signOut (){
-                gapi.auth2.getAuthInstance().signOut();
-                isAuthenticated.value = false;
-            },
-
+                const authInstance = gapi.auth2.getAuthInstance();
+                isAuthenticated.value = authInstance.isSignedIn.get();
+                authInstance.isSignedIn.listen((status) => {
+                    isAuthenticated.value = status;
+                });
+            });
         },
-        created(){
-            this.initialize();
+        // Iniciar sesión con Google
+        async signIn() {
+            await gapi.auth2.getAuthInstance().signIn();
         },
-        computed : {
-            alumno(){
-                return this.matriculaSelected.apellido + " , " + this.matriculaSelected.nombre;
-            }
+        // Cerrar sesión
+        signOut() {
+            gapi.auth2.getAuthInstance().signOut();
+            isAuthenticated.value = false;
         },
-        mounted(){
-
-
+    },
+    created() {
+        this.initialize();
+    },
+    computed: {
+        alumno() {
+            return this.matriculaSelected.apellido + " , " + this.matriculaSelected.nombre;
         }
-    }
+    },
+    mounted() {
+    },
+    components: { TemplateHdr }
+}
 
 </script>
 
