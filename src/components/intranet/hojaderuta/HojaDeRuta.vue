@@ -65,7 +65,7 @@
                                                     label="Condición"
                                                     :items="opEstados"
                                                     item-title="tag"
-                                                    item-value ="id"
+                                                    item-value ="tag"
                                                     v-model="matriculaEdited.tl_condicion"
                                                     required
                                                 ></v-select>
@@ -94,7 +94,7 @@
                                                     label="Responsable"
                                                     :items="blResponsables"
                                                     item-title="nombre"
-                                                    item-value ="id"
+                                                    item-value ="cursoid"
                                                     v-model="matriculaEdited.bl_responsable"
                                                     required
                                                 ></v-select>
@@ -105,7 +105,7 @@
                                                     label="Condición"
                                                     :items="opEstados"
                                                     item-title="tag"
-                                                    item-value ="id"
+                                                    item-value ="tag"
                                                     v-model="matriculaEdited.bl_condicion"
                                                     required
                                                 ></v-select>
@@ -133,7 +133,7 @@
                                                     label="Responsable"
                                                     :items="cpResponsables"
                                                     item-title="nombre"
-                                                    item-value ="id"
+                                                    item-value ="cursoid"
                                                     v-model="matriculaEdited.coop_responsable"
                                                     required
                                                 ></v-select>
@@ -144,7 +144,7 @@
                                                     label="Condición"
                                                     :items="opEstados"
                                                     item-title="tag"
-                                                    item-value ="id"
+                                                    item-value ="tag"
                                                     v-model="matriculaEdited.coop_condicion"
                                                     required
                                                 ></v-select>
@@ -176,7 +176,7 @@
                                                     label="Responsable"
                                                     :items="intResponsables"
                                                     item-title="nombre"
-                                                    item-value ="id"
+                                                    item-value ="cursoid"
                                                     v-model="matriculaEdited.int_responsable"
                                                     required
                                                 ></v-select>
@@ -187,7 +187,7 @@
                                                     label="Condición"
                                                     :items="opEstados"
                                                     item-title="tag"
-                                                    item-value ="id"
+                                                    item-value ="tag"
                                                     v-model="matriculaEdited.int_condicion"
                                                     required
                                                 ></v-select>
@@ -203,13 +203,13 @@
                                 </v-card>
                             </v-dialog>
 
-                            <v-dialog v-model="dialogHdr" max-width="1096px">
+                            <v-dialog v-model="dialogHdr" max-width="1900px">
                                 <v-card>
-                                    <v-card-title class="text-h5">
+                                    <v-card-title class="text-h5 text-center">
                                         Hoja de Ruta
                                     </v-card-title>
                                     <v-card-text>
-                                        <TemplateHdr></TemplateHdr>
+                                        <TemplateHdr ref="cardRef" :matricula="matriculaEdited" :ciclo="ciclo"></TemplateHdr>
                                     </v-card-text>
                                     <v-card-actions>
                                         <v-spacer></v-spacer>
@@ -279,10 +279,9 @@
     import { jsPDF } from "jspdf";
     import html2canvas from 'html2canvas';
 
-    import { templateHdr } from '@/components/intranet/hojaderuta/TemplateHdr.vue';
-
     import plantillaHTML from '@/assets/plantillas/hdr.html?raw';
-import TemplateHdr from './TemplateHdr.vue';
+    
+    import TemplateHdr from './TemplateHdr.vue';
 
     const vEstados = [{id:1,tag:"COMPLETO",key:"CO"},{id:2,tag:"PENDIENTE",key:"PE"},{id:3,tag:"NO CORRESPONDE",key:"NC"}];
 
@@ -303,6 +302,9 @@ import TemplateHdr from './TemplateHdr.vue';
                         ];
 
     export default {
+    components:{
+        TemplateHdr
+    },
     data() {
         return {
             cursos: "",
@@ -326,6 +328,7 @@ import TemplateHdr from './TemplateHdr.vue';
             matriculaSelected: {},
             editedIndex: 0,
             matriculaEdited: {},
+            ciclo:'',
             headers: [
                 { title: "Id", align: "start", sortable: false, key: "id" },
                 { title: "Curso", align: "center", sortable: false, key: "curidhex" },
@@ -412,7 +415,6 @@ import TemplateHdr from './TemplateHdr.vue';
             }
         },
         onChange(value) {
-            //
             console.log(value);
         },
         emitManualChange() {
@@ -560,81 +562,34 @@ import TemplateHdr from './TemplateHdr.vue';
         closeInternado() {
             this.dialogInternado = false;
         },
-        showHojaDeRuta(item) {
+        async showHojaDeRuta(item) {
             console.log("Show Dialogo Hoja De Ruta");
             let matricula = this.matriculas.find(x => x.matriculaid === item.matriculaid);
             this.matriculaSelected = this.matriculas.findIndex(x => x.matriculaid === item.matriculaid);
-            this.matriculaEdited = { ...matricula };
+            this.matriculaEdited = { ...item };
+            console.log(this.matriculaEdited);
+            this.ciclo = (this.matriculaEdited.Año <4)? "Primer Ciclo":"Segundo Ciclo";
             this.dialogHdr = true;
         },
         closeHdr() {
             this.dialogHdr = false;
         },
-        printHdr(item) {
-            this.generarHtmlDatos(item);
+        printHdr() {
+            const content = this.$refs.cardRef.$el.innerHTML
+            const printWindow = window.open('', '', 'width=1900,height=960')
+            printWindow.document.write(`
+                <html>
+                <head>
+                    <title>Impresión</title>
+                </head>
+                <body onload="window.print(); window.close();">
+                    ${content}
+                </body>
+                </html>
+            `)
+            printWindow.document.close()
         },
-        generarHtmlDatos(item) {
-            console.log("generarHtmlDatos:");
-            // console.log(this.HTML_template);
-            let templateHDR = this.HTML_template;
-            var fecha = new Date();
-            templateHDR = templateHDR.replace(`{{APELLIDO}}`, item.apellido)
-                .replace(`{{NOMBRES}}`, item.nombre)
-                .replace(`{{CURSO}}`, item.Curso)
-                .replace(`{{CONDICION}}`, "Regular")
-                .replace(`{{CICLO}}`, (item.Año < 4) ? "Primer Ciclo" : "Segundo Ciclo")
-                .replace(`{{ESPECIALIDAD}}`, item.plan_estudio)
-                .replace(`{{COOP_E}}`, item.coop_condicion)
-                .replace(`{{COOP_C}}`, item.coop_cuotas)
-                .replace(`{{COOP_R}}`, item.coop_responsable)
-                .replace(`{{TL_E}}`, item.tl_condicion)
-                .replace(`{{TL_R}}`, item.tl_responsable)
-                .replace(`{{INT_E}}`, item.int_condicion)
-                .replace(`{{INT_R}}`, item.int_responsable)
-                .replace(`{{BIBLIO_E}}`, item.bl_condicion)
-                .replace(`{{BIBLIO_R}}`, item.bl_responsable)
-                .replace(`{{FECHA}}`, item.fecha)
-                .replace(`{{DIA}}`, fecha.getDate())
-                .replace(`{{MES}}`, fecha.getMonth() + 1)
-                .replace(`{{ANIO}}`, fecha.getFullYear());
-            // ... y así sucesivamente ...
-            // console.log(templateHTML);
-            this.generatePDF(templateHDR);
-            /*
-              let matricula  = this.matriculas.find(x => x.matriculaid === item.matriculaid );
-              this.matriculaSelected = this.matriculas.findIndex(x => x.matriculaid === item.matriculaid );
-              this.matriculaEdited = {...matricula};
-
-              console.log(this.plantillaHTML);
-            */
-        },
-        async generatePDF(contenido) {
-            // console.log(contenido);
-            let doc = document.implementation.createHTMLDocument("New Document");
-            const tempDiv = doc.createElement("div");
-            tempDiv.innerHTML = contenido;
-            document.body.appendChild(tempDiv);
-            console.log(tempDiv);
-            html2canvas(tempDiv, {
-                foreignObjectRendering: true,
-                width: 800,
-                height: 600,
-            }).then(canvas => {
-                // ... (código para generar el PDF)
-                const pdf = new jsPDF("l", "mm", "a4");
-                const imgData = canvas.toDataURL("image/png");
-                const imgProps = pdf.getImageProperties(imgData);
-                const pdfWidth = pdf.internal.pageSize.getWidth();
-                const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-                pdf.addImage(imgData, "PNG", 0, 15, pdfWidth, pdfHeight);
-                pdf.save("hdr.pdf");
-                alert("Se ha generado la hoja de ruta");
-                document.body.removeChild(tempDiv); // <--- Eliminar el div temporal después de usarlo
-            }).catch(error => {
-                console.error("Error al generar el PDF:", error);
-                document.body.removeChild(tempDiv); // Asegurarse de eliminarlo incluso si hay error
-            });
-        },
+    
         async cargarDocumento() {
             this.signIn();
             this.initClient();
