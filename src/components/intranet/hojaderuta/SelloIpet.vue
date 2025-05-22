@@ -13,7 +13,7 @@
         max-width: 100px;
         max-height: 150px;
         width:100px;
-        height:150px;
+        height:120px;
     }
 
     .image-container {

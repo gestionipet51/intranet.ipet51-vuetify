@@ -1,7 +1,13 @@
 <template>
-    <div ref="printSection">
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-        <div class="container">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    
+    <div ref="pdfContent">
+        <div class="container pdng-20">
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <h3><strong>Hoja de Ruta</strong></h3>
+            </div>
+        </div>
         <div class="row border1">
 
             <header class="header  text-center">
@@ -39,7 +45,7 @@
 
         <br>
         <br>
-        <table class="table table-bordered border1">
+        <table class="table table-bordered">
             <thead>
                 <th scope="col" class="text-center">V°B° Cooperadora</th>
                 <th scope="col" class="text-center">V°B° Taller-Laboratorio</th>
@@ -121,6 +127,9 @@
 
 <script>
 
+    import html2canvas from 'html2canvas'
+    import jsPDF from 'jspdf'
+
     const titleHeaders = [
         {id:1,tag:"Estudiante"},
         {id:2,tag:"Curso-Comision"},
@@ -149,7 +158,7 @@
                 DIA:'',
                 MES:'',
                 ANIO:'',
-                COND:'Regular',
+                COND:'Regular'
         }),
         created(){
             this.fecha = new Date();
@@ -157,6 +166,30 @@
             this.MES = meses[this.fecha.getMonth()];
             this.ANIO = this.fecha.getFullYear();
         },
+        methods:{
+            async generarPDF(){
+                const element = this.$refs.pdfContent
+
+                const canvas = await html2canvas(element)
+                const imgData = canvas.toDataURL('image/png')
+
+                const pdf = new jsPDF('l', 'mm', 'a4')
+                const pdfWidth = pdf.internal.pageSize.getWidth()
+                const pdfHeight = pdf.internal.pageSize.getHeight()
+
+                const imgProps = pdf.getImageProperties(imgData)
+                const imgWidth = pdfWidth * 0.9 // 90% del ancho A4
+                const imgHeight = (imgProps.height * imgWidth) / imgProps.width
+
+                // Centramos la imagen
+                const x = (pdfWidth - imgWidth) / 2
+                const y = (pdfHeight - imgHeight) / 2
+
+                pdf.addImage(imgData, 'PNG', x, y, imgWidth, imgHeight)
+                const sNombreTemplate =  'HojaDeRuto.pdf' ; // 'HDR-'+ alumno.apellido + '_' + alumno.nombre + '.pdf';
+                pdf.save(sNombreTemplate)
+            }
+        }
         
     }
 </script>
@@ -205,6 +238,9 @@
         
         .pie-firma{
             padding-top: 0px;
+        }
+        .pdng-20{
+            padding-top: 140px;
         }
 
 </style>

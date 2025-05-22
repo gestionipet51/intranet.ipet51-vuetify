@@ -203,13 +203,13 @@
                                 </v-card>
                             </v-dialog>
 
-                            <v-dialog v-model="dialogHdr" max-width="1900px">
+                            <v-dialog v-model="dialogHdr" max-width="1280px">
                                 <v-card>
                                     <v-card-title class="text-h5 text-center">
-                                        Hoja de Ruta
+                                        
                                     </v-card-title>
                                     <v-card-text>
-                                        <TemplateHdr ref="cardRef" :matricula="matriculaEdited" :ciclo="ciclo"></TemplateHdr>
+                                        <TemplateHdr ref="pdfComp" :matricula="matriculaEdited" :ciclo="ciclo"></TemplateHdr>
                                     </v-card-text>
                                     <v-card-actions>
                                         <v-spacer></v-spacer>
@@ -575,19 +575,7 @@
             this.dialogHdr = false;
         },
         printHdr() {
-            const content = this.$refs.cardRef.$el.innerHTML
-            const printWindow = window.open('', '', 'width=1900,height=960')
-            printWindow.document.write(`
-                <html>
-                <head>
-                    <title>Impresión</title>
-                </head>
-                <body onload="window.print(); window.close();">
-                    ${content}
-                </body>
-                </html>
-            `)
-            printWindow.document.close()
+            this.$refs.pdfComp.generarPDF()
         },
     
         async cargarDocumento() {
