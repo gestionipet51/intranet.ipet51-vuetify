@@ -21,6 +21,7 @@
     "papaparse": "^5.4.1",
     "roboto-fontface": "*",
     "vue": "^3.4.0",
+    "vue-html-to-paper": "^2.0.3",
     "vue-router": "^4.3.0",
     "vue3-google-oauth2": "^1.0.7",
     "vue3-google-signin": "^2.1.1",
