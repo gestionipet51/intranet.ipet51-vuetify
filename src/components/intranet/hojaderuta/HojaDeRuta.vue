@@ -575,7 +575,7 @@
             this.dialogHdr = false;
         },
         printHdr() {
-            this.$refs.pdfComp.generarPDF()
+            this.$refs.pdfComp.doPDF()
         },
     
         async cargarDocumento() {

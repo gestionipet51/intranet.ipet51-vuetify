@@ -10,9 +10,9 @@
 
 <style>
     img {
-        max-width: 100px;
+        max-width: 120px;
         max-height: 150px;
-        width:100px;
+        width:120px;
         height:150px;
     }
 
