@@ -203,7 +203,7 @@
                                 </v-card>
                             </v-dialog>
 
-                            <v-dialog v-model="dialogHdr" max-width="1280px">
+                            <v-dialog v-model="dialogHdr" max-width="1320px" max-height="880px">
                                 <v-card>
                                     <v-card-title class="text-h5 text-center">
                                         
@@ -575,7 +575,9 @@
             this.dialogHdr = false;
         },
         printHdr() {
+
             this.$refs.pdfComp.doPDF()
+
         },
     
         async cargarDocumento() {
