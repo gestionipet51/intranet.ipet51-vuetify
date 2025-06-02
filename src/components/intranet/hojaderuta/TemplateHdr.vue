@@ -1,47 +1,23 @@
 <template>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <div id="pdfContent">
-            <div ref="pdfContent" class="report container">
-                <v-container>
-                    <div class="">
-                    <v-row>
+    <div ref="pdfContent">
+            <div id="pdfContent" class="">
+                <v-container class="report container">
+                        <v-row>
                             <v-col cols="12" class="text-center">
                                 <div class="font-title-2"><strong>Hoja de Ruta</strong></div>
                             </v-col>
-                    </v-row>
-                    <br>
-                    <v-row>
+                        </v-row>
+                        <br>
+                        <v-row>
                             <v-col cols="12">
                                     <div class="font-title-1 text-center">Instituto Provincial de Educación Técnica N° 51 "Nicolas Avellaneda"</div>
                             </v-col>
-                    </v-row>
-                    </div>
-                    <br>
-                    <v-row class="text-center">
-                        <v-col cols="12">
-                            <!-- 
-                                <table class="table font-sm">
-                                    <thead>
-                                        <tr class="">
-                                            <th class="">Estudiante</th>
-                                            <th class="">Curso-Division</th>
-                                            <th class="">Condicion</th>
-                                            <th class="">Ciclo</th>
-                                            <th class="">Especialidad</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr class="font-ita">
-                                            <td class="">{{matricula.apellido}},{{matricula.nombre}}</td>
-                                            <td class="">{{matricula.Curso}}</td>
-                                            <td class="">{{COND}}</td>
-                                            <td class="">{{ciclo}}</td>
-                                            <td class="">{{matricula.plan_estudio}}</td>
-                                        </tr>
-                                    </tbody>
-                                </table>  
-                            -->
-                                <v-row>
+                        </v-row>
+                        <br>
+                        <v-row class="text-center">
+                            <v-col cols="12">
+                               <v-row>
                                         <v-col>Estudiante</v-col>
                                         <v-col>Curso-Division</v-col>
                                         <v-col>Condicion</v-col>
@@ -60,55 +36,56 @@
                         </v-row>
                         <v-row class="font-sm text-center">
                             <v-col>
-                                <div class="font-sm">El estudiante entrega todos los elementos a cargo y cancela los compromisos con las siguientes observaciones
+                                <div class="font-sm">
+                                    El estudiante entrega todos los elementos a cargo y cancela los compromisos con las siguientes observaciones
                                 </div>
                             </v-col>
                         </v-row>
-                    <br>
-                    <br>
-                    <v-row>
-                            <v-col cols="12">
-                                <table class="table table-bordered">
-                                    <thead>
-                                        <tr class="">
-                                            <th scope="col" class="text-center">V°B° Cooperadora</th>
-                                            <th scope="col" class="text-center">V°B° Taller-Laboratorio</th>
-                                            <th scope="col" class="text-center">V°B° Internado</th>
-                                            <th scope="col" class="text-center">V°B° Biblioteca</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr class="">
-                                            <td class="text-center">
-                                                {{matricula.coop_condicion}}
-                                                <br>
-                                                Cuotas Pendientes : 
-                                                {{matricula.coop_cuotas}}
-                                                <br>
-                                            </td>
-                                            <td class="text-center">
-                                                {{matricula.tl_condicion}}
-                                            </td>
-                                            <td class="text-center">
-                                                {{matricula.int_condicion}}
-                                            </td>
-                                            <td class="text-center">
-                                                {{matricula.bl_condicion}}
-                                            </td>
-                                        </tr>
-                                        <tr scope="row" class="">
-                                            <td class="text-center">{{matricula.coop_responsable}}</td>
-                                            <td class="text-center">{{matricula.tl_responsable}}</td>
-                                            <td class="text-center">{{matricula.int_responsable}}</td>
-                                            <td class="text-center">{{matricula.bl_responsable}}</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </v-col>
-                    </v-row>
-                    <br>
-                    <br>
-                    <v-row>
+                        <br>
+                        <br>
+                        <v-row>
+                                <v-col cols="12">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr class="">
+                                                <th scope="col" class="text-center">V°B° Cooperadora</th>
+                                                <th scope="col" class="text-center">V°B° Taller-Laboratorio</th>
+                                                <th scope="col" class="text-center">V°B° Internado</th>
+                                                <th scope="col" class="text-center">V°B° Biblioteca</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr class="">
+                                                <td class="text-center">
+                                                    {{matricula.coop_condicion}}
+                                                    <br>
+                                                    Cuotas Pendientes : 
+                                                    {{matricula.coop_cuotas}}
+                                                    <br>
+                                                </td>
+                                                <td class="text-center">
+                                                    {{matricula.tl_condicion}}
+                                                </td>
+                                                <td class="text-center">
+                                                    {{matricula.int_condicion}}
+                                                </td>
+                                                <td class="text-center">
+                                                    {{matricula.bl_condicion}}
+                                                </td>
+                                            </tr>
+                                            <tr scope="row" class="">
+                                                <td class="text-center">{{matricula.coop_responsable}}</td>
+                                                <td class="text-center">{{matricula.tl_responsable}}</td>
+                                                <td class="text-center">{{matricula.int_responsable}}</td>
+                                                <td class="text-center">{{matricula.bl_responsable}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </v-col>
+                        </v-row>
+                        <br>
+                        <br>
+                        <v-row>
                             <v-col cols="5" class="font-xx-sm text-center">
                                 <hr>
                                 Firma Padre/Madre/Tutor
@@ -118,43 +95,43 @@
                                 <hr>
                                 Firma Estudiante
                             </v-col>
-                    </v-row>
-                    <br>
-                    <v-row class="">
-                            <v-col  cols="8" class="font-sm">
-                                <v-container>
-                                    <p>Autoridad Competente</p>
-                                    <br>
-                                    <p>El estudiante ha cancelado los compromisos el dia : <strong>{{fecha.toLocaleDateString('es-AR')}}</strong></p>
-                                    <br>
-                                    <p>Marcos Juarez, <strong>{{DIA}}</strong> de <strong>{{MES}}</strong> de  <strong>{{ANIO}}</strong></p>
-                                </v-container>
+                        </v-row>
+                        <br>
+                        <v-row class="">
+                                <v-col  cols="8" class="font-sm">
+                                    <v-container>
+                                        <p>Autoridad Competente</p>
+                                        <br>
+                                        <p>El estudiante ha cancelado los compromisos el dia : <strong>{{fecha.toLocaleDateString('es-AR')}}</strong></p>
+                                        <br>
+                                        <p>Marcos Juarez, <strong>{{DIA}}</strong> de <strong>{{MES}}</strong> de  <strong>{{ANIO}}</strong></p>
+                                    </v-container>
+                                </v-col>
+                                <v-col cols="4">
+                                    <v-row>
+                                        <v-col cols="4" class="text-center">
+                                            <FirmaIpet></FirmaIpet>
+                                        </v-col>
+                                        <v-col cols="1"></v-col>
+                                        <v-col cols="4" class="text-center">
+                                            <SelloIpet></SelloIpet>
+                                        </v-col>
+                                    </v-row>
+                                    <v-row class="pie-firma text-center font-sm">
+                                        <v-col cols="12">
+                                            Sello y Firma Dirección
+                                        </v-col>
+                                    </v-row>
+                                </v-col>
+                        </v-row>
+                        <br>
+                        <v-row>
+                            <v-col cols="12">
+                                <span class="font-xx-sm">
+                                    <strong>Nota:</strong>La  presente hoja de ruta debe presentarse ante la autoridad escolas con el V°B° de todas las dependencias
+                                </span>
                             </v-col>
-                            <v-col cols="4">
-                                <v-row>
-                                    <v-col cols="4" class="text-center">
-                                        <FirmaIpet></FirmaIpet>
-                                    </v-col>
-                                    <v-col cols="1"></v-col>
-                                    <v-col cols="4" class="text-center">
-                                        <SelloIpet></SelloIpet>
-                                    </v-col>
-                                </v-row>
-                                <v-row class="pie-firma text-center font-sm">
-                                    <v-col cols="12">
-                                        Sello y Firma Dirección
-                                    </v-col>
-                                </v-row>
-                            </v-col>
-                    </v-row>
-                    <br>
-                    <v-row>
-                        <v-col cols="12">
-                            <span class="font-xx-sm">
-                                <strong>Nota:</strong>La  presente hoja de ruta debe presentarse ante la autoridad escolas con el V°B° de todas las dependencias
-                            </span>
-                        </v-col>
-                    </v-row>
+                        </v-row>
                 </v-container>
             </div>
     </div>
@@ -163,7 +140,7 @@
 
 <script>
 
-    import html2canvas from 'html2canvas'
+    // import html2canvas from 'html2canvas'
     import html2pdf from 'html2pdf.js';
 
     import jsPDF from 'jspdf'
@@ -215,23 +192,37 @@
                 const pdfHeight = docPdf.internal.pageSize.getHeight();
 
                 const element = document.getElementById("pdfContent");
-                element.classList.add('pt-80');
-                const canvas = await html2canvas(element);
-                const imgData = canvas.toDataURL('image/png');
+                /*
+                    // element.classList.add('pt-80');
+                    const canvas = await html2canvas(element);
+                    const imgData = canvas.toDataURL('image/png');
 
-                const imgProps = docPdf.getImageProperties(imgData);
-                const imgWidth = pdfWidth * 0.9 ;// 90% del ancho A4
-                const imgHeight = ((imgProps.height * imgWidth) / imgProps.width) ;
+                    const imgProps = docPdf.getImageProperties(imgData);
+                    const imgWidth = pdfWidth * 0.9 ;// 90% del ancho A4
+                    const imgHeight = ((imgProps.height * imgWidth) / imgProps.width) ;
 
-                // Centramos la imagen
-                const x = ((pdfWidth - imgWidth) / 2) ;
-                const y = ((pdfHeight - imgHeight) / 2) + 10 ;
+                    // Centramos la imagen
+                    const x = ((pdfWidth - imgWidth) / 2) ;
+                    const y = ((pdfHeight - imgHeight) / 2) + 10 ;
 
-                docPdf.addImage(imgData, 'PNG', x, y, imgWidth, imgHeight)
-            
-               const sNombreTemplate =  'HojaDeRuta.pdf' ; // 'HDR-'+ alumno.apellido + '_' + alumno.nombre + '.pdf';
-               docPdf.save(sNombreTemplate);
+                    docPdf.addImage(imgData, 'PNG', x, y, imgWidth, imgHeight)
+                
+                const sNombreTemplate =  'HojaDeRuta.pdf' ; // 'HDR-'+ alumno.apellido + '_' + alumno.nombre + '.pdf';
+                docPdf.save(sNombreTemplate);
+               */
 
+               var opts = {
+                margin : 1,
+                filename : 'HojaDeRuta.pdf',
+                image: { type:'jpeg' , quality : 0.90 },
+                html2canvas: { scale: 2, useCORS: true},
+                jsPDF: { unit :'mm',format:'A4',orientation:'landscape'},
+                pagebrak: { mode:['avoid-all','css','legacy']}
+               }
+
+               html2pdf().set(opts).from(element).save();
+
+               html2pdf(element,opt);
             }
             
             /*
@@ -316,9 +307,16 @@
       }
 
       .pt-80{
-        padding-top : 150px; 
+        padding-top : 80px; 
       }
 
+      .pt-120{
+        padding-top:120px;
+      }
+
+      .pt-160{
+        padding-top: 160px;
+      }
 
       .bdr-red-1{
         border:1px solid red;
