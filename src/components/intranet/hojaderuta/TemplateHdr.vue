@@ -43,6 +43,7 @@
                         </v-row>
                         <br>
                         <br>
+                        <br>
                         <v-row>
                                 <v-col cols="12">
                                     <table class="table table-bordered">
@@ -83,6 +84,7 @@
                                     </table>
                                 </v-col>
                         </v-row>
+                        <br>
                         <br>
                         <br>
                         <v-row>
@@ -183,15 +185,14 @@
         },
         methods:{
             
-            async doPDF(){
+            doPDF(){
                 
                 // const element = this.$refs.pdfContent
+                // const docPdf = new jsPDF('l', 'mm', 'a4');
+                // const pdfWidth = docPdf.internal.pageSize.getWidth();
+                // const pdfHeight = docPdf.internal.pageSize.getHeight();
 
-                const docPdf = new jsPDF('l', 'mm', 'a4');
-                const pdfWidth = docPdf.internal.pageSize.getWidth();
-                const pdfHeight = docPdf.internal.pageSize.getHeight();
-
-                const element = document.getElementById("pdfContent");
+                // const element = document.getElementById("pdfContent");
                 /*
                     // element.classList.add('pt-80');
                     const canvas = await html2canvas(element);
@@ -211,21 +212,32 @@
                 docPdf.save(sNombreTemplate);
                */
 
-               var opts = {
-                margin : 1,
-                filename : 'HojaDeRuta.pdf',
-                image: { type:'jpeg' , quality : 0.90 },
-                html2canvas: { scale: 2, useCORS: true},
-                jsPDF: { unit :'mm',format:'A4',orientation:'landscape'},
-                pagebrak: { mode:['avoid-all','css','legacy']}
-               }
+               // var opts = {
+               //  margin : {top:2,right:3,bottom:2,left:3},
+               //  filename : 'HojaDeRuta.pdf',
+               //  image: { type:'jpeg' , quality : 0.90 },
+               //  html2canvas: { scale: 0.2, useCORS: true},
+               //  jsPDF: { unit :'mm',format:'A4',orientation:'landscape'},
+               //  pagebrak: { mode:['avoid-all','css','legacy']}
+               // }
 
-               html2pdf().set(opts).from(element).save();
+               // html2pdf().set(opts).from(element).save();
+               // html2pdf(element,opts);
 
-               html2pdf(element,opt);
+               /**
+                * 
+                docPdf.html(element,{
+                    callback:function(pdf){
+                        pdf.save('HojaDeRuta.pdf')
+                    },
+                    opts
+                    })
+                */
+
+                return this.$refs.pdfContent;
             }
             
-            /*
+            /** 
             doPDF(){
                 const options = {
                     margin:[10,10,10,10],
@@ -323,12 +335,14 @@
       }
 
       .report{
+        /*
         width:100%;
-        padding-top: 0px;
+        padding-top: 50px;
         min-height:100vh;
+        padding: 40px;
+        */
         display:flex;
         flex-direction: column;
         background: #fff;
-        padding: 40px;
       }
 </style>

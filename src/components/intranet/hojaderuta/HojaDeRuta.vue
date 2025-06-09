@@ -574,10 +574,43 @@
         closeHdr() {
             this.dialogHdr = false;
         },
-        printHdr() {
+        async printHdr() {
 
-            this.$refs.pdfComp.doPDF()
+           const contenidoPdf = this.$refs.pdfComp.doPDF();
+           /*
+            const element = document.getElementById('pdfContent');
+           */
+            /*
+                const opt = {
+                        margin: 10 ,
+                        filename:'hdr.pdf',
+                        image: { type:'jpeg',quality:0.98 },
+                        html2canvas: { scale : 2 , dpi : 400 , letterRendering: true },
+                        jsPDF: { unit:'mm',format:'a4',orientation:'landscape'}
+                };
 
+                html2pdf().from(contenidoPdf).set(opt).save();
+            */
+
+            const canvas = await html2canvas(contenidoPdf,{scale:2,userCORS:true}) ; 
+
+            const imgData = canvas.toDataURL('image/png');
+
+            const docPdf = new jsPDF('l','mm','a4')
+
+            const pdfWidth = docPdf.internal.pageSize.getWidth();
+            const pdfHeight = docPdf.internal.pageSize.getHeight();
+
+            const imgProps = docPdf.getImageProperties(imgData);
+            const imgWidth = pdfWidth * 0.9 // 90% del ancho A4
+            const imgHeight = (imgProps.height * imgWidth) / imgProps.width
+
+            const x = (pdfWidth - imgWidth) / 2 
+            const y = ((pdfHeight - imgHeight) / 2) + 40
+
+            docPdf.addImage(imgData,'PNG',x,y,imgWidth,imgHeight)
+
+            docPdf.save('Hdr.pdf')
         },
     
         async cargarDocumento() {
@@ -652,7 +685,10 @@
 </script>
 
 <style scoped>
-
+@page{
+    height: 297mm;
+    width:  210mm;
+}
 .hidden {
     display: none;
 }
