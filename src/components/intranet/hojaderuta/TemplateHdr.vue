@@ -1,8 +1,8 @@
 <template>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <div ref="pdfContent">
-            <div id="pdfContent" class="">
-                <v-container class="report container">
+        <div id="pdfContent" class="">
+                <v-container class="report">
                         <v-row>
                             <v-col cols="12" class="text-center">
                                 <div class="font-title-2"><strong>Hoja de Ruta</strong></div>
@@ -46,7 +46,7 @@
                         <br>
                         <v-row>
                                 <v-col cols="12">
-                                    <table class="table table-bordered">
+                                    <table class="table">
                                         <thead>
                                             <tr class="">
                                                 <th scope="col" class="text-center">V°B° Cooperadora</th>
@@ -56,7 +56,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr class="">
+                                            <tr class="font-sm">
                                                 <td class="text-center">
                                                     {{matricula.coop_condicion}}
                                                     <br>
@@ -74,7 +74,7 @@
                                                     {{matricula.bl_condicion}}
                                                 </td>
                                             </tr>
-                                            <tr scope="row" class="">
+                                            <tr scope="row" class="font-sm">
                                                 <td class="text-center">{{matricula.coop_responsable}}</td>
                                                 <td class="text-center">{{matricula.tl_responsable}}</td>
                                                 <td class="text-center">{{matricula.int_responsable}}</td>
@@ -143,9 +143,8 @@
 <script>
 
     // import html2canvas from 'html2canvas'
-    import html2pdf from 'html2pdf.js';
-
-    import jsPDF from 'jspdf'
+    // import html2pdf from 'html2pdf.js';
+    // import jsPDF from 'jspdf'
 
     const titleHeaders = [
         {id:1,tag:"Estudiante"},

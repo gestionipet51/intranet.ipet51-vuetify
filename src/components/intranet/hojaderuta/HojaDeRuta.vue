@@ -209,7 +209,8 @@
                                         
                                     </v-card-title>
                                     <v-card-text>
-                                        <TemplateHdr ref="pdfComp" :matricula="matriculaEdited" :ciclo="ciclo"></TemplateHdr>
+                                        <TemplateHdr ref="pdfComp" :matricula="matriculaEdited" :ciclo="ciclo">
+                                        </TemplateHdr>
                                     </v-card-text>
                                     <v-card-actions>
                                         <v-spacer></v-spacer>
@@ -261,7 +262,6 @@
                 </v-data-table>
             </v-row>
     </v-container>
-
 </template>
 
 
@@ -277,7 +277,9 @@
     import { ref, onMounted } from "vue";
     import html2pdf from "html2pdf.js";
     import { jsPDF } from "jspdf";
+
     import html2canvas from 'html2canvas';
+    // import "@/assets/SASS/index.sass"
 
     import plantillaHTML from '@/assets/plantillas/hdr.html?raw';
     
@@ -576,7 +578,7 @@
         },
         async printHdr() {
 
-           const contenidoPdf = this.$refs.pdfComp.doPDF();
+           const hdrPdf = this.$refs.pdfComp.doPDF();
            /*
             const element = document.getElementById('pdfContent');
            */
@@ -592,9 +594,9 @@
                 html2pdf().from(contenidoPdf).set(opt).save();
             */
 
-            const canvas = await html2canvas(contenidoPdf,{scale:2,userCORS:true}) ; 
+            const canvas = await html2canvas(hdrPdf,{allowTaint:true }) ; 
 
-            const imgData = canvas.toDataURL('image/png');
+            const imgData = canvas.toDataURL('image/jpg',1.0);
 
             const docPdf = new jsPDF('l','mm','a4')
 
@@ -603,12 +605,14 @@
 
             const imgProps = docPdf.getImageProperties(imgData);
             const imgWidth = pdfWidth * 0.9 // 90% del ancho A4
-            const imgHeight = (imgProps.height * imgWidth) / imgProps.width
+            const imgHeight = ((imgProps.height * imgWidth) / imgProps.width) ;
 
-            const x = (pdfWidth - imgWidth) / 2 
-            const y = ((pdfHeight - imgHeight) / 2) + 40
 
-            docPdf.addImage(imgData,'PNG',x,y,imgWidth,imgHeight)
+            const x = (pdfWidth - imgWidth) / 2 ;
+            const y = ((pdfHeight - imgHeight) / 2) ;
+
+            // docPdf.line(0, y , pdfWidth, y );
+            docPdf.addImage(imgData,'PNG',x,y,imgWidth,imgHeight )
 
             docPdf.save('Hdr.pdf')
         },
@@ -691,5 +695,9 @@
 }
 .hidden {
     display: none;
+}
+
+.pt-160{
+    padding-top: 160px;
 }
 </style>
