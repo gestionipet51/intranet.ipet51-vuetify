@@ -203,19 +203,21 @@
                                 </v-card>
                             </v-dialog>
 
-                            <v-dialog v-model="dialogHdr" max-width="1320px" max-height="880px">
+                            <v-dialog v-model="dialogHdr" max-width="1320px" max-height="980px">
                                 <v-card>
                                     <v-card-title class="text-h5 text-center">
                                         
                                     </v-card-title>
                                     <v-card-text>
-                                        <TemplateHdr ref="pdfComp" :matricula="matriculaEdited" :ciclo="ciclo">
-                                        </TemplateHdr>
+                                        <div ref="pdfComp" id="templatePdf">
+                                            <TemplateHdr :matricula="matriculaEdited" :ciclo="ciclo">
+                                            </TemplateHdr>
+                                        </div>
                                     </v-card-text>
                                     <v-card-actions>
                                         <v-spacer></v-spacer>
                                                 <v-btn color="red-accent-4" variant="text" @click="closeHdr" icon="mdi-close-circle-outline"></v-btn>
-                                                <v-btn color="blue-darken-4" variant="text" @click="printHdr" icon="mdi-printer-outline"></v-btn>
+                                                <v-btn color="blue-darken-4" variant="text" @click="doPdf" icon="mdi-printer-outline"></v-btn>
                                             <v-spacer></v-spacer>
                                     </v-card-actions>
                                 </v-card>
@@ -260,6 +262,12 @@
                         </v-icon>
                     </template>
                 </v-data-table>
+            </v-row>
+            <v-spacer></v-spacer>
+            <v-row>
+                <div id="printPdf">
+
+                </div>
             </v-row>
     </v-container>
 </template>
@@ -348,6 +356,7 @@
             ],
             HTML_template: "",
             userData: null,
+            imprimible:''
         };
     },
     methods: {
@@ -578,7 +587,10 @@
         },
         async printHdr() {
 
-           const hdrPdf = this.$refs.pdfComp.doPDF();
+           const hdrPdf = this.$refs.pdfComp;
+
+           // const imprimible = document.getElementById('printPdf')
+           // imprimible.appendChild(hdrPdf)
            /*
             const element = document.getElementById('pdfContent');
            */
@@ -617,6 +629,52 @@
             docPdf.save('Hdr.pdf')
         },
     
+        doPdf(){
+            const pdfDoc = new jsPDF('l','mm','A4');
+
+            // pdfDoc.text("Hoja de Ruta",130,20);
+            // pdfDoc.text("Instituto Provincial de Educación Técnica N° 51 'Nicolas Avellaneda'", 60, 30);
+
+            // const source = document.getElementById('#templatePdf');
+            const hdrPdf = this.$refs.pdfComp;
+            console.log(hdrPdf); 
+            /*
+            specialElementHandlers = {
+                    // element with id of "bypass" - jQuery style selector
+                    '#bypassme': function(element, renderer){
+                        // true = "handled elsewhere, bypass text extraction"
+                        return true
+                    }
+                }
+
+                margins = {
+                    top: 80,
+                    bottom: 60,
+                    left: 40,
+                    width: 522
+                };
+                // all coords and widths are in jsPDF instance's declared units
+                // 'inches' in this case
+                pdfDoc.fromHTML(
+                    source // HTML string or DOM elem ref.
+                    , margins.left // x coord
+                    , margins.top // y coord
+                    , {
+                        'width': margins.width // max width of content on PDF
+                        , 'elementHandlers': specialElementHandlers
+                    },
+                    function (dispose) {
+                    // dispose: object with X, Y of the last line add to the PDF
+                    //          this allow the insertion of new lines after html
+                        pdfDoc.save('Demo.pdf');
+                    },
+                    margins
+                )
+                */
+
+            // pdfDoc.save("Demo.pdf");
+
+        },
         async cargarDocumento() {
             this.signIn();
             this.initClient();

@@ -1,5 +1,4 @@
 <template>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <div ref="pdfContent">
         <div id="pdfContent" class="">
                 <v-container class="report">
@@ -46,6 +45,7 @@
                         <br>
                         <v-row>
                                 <v-col cols="12">
+                                    <!-- 
                                     <table class="table">
                                         <thead>
                                             <tr class="">
@@ -82,8 +82,56 @@
                                             </tr>
                                         </tbody>
                                     </table>
+                                    -->
+
+                                    <v-table>
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-center">V°B° Cooperadora</th>
+                                                    <th class="text-center">V°B° Taller-Laboratorio</th>
+                                                    <th class="text-center">V°B° Internado</th>
+                                                    <th class="text-center">V°B° Biblioteca</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td class="text-center">
+                                                        {{matricula.coop_condicion}}
+                                                        <br>
+                                                        Cuotas Pendientes : 
+                                                        {{matricula.coop_cuotas}}
+                                                        <br>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        {{matricula.tl_condicion}}
+                                                    </td>
+                                                    <td class="text-center">
+                                                        {{matricula.int_condicion}}
+                                                    </td>
+                                                    <td class="text-center">
+                                                        {{matricula.bl_condicion}}
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="text-center">
+                                                        {{matricula.coop_responsable}}
+                                                    </td>
+                                                    <td class="text-center">
+                                                        {{matricula.tl_responsable}}
+                                                    </td>
+                                                    <td class="text-center">
+                                                        {{matricula.int_responsable}}
+                                                    </td>
+                                                    <td class="text-center">
+                                                        {{matricula.bl_responsable}}
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                    </v-table>
                                 </v-col>
                         </v-row>
+                        
+                        <br>
                         <br>
                         <br>
                         <br>
@@ -233,7 +281,7 @@
                     })
                 */
 
-                return this.$refs.pdfContent;
+                return this.$refs.pdfContent.innerHTML;
             }
             
             /** 
@@ -344,4 +392,6 @@
         flex-direction: column;
         background: #fff;
       }
+
+
 </style>
