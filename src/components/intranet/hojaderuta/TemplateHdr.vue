@@ -45,7 +45,7 @@
                         <br>
                         <v-row>
                                 <v-col cols="12">
-                                    <!-- 
+                                <!-- 
                                     <table class="table">
                                         <thead>
                                             <tr class="">
@@ -82,7 +82,7 @@
                                             </tr>
                                         </tbody>
                                     </table>
-                                    -->
+                                -->
 
                                     <v-table>
                                             <thead>
@@ -394,4 +394,8 @@
       }
 
 
+      .hdr{
+        height: 900px;
+        width: 1300px;
+      }
 </style>

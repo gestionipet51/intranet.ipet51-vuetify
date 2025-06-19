@@ -631,48 +631,47 @@
     
         doPdf(){
             const pdfDoc = new jsPDF('l','mm','A4');
+            pdfDoc.setFont("helvetica", "bold");
+            pdfDoc.text("Hoja de Ruta",130,20);
+            pdfDoc.setFont("helvetica", "normal");
+            pdfDoc.text("Instituto Provincial de Educación Técnica N° 51 \"Nicolas Avellaneda\" ", 60, 30);
 
-            // pdfDoc.text("Hoja de Ruta",130,20);
-            // pdfDoc.text("Instituto Provincial de Educación Técnica N° 51 'Nicolas Avellaneda'", 60, 30);
+            pdfDoc.setFont("helvetica", "bold");
+            pdfDoc.setFontSize(10);
+            pdfDoc.text("Estudiante",30,50);
+            pdfDoc.text("Curso-Division",90,50);
+            pdfDoc.text("Condición",140,50);
+            pdfDoc.text("Ciclo",180,50);
+            pdfDoc.text("Especialidad",230,50);
+            pdfDoc.line(10, 52, 280, 52); 
+            pdfDoc.setFont("helvetica", "italic");
+            pdfDoc.setFontSize(8);
+            pdfDoc.text(this.matriculaEdited.apellido + "," + this.matriculaEdited.nombre,40,56,null,null,"center");
+            pdfDoc.text(this.matriculaEdited.Curso ,100,56,null,null,"center");
+            pdfDoc.text(this.ciclo,185,56,null,null,"center");
+            pdfDoc.text("Regular",148,56,null,null,"center");
+            pdfDoc.text(this.matriculaEdited.plan_estudio,240,56,null,null,"center");
+            pdfDoc.setFontSize(6);
+            pdfDoc.text("El estudiante entrega todos los elementos a cargo y cancela los compromisos con las siguientes observaciones",140,65,null,null,"center");
+            pdfDoc.setFontSize(10);
+            pdfDoc.setFont("helvetica", "bold");
+            pdfDoc.text("V°B° Cooperadora",30,80);
+            pdfDoc.text("V°B° Taller-Laboratorio",90,80);
+            pdfDoc.text("V°B° Internado",160,80);
+            pdfDoc.text("V°B° Biblioteca",220,80);
+            pdfDoc.setFont("helvetica", "normal");
+            pdfDoc.line(22, 82, 260, 82);
+            pdfDoc.text(this.matriculaEdited.coop_condicion,35,88);
+            pdfDoc.text("Cuotas Pendientes:" + this.matriculaEdited.coop_cuotas ,28,95);
 
-            // const source = document.getElementById('#templatePdf');
-            const hdrPdf = this.$refs.pdfComp;
-            console.log(hdrPdf); 
-            /*
-            specialElementHandlers = {
-                    // element with id of "bypass" - jQuery style selector
-                    '#bypassme': function(element, renderer){
-                        // true = "handled elsewhere, bypass text extraction"
-                        return true
-                    }
-                }
+            pdfDoc.text(this.matriculaEdited.tl_condicion,92,88);
+            pdfDoc.text(this.matriculaEdited.int_condicion,162,88);
+            pdfDoc.text(this.matriculaEdited.bl_condicion,222,88);
 
-                margins = {
-                    top: 80,
-                    bottom: 60,
-                    left: 40,
-                    width: 522
-                };
-                // all coords and widths are in jsPDF instance's declared units
-                // 'inches' in this case
-                pdfDoc.fromHTML(
-                    source // HTML string or DOM elem ref.
-                    , margins.left // x coord
-                    , margins.top // y coord
-                    , {
-                        'width': margins.width // max width of content on PDF
-                        , 'elementHandlers': specialElementHandlers
-                    },
-                    function (dispose) {
-                    // dispose: object with X, Y of the last line add to the PDF
-                    //          this allow the insertion of new lines after html
-                        pdfDoc.save('Demo.pdf');
-                    },
-                    margins
-                )
-                */
+            pdfDoc.setLineDash([0.5]);
+            pdfDoc.line(22, 98, 260, 98);
 
-            // pdfDoc.save("Demo.pdf");
+            pdfDoc.save("Demo.pdf");
 
         },
         async cargarDocumento() {
