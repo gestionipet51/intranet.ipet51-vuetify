@@ -664,12 +664,23 @@
             pdfDoc.text(this.matriculaEdited.coop_condicion,35,88);
             pdfDoc.text("Cuotas Pendientes:" + this.matriculaEdited.coop_cuotas ,28,95);
 
-            pdfDoc.text(this.matriculaEdited.tl_condicion,92,88);
+            pdfDoc.text(this.matriculaEdited.tl_condicion,96,88);
             pdfDoc.text(this.matriculaEdited.int_condicion,162,88);
             pdfDoc.text(this.matriculaEdited.bl_condicion,222,88);
 
             pdfDoc.setLineDash([0.5]);
             pdfDoc.line(22, 98, 260, 98);
+            pdfDoc.setFont("helvetica", "normal");
+            pdfDoc.setFontSize(8);
+            pdfDoc.text(this.matriculaEdited.coop_responsable,28,104);
+            pdfDoc.text(this.matriculaEdited.tl_responsable,88,104);
+            pdfDoc.text(this.matriculaEdited.int_responsable,158,104);
+            pdfDoc.text(this.matriculaEdited.bl_responsable,218,104);
+
+            pdfDoc.setLineDash([1]);
+            pdfDoc.line(22, 120, 80, 120);
+
+            pdfDoc.line(140, 120, 210, 120);
 
             pdfDoc.save("Demo.pdf");
 
