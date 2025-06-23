@@ -292,9 +292,13 @@
     import plantillaHTML from '@/assets/plantillas/hdr.html?raw';
     
     import TemplateHdr from './TemplateHdr.vue';
+    import firmaIpet from '@/assets/plantillas/images/image1.png'
+    import selloIpet from '@/assets/plantillas/images/image2.png'
+
 
     const vEstados = [{id:1,tag:"COMPLETO",key:"CO"},{id:2,tag:"PENDIENTE",key:"PE"},{id:3,tag:"NO CORRESPONDE",key:"NC"}];
-
+    const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Setiembre", "Octubre", "Noviembre", "Diciembre"];
+   
 
     const vResponsables = [{id:1,grupo:"COOPERADORA",nombre:"PERALTA,FLORENCIA"},
                           {id:2,grupo:"TALLER",nombre:"LAZZARO MATAR,CARLOS"},
@@ -356,7 +360,11 @@
             ],
             HTML_template: "",
             userData: null,
-            imprimible:''
+            imprimible:'',
+            fecha:{},
+            DIA:'',
+            MES:'',
+            ANIO:'',
         };
     },
     methods: {
@@ -677,10 +685,27 @@
             pdfDoc.text(this.matriculaEdited.int_responsable,158,104);
             pdfDoc.text(this.matriculaEdited.bl_responsable,218,104);
 
-            pdfDoc.setLineDash([1]);
-            pdfDoc.line(22, 120, 80, 120);
+            pdfDoc.setLineDash([0]);
+            pdfDoc.line(22, 120, 120, 120);
+            pdfDoc.setFontSize(6);
+            pdfDoc.text("Firma Padre/Madre/Tutor",56,123);
 
-            pdfDoc.line(140, 120, 210, 120);
+            pdfDoc.line(160, 120, 260, 120);
+            pdfDoc.setFontSize(6);
+            pdfDoc.text("Firma Estudiante",196,123);
+
+            pdfDoc.rect(10,138,270,50);
+            pdfDoc.setFontSize(10);
+            pdfDoc.text("Autoridad Competente",12,144);
+            pdfDoc.text("El estudiante ha cancelado los compromisos el dia: " + this.fechaEntrega , 12,162);
+            pdfDoc.text("Marcos Juarez,", 12,182);
+            
+            
+            pdfDoc.setFontSize(6);
+            pdfDoc.addImage(firmaIpet,200,140,40,50)
+            pdfDoc.addImage(selloIpet,240,140,40,50)
+            pdfDoc.text("Sello y Firma",240,186);
+            pdfDoc.text("Nota: la presente hoja de ruta deb presentarse ante la autoridad escolar con el V°B° de todas las dependencias",12,194);
 
             pdfDoc.save("Demo.pdf");
 
@@ -743,10 +768,17 @@
     },
     created() {
         this.initialize();
+        this.fecha = new Date();
+        this.DIA = this.fecha.getDate();
+        this.MES = meses[this.fecha.getMonth()];
+        this.ANIO = this.fecha.getFullYear();
     },
     computed: {
         alumno() {
             return this.matriculaSelected.apellido + " , " + this.matriculaSelected.nombre;
+        },
+        fechaEntrega(){
+            return this.fecha.toLocaleDateString('es-AR');
         }
     },
     mounted() {
