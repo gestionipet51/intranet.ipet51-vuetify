@@ -45,45 +45,6 @@
                         <br>
                         <v-row>
                                 <v-col cols="12">
-                                <!-- 
-                                    <table class="table">
-                                        <thead>
-                                            <tr class="">
-                                                <th scope="col" class="text-center">V°B° Cooperadora</th>
-                                                <th scope="col" class="text-center">V°B° Taller-Laboratorio</th>
-                                                <th scope="col" class="text-center">V°B° Internado</th>
-                                                <th scope="col" class="text-center">V°B° Biblioteca</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr class="font-sm">
-                                                <td class="text-center">
-                                                    {{matricula.coop_condicion}}
-                                                    <br>
-                                                    Cuotas Pendientes : 
-                                                    {{matricula.coop_cuotas}}
-                                                    <br>
-                                                </td>
-                                                <td class="text-center">
-                                                    {{matricula.tl_condicion}}
-                                                </td>
-                                                <td class="text-center">
-                                                    {{matricula.int_condicion}}
-                                                </td>
-                                                <td class="text-center">
-                                                    {{matricula.bl_condicion}}
-                                                </td>
-                                            </tr>
-                                            <tr scope="row" class="font-sm">
-                                                <td class="text-center">{{matricula.coop_responsable}}</td>
-                                                <td class="text-center">{{matricula.tl_responsable}}</td>
-                                                <td class="text-center">{{matricula.int_responsable}}</td>
-                                                <td class="text-center">{{matricula.bl_responsable}}</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                -->
-
                                     <v-table>
                                             <thead>
                                                 <tr>
@@ -189,11 +150,6 @@
 
 
 <script>
-
-    // import html2canvas from 'html2canvas'
-    // import html2pdf from 'html2pdf.js';
-    // import jsPDF from 'jspdf'
-
     const titleHeaders = [
         {id:1,tag:"Estudiante"},
         {id:2,tag:"Curso-Comision"},
@@ -229,76 +185,15 @@
             this.DIA = this.fecha.getDate();
             this.MES = meses[this.fecha.getMonth()];
             this.ANIO = this.fecha.getFullYear();
+
+            console.log(this.matricula);
         },
         methods:{
             
             doPDF(){
-                
-                // const element = this.$refs.pdfContent
-                // const docPdf = new jsPDF('l', 'mm', 'a4');
-                // const pdfWidth = docPdf.internal.pageSize.getWidth();
-                // const pdfHeight = docPdf.internal.pageSize.getHeight();
-
-                // const element = document.getElementById("pdfContent");
-                /*
-                    // element.classList.add('pt-80');
-                    const canvas = await html2canvas(element);
-                    const imgData = canvas.toDataURL('image/png');
-
-                    const imgProps = docPdf.getImageProperties(imgData);
-                    const imgWidth = pdfWidth * 0.9 ;// 90% del ancho A4
-                    const imgHeight = ((imgProps.height * imgWidth) / imgProps.width) ;
-
-                    // Centramos la imagen
-                    const x = ((pdfWidth - imgWidth) / 2) ;
-                    const y = ((pdfHeight - imgHeight) / 2) + 10 ;
-
-                    docPdf.addImage(imgData, 'PNG', x, y, imgWidth, imgHeight)
-                
-                const sNombreTemplate =  'HojaDeRuta.pdf' ; // 'HDR-'+ alumno.apellido + '_' + alumno.nombre + '.pdf';
-                docPdf.save(sNombreTemplate);
-               */
-
-               // var opts = {
-               //  margin : {top:2,right:3,bottom:2,left:3},
-               //  filename : 'HojaDeRuta.pdf',
-               //  image: { type:'jpeg' , quality : 0.90 },
-               //  html2canvas: { scale: 0.2, useCORS: true},
-               //  jsPDF: { unit :'mm',format:'A4',orientation:'landscape'},
-               //  pagebrak: { mode:['avoid-all','css','legacy']}
-               // }
-
-               // html2pdf().set(opts).from(element).save();
-               // html2pdf(element,opts);
-
-               /**
-                * 
-                docPdf.html(element,{
-                    callback:function(pdf){
-                        pdf.save('HojaDeRuta.pdf')
-                    },
-                    opts
-                    })
-                */
-
                 return this.$refs.pdfContent.innerHTML;
             }
-            
-            /** 
-            doPDF(){
-                const options = {
-                    margin:[10,10,10,10],
-                    filename: 'hoja_de_ruta.pdf',
-                    image: { type: 'jpeg', quality:0.98},
-                    html2canvas:{scale: 3 ,logging:true,useCORS:true },
-                    jsPDF : { unit:'mm',format:'A4',orientation:'landscape'}
-                }
-
-                const el = document.getElementById('pdfContent');
-
-                html2pdf().set(options).from(el.innerHTML).save();
-            }
-            */
+        
         }
         
     }
@@ -382,12 +277,6 @@
       }
 
       .report{
-        /*
-        width:100%;
-        padding-top: 50px;
-        min-height:100vh;
-        padding: 40px;
-        */
         display:flex;
         flex-direction: column;
         background: #fff;

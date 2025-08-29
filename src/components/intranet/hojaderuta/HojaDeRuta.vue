@@ -28,10 +28,37 @@
                             @change="onChange">
                     </v-select>
                 </v-col>
-                <v-col cols="1">
-                    <v-btn color="blue-darken-3" @click="emitManualChange" icon ="mdi-folder-search-outline" title="Buscar">
-                    </v-btn>
+                <v-col cols="3">
+                    <v-btn color="blue-darken-3" @click="emitManualChange" icon ="mdi-folder-search-outline" title="Buscar"></v-btn> 
+                    <v-btn color="blue-darken-2" @click="showModalResponsables" icon="mdi mdi-account-group" title="Responsables"></v-btn>
                 </v-col>
+                
+                <v-dialog v-model="dialogResponsables" max-width="600px">
+                        <v-card>
+                            <v-card-title class="text-h5" color="red-accent-4">
+                                Responsables de Dependencias
+                            </v-card-title>
+                            <v-card-text>
+                                <v-select 
+                                        label="Seleccione Dependencia" 
+                                        :items="dependencias" 
+                                        item-title="text"
+                                        item-value="id"
+                                        v-model="idDependenciaSelected"
+                                        @change="changeDependencia"
+                                ></v-select>
+                                <v-data-table :items="responsables"> 
+
+                                </v-data-table>
+                            </v-card-text>
+                            <v-card-actions>
+                                <v-spacer></v-spacer>
+                                    <v-btn color="red-accent-4" variant="text" @click="closeModalResponsables" icon="mdi-close-circle-outline"></v-btn>
+                                     <v-btn color="blue-darken-4" variant="text" @click="saveResponsables" icon="mdi-content-save-settings"></v-btn>
+                                    <v-spacer></v-spacer>
+                                </v-card-actions>
+                        </v-card>
+                </v-dialog>
             </v-row>
 
             <v-row>
@@ -264,11 +291,6 @@
                 </v-data-table>
             </v-row>
             <v-spacer></v-spacer>
-            <v-row>
-                <div id="printPdf">
-
-                </div>
-            </v-row>
     </v-container>
 </template>
 
@@ -300,7 +322,7 @@
     const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Setiembre", "Octubre", "Noviembre", "Diciembre"];
    
 
-    const vResponsables = [{id:1,grupo:"COOPERADORA",nombre:"PERALTA,FLORENCIA"},
+    const vResponsables = [{id:1,grupo:"COOPERADORA",nombre:"GRIGHINI,CAMILA"},
                           {id:2,grupo:"TALLER",nombre:"LAZZARO MATAR,CARLOS"},
                           {id:3,grupo:"TALLER",nombre:"GOROCITO,WALTER"},
                           {id:4,grupo:"TALLER",nombre:"VICENTE,JORGE"},
@@ -365,6 +387,11 @@
             DIA:'',
             MES:'',
             ANIO:'',
+            dialogResponsables:'',
+            responsables: [],
+            dependencias:[{id:1,text:"Cooperadora"},{id:2,text:"Taller"},{id:3,text:"Internado"},{id:4,text:"Biblioteca"}],
+            idDependenciaSelected:"",
+
         };
     },
     methods: {
@@ -568,7 +595,7 @@
             }
             catch (error) {
                 console.log(error);
-                return fa;
+                return false;
             }
         },
         editInternado(item) {
@@ -577,6 +604,7 @@
             this.matriculaSelected = this.matriculas.findIndex(x => x.matriculaid === item.matriculaid);
             this.matriculaEdited = { ...matricula };
             this.dialogInternado = true;
+            console.log(this.matriculaEdited);
         },
         closeInternado() {
             this.dialogInternado = false;
@@ -694,11 +722,11 @@
             pdfDoc.setFontSize(6);
             pdfDoc.text("Firma Estudiante",196,123);
 
-            pdfDoc.rect(10,138,270,50);
+            pdfDoc.rect(10,138,270,52);
             pdfDoc.setFontSize(10);
             pdfDoc.text("Autoridad Competente",12,144);
             pdfDoc.text("El estudiante ha cancelado los compromisos el dia: " + this.fechaEntrega , 12,162);
-            pdfDoc.text("Marcos Juarez,", 12,182);
+            pdfDoc.text("Marcos Juarez , " + this.DIA + " de " + this.MES + " de " + this.ANIO , 12,182);
             
             
             pdfDoc.setFontSize(6);
@@ -707,39 +735,15 @@
             pdfDoc.text("Sello y Firma",240,186);
             pdfDoc.text("Nota: la presente hoja de ruta deb presentarse ante la autoridad escolar con el V°B° de todas las dependencias",12,194);
 
-            pdfDoc.save("Demo.pdf");
+            var pdfName = "HDR_" + this.matriculaEdited.apellido + "_" + this.matriculaEdited.nombre + ".pdf";
+            pdfDoc.save(pdfName);
 
         },
         async cargarDocumento() {
             this.signIn();
             this.initClient();
             this.signOut();
-            /*
-                try {
-                    await loadGapiInsideDOM();
-                    const gapi = window.gapi;
-                    gapi.load("client", async () => {
-                    await gapi.client.init({
-                        apiKey,
-                        discoveryDocs: [
-                                        "https://docs.googleapis.com/$discovery/rest?version=v1",
-                                        ],
-                    });
 
-                    const response = await gapi.client.docs.documents.get({
-                        templateId,
-                    });
-
-                    const textoExtraido = response.result.body.content
-                        .map((block) => block.paragraph?.elements?.map((el) => el.textRun?.content).join("") || "")
-                        .join("\n");
-
-                    contenido.value = textoExtraido;
-                    });
-                } catch (error) {
-                    console.error("Error al cargar el documento:", error);
-                }
-            */
         },
         async initClient() {
             gapi.load("client:auth2", async () => {
@@ -765,6 +769,21 @@
             gapi.auth2.getAuthInstance().signOut();
             isAuthenticated.value = false;
         },
+        showModalResponsables(){
+            this.dialogResponsables = true;
+        },
+        closeModalResponsables(){
+            this.dialogResponsables = false;
+        },
+        saveResponsables(){
+            console.log("Guardar Responsables");
+            this.closeModalResponsables();
+        },
+        changeDependencia(value){
+            this.idDependenciaSelected = value;
+            this.responsables = vResponsables.filter(elem => (elem.grupo == this.idDependenciaSelected))
+            console.log(this.responsables);
+        }
     },
     created() {
         this.initialize();
@@ -789,15 +808,15 @@
 </script>
 
 <style scoped>
-@page{
-    height: 297mm;
-    width:  210mm;
-}
-.hidden {
-    display: none;
-}
+    @page{
+        height: 297mm;
+        width:  210mm;
+    }
+    .hidden {
+        display: none;
+    }
 
-.pt-160{
-    padding-top: 160px;
-}
+    .pt-160{
+        padding-top: 160px;
+    }
 </style>
