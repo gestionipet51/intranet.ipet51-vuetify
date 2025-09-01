@@ -33,22 +33,27 @@
                     <v-btn color="blue-darken-2" @click="showModalResponsables" icon="mdi mdi-account-group" title="Responsables"></v-btn>
                 </v-col>
                 
-                <v-dialog v-model="dialogResponsables" max-width="600px">
+                <v-dialog v-model="dialogDependencias" max-width="800px">
                         <v-card>
                             <v-card-title class="text-h5" color="red-accent-4">
                                 Responsables de Dependencias
                             </v-card-title>
                             <v-card-text>
-                                <v-select 
+                                <!-- v-select 
                                         label="Seleccione Dependencia" 
                                         :items="dependencias" 
                                         item-title="text"
                                         item-value="id"
                                         v-model="idDependenciaSelected"
                                         @change="changeDependencia"
-                                ></v-select>
-                                <v-data-table :items="responsables"> 
-
+                                ></v-select-->
+                                <v-data-table :items="responsables" :headers="headerDeps"> 
+                                    <template v-slot:item.actions="{ item }">
+                                        <div class="d-flex ga-2 justify-end">
+                                        <v-icon color="green-darken-2" icon="mdi-pencil" size="small" @click="edit(item.id)"></v-icon>
+                                        <v-icon color="red-darken-4" icon="mdi-delete" size="small" @click="remove(item.id)"></v-icon>
+                                        </div>
+                                    </template>
                                 </v-data-table>
                             </v-card-text>
                             <v-card-actions>
@@ -337,6 +342,13 @@
                           {id:13,grupo:"INTERNADO",nombre:"LAMBERTUCCI,FRANCISCO"},
                         ];
 
+    const vHeaderDependencias =[
+                { title: "Id Dependencia", align: "start", sortable: false, key: "id" },
+                { title: "Dependencia", align: "center", sortable: false, key: "grupo" },
+                { title: "Responsable", align: "center", sortable: false, key: "nombre" },
+                { title: "Actions", key: "actions", sortable: false },
+            ];
+
     export default {
     components:{
         TemplateHdr
@@ -387,11 +399,11 @@
             DIA:'',
             MES:'',
             ANIO:'',
-            dialogResponsables:'',
+            dialogDependencias:false,
             responsables: [],
             dependencias:[{id:1,text:"Cooperadora"},{id:2,text:"Taller"},{id:3,text:"Internado"},{id:4,text:"Biblioteca"}],
             idDependenciaSelected:"",
-
+            headerDeps:vHeaderDependencias,
         };
     },
     methods: {
@@ -405,6 +417,7 @@
             this.cpResponsables = vResponsables.filter(elem => elem.grupo == "COOPERADORA");
             this.blResponsables = vResponsables.filter(elem => elem.grupo == "BIBLIOTECA");
             this.intResponsables = vResponsables.filter(elem => elem.grupo == "INTERNADO");
+            this.responsables = vResponsables;
             this.HTML_template = plantillaHTML;
             // console.log(this.matriculas);
         },
@@ -770,10 +783,10 @@
             isAuthenticated.value = false;
         },
         showModalResponsables(){
-            this.dialogResponsables = true;
+            this.dialogDependencias = true;
         },
         closeModalResponsables(){
-            this.dialogResponsables = false;
+            this.dialogDependencias = false;
         },
         saveResponsables(){
             console.log("Guardar Responsables");

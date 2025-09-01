@@ -15,6 +15,7 @@ import HojaDeRuta from '@/components/intranet/hojaderuta/HojaDeRuta.vue';
 import Departamentos from "@/components/intranet/departamentos/Departamentos.vue";
 import Docentes from "@/components/intranet/docentes/Docentes.vue";
 import LoadData from "@/components/intranet/loaddata/LoadData.vue";
+import Dependencias from '@/components/intranet/hojaderuta/Dependencias.vue';
 
 
 const routes = [
@@ -34,6 +35,7 @@ const routes = [
     { path:'/intranet/departamentos', component:Departamentos},
     { path:'/intranet/loaddata/index',component:LoadData},
     { path:'/intranet/docentes/index',component:Docentes},
+    { path:'/intranet/hojaderuta/dependencias',component:Dependencias}
 ];
 
 
