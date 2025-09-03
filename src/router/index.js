@@ -8,11 +8,20 @@ import TecnicoAutomotores from "@/components/intranet/especialidades/TecnicoAuto
 import TecnicoMecanico from "@/components/intranet/especialidades/TecnicoMecanico.vue";
 import TecnicoCarpinteria from "@/components/intranet/especialidades/TecnicoCarpinteria.vue";
 import PanelHome from "@/components/PanelHome.vue";
+import Roles from '@/components/intranet/roles/Roles.vue';
+import Catalogos from '@/components/catalogos/Catalogos.vue';
+import DetCatalogos from '@/components/catalogos/DetCatalogos.vue';
+import HojaDeRuta from '@/components/intranet/hojaderuta/HojaDeRuta.vue';
+import Departamentos from "@/components/intranet/departamentos/Departamentos.vue";
+import Docentes from "@/components/intranet/docentes/Docentes.vue";
+import LoadData from "@/components/intranet/loaddata/LoadData.vue";
+import Dependencias from '@/components/intranet/hojaderuta/Dependencias.vue';
 
 
 const routes = [
     { path:'/' , component:Welcome },
     { path:'/panelHome',component:PanelHome },
+    { path:'/intranet/roles',component:Roles},
     { path:'/intranet/login/index' , component:Login },
     { path:'/intranet/cursos/index' , component:Cursos },
     { path:'/intranet/cursos/listar' , component:ListarCursos },
@@ -20,6 +29,13 @@ const routes = [
     { path:'/intranet/especialidades/mecanico',component:TecnicoMecanico },
     { path:'/intranet/especialidades/automotores', component:TecnicoAutomotores },
     { path:'/intranet/especialidades/carpinteria' , component:TecnicoCarpinteria },
+    { path:'/catalogos', component:Catalogos },
+    { path:'/catalogos/detalleCatalogos',component:DetCatalogos},
+    { path:'/intranet/hojaderuta/index',component:HojaDeRuta},
+    { path:'/intranet/departamentos', component:Departamentos},
+    { path:'/intranet/loaddata/index',component:LoadData},
+    { path:'/intranet/docentes/index',component:Docentes},
+    { path:'/intranet/hojaderuta/dependencias',component:Dependencias}
 ];
 
 

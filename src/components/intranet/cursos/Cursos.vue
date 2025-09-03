@@ -56,6 +56,11 @@ const anios = [
 ];
 
 
+const estados = [
+    {id:1,caption:'Activo',key:'AC'},
+    {id:2,caption:'Inactivo',key:'IN'}
+]
+
 const divisiones =  [ {id:1,division:'A'},{id:2,division:'B'},{id:3,division:'C'},{id:4,division:'D'}];
 
 // console.log(myCursos);
@@ -78,7 +83,7 @@ export default {
             dialogDelete:false,
             editedIndex: -1,
             editedCurso:{
-                id:'',
+                cursoid:'',
                 ciclo:'',
                 anio:'',
                 division:'',
@@ -86,12 +91,13 @@ export default {
             },
             ciclos:[],
             cicloSel:{
-                id:'',
+                cursoid:'',
                 key:'',
                 caption:'',
                 description:'',
                 oldkey:''
                 },
+            estados:estados
         }),
         methods:{
             initialize(){
@@ -103,7 +109,9 @@ export default {
                 const querySnapshot = await getDocs(collection(db,"cursos"));
                 this.cursos = querySnapshot.docs
                                     .map(doc => ({ id:doc.id, ...doc.data() }))
-                                    // .sort((a,b) => a.anio.localCompare(b.anio));
+                                    .sort((a,b) => a.anio - b.anio);
+
+                console.log(this.cursos);
                 this.loading = false;
             },
             sendData(){
@@ -141,29 +149,19 @@ export default {
             close () {
                 this.dialog = false;
                 this.$nextTick(() => {
-                    this.editedCurso =  { id:0,ciclo:'',anio:0,division:'',descripcion:''}
+                    this.editedCurso =  { cursoid:0,ciclo:'',anio:0,division:'',descripcion:''}
                     this.editedIndex = -1;
                 })
             },
             closeDelete () {
                 this.dialogDelete = false
                 this.$nextTick(() => {
-                this.editedCurso = Object.assign({}, { id:0,ciclo:'',anio:0,division:'',descripcion:''} )
+                this.editedCurso = Object.assign({}, { cursoid:0,ciclo:'',anio:0,division:'',descripcion:''} )
                 this.editedIndex = -1;
                 })
             },
 
-            async update(){
-                // Update
-                Object.assign(this.cursos[this.editedIndex], this.editedCurso)
-                await updateDoc(doc(db,"cursos",this.selected),this.editedCurso)
-            },
-            async create(){
-                // create
-                this.editedCurso.id = crypto.randomUUID();
-                this.cursos.push(this.editedCurso)
-                await addDoc(collection(db,"cursos"),this.editedCurso);
-            },
+           
             async save () {
 
                 if(this.editedIndex > -1 ){
@@ -173,7 +171,6 @@ export default {
                 }
 
                 this.close();
-
                 await this.fetchCursos();
 
             },
@@ -183,7 +180,25 @@ export default {
                        title: ciclo.caption,
                        value: ciclo.id
                     }
-            }
+            },
+            async update(){
+                // Update
+                
+                try{
+                    Object.assign(this.cursos[this.editedIndex], this.editedCurso)
+                    await updateDoc(doc(db,"cursos",this.selected.id),this.editedCurso)
+
+                }
+                catch(error){
+                    console.log(error);
+                }
+            },
+            async create(){
+                // create
+                this.editedCurso.id = crypto.randomUUID();
+                this.cursos.push(this.editedCurso)
+                await addDoc(collection(db,"cursos"),this.editedCurso);
+            },
 
         },
         computed: {
@@ -204,7 +219,7 @@ export default {
                     }
                 }
                 
-                console.log(this.editedCurso);
+                console.log(this.cicloSel);
             },
         },
         watch: {
@@ -225,7 +240,10 @@ export default {
 <!--   @update:options="loadItems" -->
 <template>
     <v-container>
-        <v-app-bar :elevation="2" title="Cursos" color="deep-purple-darken-4"></v-app-bar>
+        <v-app-bar :elevation="2" color="deep-purple-darken-4">
+            <v-app-bar-nav-icon icon="mdi-file-account-outline"></v-app-bar-nav-icon>
+            <v-toolbar-title>Cursos</v-toolbar-title>
+        </v-app-bar>
         <v-row no-gutters>
           <v-col cols="2"></v-col>
           <v-col cols="6">
@@ -235,83 +253,82 @@ export default {
                 v-model:items-per-page="itemsPerPage"
                 :items-length="totalCursos"
                 :loading="loading"
-                item-value="id"
-              
+                item-value="cursoid"
                 :search="search"
                 :single-select="singleSelect"
                 >
                     <template v-slot:top>
-                    <v-toolbar flat>
-                            <v-toolbar-title>CRUD</v-toolbar-title>
-                            <v-text-field
-                                v-model="search"
-                                label="Buscar"
-                                prepend-inner-icon="mdi-magnify"
-                                variant="outlined"
-                                hide-details
-                                single-line
-                                cols="1"
-                            >
-                            </v-text-field>
-                            <v-divider class="mx-8" inset vertical ></v-divider>
-                            <v-dialog v-model="dialog" max-width="800px">
-                                <template v-slot:activator="{ props }">
-                                    <v-btn class="mb-2" color="primary" variant="elevated" v-bind="props"><v-icon>mdi-plus</v-icon></v-btn>
-                                </template>
-                                <v-card>
-                                    <v-card-title>
-                                            <span class="text-h5"> {{ formTitle }}</span>
-                                    </v-card-title>
-                                    <v-card-text>
-                                        <v-container>
-                                            <v-row>
-                                                <v-col cols="12" md="6" sm="6">
-                                                    <v-text-field v-model="editedCurso.id" label="Curso Id" disabled> </v-text-field>
-                                                </v-col>
-                                            </v-row>
-                                            <v-row>
-                                                <v-col cols="12" md="4" sm="4"> 
-                                                    <v-select v-model="cicloSel.id" label="Seleccione" :items="ciclos" item-title="caption" item-value="id" @change="setCiclo"></v-select>
-                                                    <v-text-field v-model="editedCurso.ciclo" label="Ciclo" v-show="false"></v-text-field> 
-                                                </v-col>
-                                                <v-col cols="12" md="2" sm="4"> 
-                                                    <v-text-field v-model="editedCurso.anio" label="Año"></v-text-field> 
-                                                </v-col>
-                                                <v-col cols="12" md="2" sm="4"> 
-                                                    <v-text-field v-model="editedCurso.division" label="División"></v-text-field> 
-                                                </v-col>
-                                                <v-col cols="12" md="4" sm="4">
-                                                    <v-text-field v-model="editedCurso.descripcion" label="Descripción"></v-text-field>
-                                                </v-col>
-                                            </v-row>
-                                        </v-container>
-                                    </v-card-text>
-                                    <v-card-actions>
-                                        <v-spacer></v-spacer>
-                                        <v-btn color="red-accent-4" variant="text" @click="close" icon="mdi-arrow-u-left-top-bold"></v-btn>
-                                        <v-btn color="green-darken-4" variant="text" @click="save" icon="mdi-content-save-settings"></v-btn>
-                                    </v-card-actions>
-                                </v-card>
-                            </v-dialog>
-
-                            <v-dialog v-model="dialogDelete" max-width="500px">
-                                <v-card color="pink-lighten-4">
-                                    <v-card-title class="text-h6">
-                                        <v-icon color="red-accent-4">mdi-help-circle</v-icon> <span class="red-accent-4">¿Esta seguro de eliminar este curso?</span>
-                                    </v-card-title>
-                                    <v-card-actions>
-                                    <v-spacer></v-spacer>
-                                    <v-btn color="red-accent-4"  variant="text" @click="closeDelete" icon="mdi-close-thick"></v-btn>
-                                    <v-btn color="blue-darken-1" variant="text" @click="confirmDeleteCurso" icon="mdi-content-save"></v-btn>
-                                    <v-spacer></v-spacer>
-                                    </v-card-actions>
-                                </v-card>
+                        <v-toolbar flat>
+                                <v-toolbar-title>CRUD</v-toolbar-title>
+                                <v-text-field
+                                    v-model="search"
+                                    label="Buscar"
+                                    prepend-inner-icon="mdi-magnify"
+                                    variant="outlined"
+                                    hide-details
+                                    single-line
+                                    cols="1"
+                                >
+                                </v-text-field>
+                                <v-divider class="mx-8" inset vertical ></v-divider>
+                                <v-dialog v-model="dialog" max-width="800px">
+                                    <template v-slot:activator="{ props }">
+                                        <v-btn class="mb-2" color="success" variant="elevated" v-bind="props" icon="mdi-plus"></v-btn>
+                                    </template>
+                                    <v-card>
+                                        <v-card-title>
+                                                <span class="text-h5"> {{ formTitle }}</span>
+                                        </v-card-title>
+                                        <v-card-text>
+                                            <v-container>
+                                                <v-row>
+                                                    <v-col cols="12" md="6" sm="6">
+                                                        <v-text-field v-model="editedCurso.id" label="Curso Id" disabled> </v-text-field>
+                                                    </v-col>
+                                                </v-row>
+                                                <v-row>
+                                                    <v-col cols="12" md="4" sm="4"> 
+                                                        <v-select v-model="cicloSel.id" label="Seleccione" :items="ciclos" item-title="caption" item-value="id" @change="setCiclo"></v-select>
+                                                        <v-text-field v-model="editedCurso.ciclo" label="Ciclo" v-show="false"></v-text-field> 
+                                                    </v-col>
+                                                    <v-col cols="12" md="2" sm="4"> 
+                                                        <v-text-field v-model="editedCurso.anio" label="Año"></v-text-field> 
+                                                    </v-col>
+                                                    <v-col cols="12" md="2" sm="4"> 
+                                                        <v-text-field v-model="editedCurso.division" label="División"></v-text-field> 
+                                                    </v-col>
+                                                    <v-col cols="12" md="4" sm="4">
+                                                        <v-text-field v-model="editedCurso.descripcion" label="Descripción"></v-text-field>
+                                                    </v-col>
+                                                </v-row>
+                                            </v-container>
+                                        </v-card-text>
+                                        <v-card-actions>
+                                            <v-spacer></v-spacer>
+                                            <v-btn color="red-accent-4" variant="text" @click="close" icon="mdi-close-thick"></v-btn>
+                                            <v-btn color="green-darken-4" variant="text" @click="save" icon="mdi-content-save-settings"></v-btn>
+                                        </v-card-actions>
+                                    </v-card>
                                 </v-dialog>
-                    </v-toolbar>
+
+                                <v-dialog v-model="dialogDelete" max-width="500px">
+                                    <v-card color="pink-lighten-4">
+                                        <v-card-title class="text-h6">
+                                            <v-icon color="red-accent-4">mdi-help-circle</v-icon> <span class="red-accent-4">¿Esta seguro de eliminar este curso?</span>
+                                        </v-card-title>
+                                        <v-card-actions>
+                                        <v-spacer></v-spacer>
+                                        <v-btn color="red-accent-4"  variant="text" @click="closeDelete" icon="mdi-close-thick"></v-btn>
+                                        <v-btn color="blue-darken-1" variant="text" @click="confirmDeleteCurso" icon="mdi-content-save"></v-btn>
+                                        <v-spacer></v-spacer>
+                                        </v-card-actions>
+                                    </v-card>
+                                    </v-dialog>
+                        </v-toolbar>
                     </template>
                     <template v-slot:item.actions="{ item }">
-                    <v-icon class="me-2" size="small" color="green-darken-4" @click="updateCurso(item)">mdi-pencil </v-icon>
-                    <v-icon class="me-2" size="small" color="red-accent-4"   @click="deleteCurso(item)">mdi-delete </v-icon>
+                        <v-icon class="me-2" size="small" color="orange-darken-4" @click="updateCurso(item)">mdi-pencil </v-icon>
+                        <v-icon class="me-2" size="small" color="red-accent-4"   @click="deleteCurso(item)">mdi-delete </v-icon>
                     </template>
                     <template v-slot:no-data>
                         <v-btn
