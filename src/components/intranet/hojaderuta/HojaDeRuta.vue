@@ -306,15 +306,11 @@
     import { collection ,addDoc,getDocs,doc,deleteDoc,updateDoc, getPersistentCacheIndexManager } from 'firebase/firestore';
 
     import Papa from "papaparse"; // Importar PapaParse para procesar CSV
-    import axios from "axios"; // Axios para enviar datos al backend
+    // import axios from "axios"; // Axios para enviar datos al backend
 
-
-    import { ref, onMounted } from "vue";
-    import html2pdf from "html2pdf.js";
     import { jsPDF } from "jspdf";
 
     import html2canvas from 'html2canvas';
-    // import "@/assets/SASS/index.sass"
 
     import plantillaHTML from '@/assets/plantillas/hdr.html?raw';
     

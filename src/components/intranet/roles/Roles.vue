@@ -36,7 +36,7 @@
                                     <v-btn class="mb-2" color="primary" variant="tonal" v-bind="props" density="comfortable" icon="mdi-plus" size="large"></v-btn>
                                 </template>
                                 <v-card>
-                                    <v-card-title>
+                                    <v-card-title>|
                                             <span class="text-h5"> {{ formTitle }}</span>
                                     </v-card-title>
                                     <v-card-text>
