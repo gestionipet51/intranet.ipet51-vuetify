@@ -5,14 +5,29 @@
                 <v-toolbar flat>
                         <v-icon color="red-accent-4">mdi-playlist-star</v-icon> <span class="red-accent-4">Miembros de la Dependencia</span>
                         <v-divider class="mx-8" inset vertical ></v-divider>
-                        <v-dialog v-model="dlgDeps" max-width="800px">
+                        <v-dialog v-model="modalMiembro" max-width="800px">
                             <template v-slot:activator="{ props }">
                                 <v-btn class="mb-2" color="primary" variant="tonal" v-bind="props" density="comfortable" icon="mdi-plus" size="large"></v-btn>
                             </template>
                             <v-card>
                                 <v-card-title class="text-h6"> <span class="text-h5"> {{ modalTitle }}</span></v-card-title>
                                 <v-card-text>
-
+                                    <v-row>
+                                        <v-col cols="4">
+                                            <v-text-field v-model="miembroDep.id" label="Miembro Id" disabled> </v-text-field>
+                                        </v-col>
+                                    </v-row>
+                                    <v-row>
+                                        <v-col cols="4">
+                                            <v-text-field v-model="miembroDep.apellido" label="Apellido"></v-text-field>
+                                        </v-col>
+                                        <v-col cols="4">
+                                            <v-text-field v-model="miembroDep.nombres" label="Nombres"></v-text-field>
+                                        </v-col>
+                                        <v-col cols="4">
+                                            <v-select v-model="estadoSel.id" label="Seleccione" :items="estados" item-title="caption" item-value="key" @change="setEstado"></v-select>
+                                        </v-col>
+                                    </v-row>
                                 </v-card-text>
                                 <v-card-actions>
                                         <v-spacer></v-spacer>
@@ -40,17 +55,69 @@ const headerItems = [
             {title:'Estado',key:'status',align : 'center'},
             {title:'Acciones',key:'actions',align:'center'},
         ];
+const arrEstados = [
+    {id:1,caption:'Vigente',key:'VI'},
+    {id:2,caption:'No Vigente',key:'NV'}
+];
 
     export default{
-        props:['dependencias'],
+        props:['dependencia'],
         data : () => ({
             headers:headerItems,
             itemsPerPage:5,
             editedIten:-1,
+            modalMiembro:false,
+            idxMiembroSel:-1,
+            dependencia:{},
+            miembros:[],
+            miembroDep:{
+                dependenciaId:'',
+                id:'',
+                apellido:'',
+                nombres:'',
+                estado:''
+            },
+            estados:[],
+            estadoSel:{
+                id:'',
+                caption:'',
+                key:''
+            }
         }),
+        created(){
+            this.init();
+        },
         computed:{
             modalTitle:function(){
-                return (this.editedItem === -1) ? 'Nuevo Miembro' : 'Actualizar Miembro'
+                return (this.idxMiembroSel === -1) ? 'Nuevo Miembro' : 'Actualizar Miembro'
+            },
+            setEstado: function () {
+                this.miembroDep.estado = this.estadoSel.id;
+       
+            },
+        },
+        methods:{
+            init:function(){
+                this.estados = arrEstados;
+                this.dependencia = this.dependencia;
+            },
+            close:function(){
+                this.modalMiembro = false;
+                this.idxMiembroSel = -1;
+            },
+            save:function(){
+                if(this.idxMiembroSel === -1){
+                    this.update();
+                }else{
+                    this.create();
+                }
+            },
+            update:function(){
+
+            },
+            create:function(){
+                this.miembroDep.id = rypto.randomUUID();
+                
             }
         }
     }

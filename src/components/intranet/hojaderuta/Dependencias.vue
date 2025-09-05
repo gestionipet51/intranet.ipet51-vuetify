@@ -46,14 +46,15 @@
                                                         <v-text-field v-model="dependenciaEdit.id" label="Dep Id" disabled> </v-text-field></v-col>
                                                     <v-col cols="4">
                                                         <v-text-field
-                                                        v-model="dependenciaEdit.descripcion"
-                                                        label="Dependencia"
-                                                        variant="outlined"
-                                                        hide-details
-                                                        single-line
-                                                        cols="1"
-                                                >
-                                                </v-text-field></v-col>
+                                                            v-model="dependenciaEdit.descripcion"
+                                                            label="Dependencia"
+                                                            variant="outlined"
+                                                            hide-details
+                                                            single-line
+                                                            cols="1"
+                                                        >
+                                                        </v-text-field>
+                                                    </v-col>
                                                 <v-col>
                                                     <v-text-field cols="2" label ="Clave" v-model="dependenciaEdit.key" variant="outlined" single-line></v-text-field>
                                                 </v-col>
@@ -74,7 +75,7 @@
                         <template v-slot:expanded-row="{ columns, item }">
                             <tr>
                                     <td :colspan="columns.length">
-                                        <MiembrosDep :dependencias="item"></MiembrosDep>
+                                        <MiembrosDep :dependencia="item"></MiembrosDep>
                                     </td>
                                 </tr>
                         </template>
