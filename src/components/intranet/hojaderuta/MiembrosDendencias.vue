@@ -3,18 +3,21 @@
         <v-data-table :headers="headers" :items-per-page="5">
             <template v-slot:top>
                 <v-toolbar flat>
-                        <v-icon color="red-accent-4">mdi-playlist-star</v-icon> <span class="red-accent-4">Miembros de la Dependencia</span>
+                        <v-icon color="orange-accent-4">mdi-account-group</v-icon> <span class="red-accent-4"> Miembros de la Dependencia : {{  dependencia.descripcion }}</span>
                         <v-divider class="mx-8" inset vertical ></v-divider>
                         <v-dialog v-model="modalMiembro" max-width="800px">
                             <template v-slot:activator="{ props }">
-                                <v-btn class="mb-2" color="primary" variant="tonal" v-bind="props" density="comfortable" icon="mdi-plus" size="large"></v-btn>
+                                <v-btn class="mb-2" color="primary" variant="tonal" v-bind="props" density="comfortable" icon="mdi-plus" size="large" @click="showModal('create')"></v-btn>
                             </template>
                             <v-card>
-                                <v-card-title class="text-h6"> <span class="text-h5"> {{ modalTitle }}</span></v-card-title>
+                                <v-card-title class="text-h6"> <span class="text-h5">{{ dependencia.descripcion }} : {{ modalTitle }}</span></v-card-title>
                                 <v-card-text>
                                     <v-row>
-                                        <v-col cols="4">
+                                        <v-col cols="6">
                                             <v-text-field v-model="miembroDep.id" label="Miembro Id" disabled> </v-text-field>
+                                        </v-col>
+                                        <v-col cols="4">
+                                            <v-text-field v-model="miembroDep.dependenciaID" label="Dependencia" disabled></v-text-field>
                                         </v-col>
                                     </v-row>
                                     <v-row>
@@ -71,7 +74,7 @@ const arrEstados = [
             dependencia:{},
             miembros:[],
             miembroDep:{
-                dependenciaId:'',
+                dependenciaID:'',
                 id:'',
                 apellido:'',
                 nombres:'',
@@ -86,6 +89,7 @@ const arrEstados = [
         }),
         created(){
             this.init();
+            this.miembroDep.dependenciaID = this.dependencia.descripcion;
         },
         computed:{
             modalTitle:function(){
@@ -95,11 +99,13 @@ const arrEstados = [
                 this.miembroDep.estado = this.estadoSel.id;
        
             },
+            getDependencia: function(){
+                return this.dependencia.id;
+            }
         },
         methods:{
             init:function(){
                 this.estados = arrEstados;
-                this.dependencia = this.dependencia;
             },
             close:function(){
                 this.modalMiembro = false;
@@ -115,9 +121,18 @@ const arrEstados = [
             update:function(){
 
             },
-            create:function(){
-                this.miembroDep.id = rypto.randomUUID();
+            create:async function(){
+               
+                this.miembros.push(this.miebroDep);
+                await addDoc(collection(db, "miembrosDependencia"), this.miembroDep);
+                console.log(this.miembroDep);
                 
+            },
+            showModal:function(action){
+                this.idxMiembroSel = -1;
+                this.miembroDep.dependencia = this.dependencia.id;
+                console.log("Show Modal:" + action );
+                this.miembroDep.id = crypto.randomUUID();
             }
         }
     }

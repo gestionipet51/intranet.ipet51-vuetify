@@ -19,6 +19,7 @@
                         <template v-slot:top>
                             <v-toolbar flat>
                                 <v-toolbar-title>
+                                        <v-icon color="green-accent-4">mdi-account-box-multiple-outline</v-icon>
                                         Dependencias Isep
                                 </v-toolbar-title>
                                     <v-text-field
@@ -97,7 +98,7 @@
     import { db } from '../../../firebaseConfig';
     import { collection ,addDoc,getDocs,doc,deleteDoc,updateDoc, getPersistentCacheIndexManager } from 'firebase/firestore';
 
-    import MiembrosDep from './DependenciasMiembros.vue';
+    import MiembrosDep from './MiembrosDendencias.vue';
 
     const vDependencias = [{id:1,descripcion:"Biblioteca",key:"BBA"},
                             {id:2,descripcion:"Taller-Laboratorio",key:"TLA"},
