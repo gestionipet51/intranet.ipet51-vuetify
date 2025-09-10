@@ -52,9 +52,9 @@
         { id:"8", caption:"Areas", icon:"mdi-group",class:"",disable:true ,target:"/areas"},
         { id:"9", caption:"Departamentos", icon:"mdi-office-building-outline",class:"",disable:false ,target:"/intranet/departamentos"},
         { id:"10", caption:"Docentes", icon:"mdi-account-group-outline",class:"",disable:false ,target:"/intranet/docentes/index"},
-        { id:"11", caption:"Hoja de Ruta",icon:"mdi-routes",class:"",disable:false,target:"/intranet/hojaderuta/index"},
-        { id:"12", caption:"Subir Datos", icon:"mdi-upload" ,class:"",disable:true,target:"/intranet/loaddata/index"},
-        { id:"13" ,caption:"Dependencias HdR",icon:"mdi-account-multiple",class:"",disable:false,target:"/intranet/hojaderuta/dependencias"},
+        { id:"11" ,caption:"HDR - Dependencias",icon:"mdi-account-multiple",class:"",disable:false,target:"/intranet/hojaderuta/dependencias"},
+        { id:"12", caption:"Hoja de Ruta",icon:"mdi-routes",class:"",disable:false,target:"/intranet/hojaderuta/index"},
+        { id:"13", caption:"Subir Datos", icon:"mdi-upload" ,class:"",disable:true,target:"/intranet/loaddata/index"},
     ];
 
     export default {
