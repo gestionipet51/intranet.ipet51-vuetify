@@ -85,7 +85,7 @@
                                                 <v-select
                                                     label="Responsable"
                                                     :items="tlResponsables"
-                                                    item-title="nombre"
+                                                    item-title="apellido"
                                                     item-value ="cursoid"
                                                     v-model="matriculaEdited.tl_responsable"
                                                     required
@@ -317,6 +317,7 @@
     import TemplateHdr from './TemplateHdr.vue';
     import firmaIpet from '@/assets/plantillas/images/image1.png'
     import selloIpet from '@/assets/plantillas/images/image2.png'
+import Docentes from '../docentes/Docentes.vue';
 
 
     const vEstados = [{id:1,tag:"COMPLETO",key:"CO"},{id:2,tag:"PENDIENTE",key:"PE"},{id:3,tag:"NO CORRESPONDE",key:"NC"}];
@@ -379,9 +380,6 @@
                 { title: "Año", align: "center", sortable: false, key: "Año" },
                 { title: "Division", align: "center", sortable: false, key: "División" },
                 { title: "Curso", align: "center", sortable: true, key: "Curso" },
-                // { title:'Curso Id hex',align:'center',sortable:false,key:'curidhex' ,class:'hidden' },
-                // { title:'Cod.Plan Est.',align:'left',sortable:false,key:'Código Plan de Estudio'},
-                // { title:'Plan Estudio',align:'left',sortable:false,key:'Plan de Estudio'},
                 { title: "Orden", align: "center", sortable: false, key: "orden" },
                 { title: "Nro.Doc.", align: "center", sortable: false, key: "nro_documento" },
                 { title: "Apellido", align: "left", sortable: true, key: "apellido" },
@@ -397,9 +395,11 @@
             ANIO:'',
             dialogDependencias:false,
             responsables: [],
-            dependencias:[{id:1,text:"Cooperadora"},{id:2,text:"Taller"},{id:3,text:"Internado"},{id:4,text:"Biblioteca"}],
+            // dependencias:[{id:1,text:"Cooperadora"},{id:2,text:"Taller"},{id:3,text:"Internado"},{id:4,text:"Biblioteca"}],
             idDependenciaSelected:"",
             headerDeps:vHeaderDependencias,
+            dependencias:[],
+            miembrosdependencias:[],
         };
     },
     methods: {
@@ -408,14 +408,17 @@
             this.loading = true;
             await this.fetchCursos();
             await this.fetchMatriculas();
+            await this.fetchDependencias();
+            await this.fetchMiembrosDependencias();
+
             this.opEstados = vEstados;
-            this.tlResponsables = vResponsables.filter(elem => elem.grupo == "TALLER");
-            this.cpResponsables = vResponsables.filter(elem => elem.grupo == "COOPERADORA");
-            this.blResponsables = vResponsables.filter(elem => elem.grupo == "BIBLIOTECA");
-            this.intResponsables = vResponsables.filter(elem => elem.grupo == "INTERNADO");
             this.responsables = vResponsables;
             this.HTML_template = plantillaHTML;
             // console.log(this.matriculas);
+            this.tlResponsables = this.miembrosdependencias.filter((elem) => (elem.dependenciaID  == (this.dependencias.find(dep => dep.key == "TLA")).id))
+            this.cpResponsables = this.miembrosdependencias.filter((elem) => (elem.dependenciaID  == (this.dependencias.find(dep => dep.key == "COO")).id))
+            this.blResponsables = this.miembrosdependencias.filter((elem) => (elem.dependenciaID  == (this.dependencias.find(dep => dep.key == "BBL")).id))
+            this.intResponsables = this.miembrosdependencias.filter((elem) => (elem.dependenciaID  == (this.dependencias.find(dep => dep.key == "INT")).id))
         },
         fetchCursos: async function () {
             const querySnapshot = await getDocs(collection(db, "cursos"));
@@ -430,6 +433,20 @@
                 .map(doc => ({ id: doc.id, ...doc.data() }))
                 .sort((a, b) => a.matriculaid - b.matriculaid);
             this.loading = false;
+        },
+        fetchDependencias: async function(){
+            const qrySnapshot = await getDocs(collection(db, "dependencias"));
+                        this.dependencias = qrySnapshot.docs
+                            .map(doc => ({ id: doc.id, ...doc.data() }))
+                            .sort((a, b) => a.id - b.id);
+                        this.loading = false;
+        },
+        fetchMiembrosDependencias: async function(){
+            const qrySnapshot = await getDocs(collection(db, "miembrosdependencia"));
+                        this.miembrosdependencias = qrySnapshot.docs
+                            .map(doc => ({ id: doc.id, ...doc.data() }))
+                            .sort((a, b) => a.id - b.id);
+                        this.loading = false;
         },
         cursosProps(item) {
             return {
@@ -792,6 +809,9 @@
             this.idDependenciaSelected = value;
             this.responsables = vResponsables.filter(elem => (elem.grupo == this.idDependenciaSelected))
             console.log(this.responsables);
+        },
+        docente: function (elem){
+            return elem.miembrosdependencias.apellido + " , " +  elem.miembrosdependencias.nombre;
         }
     },
     created() {

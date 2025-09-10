@@ -1,6 +1,6 @@
 <template>
     <v-container>
-        <v-data-table :headers="headers" :items-per-page="5">
+        <v-data-table :headers="headers" :items="miembros" :items-per-page="5">
             <template v-slot:top>
                 <v-toolbar flat>
                         <v-icon color="orange-accent-4">mdi-account-group</v-icon> <span class="red-accent-4"> Miembros de la Dependencia : {{  dependencia.descripcion }}</span>
@@ -16,7 +16,7 @@
                                         <v-col cols="6">
                                             <v-text-field v-model="miembroDep.id" label="Miembro Id" disabled> </v-text-field>
                                         </v-col>
-                                        <v-col cols="4">
+                                        <v-col cols="6">
                                             <v-text-field v-model="miembroDep.dependenciaID" label="Dependencia" disabled></v-text-field>
                                         </v-col>
                                     </v-row>
@@ -52,10 +52,14 @@
 
 <script>
 
+import { db } from '../../../firebaseConfig';
+import { collection ,addDoc,getDocs,doc,deleteDoc,updateDoc, getPersistentCacheIndexManager } from 'firebase/firestore';
+
 const headerItems = [
-            {title:'Id',key:'miembroid',align:'center',class:'d-none'},
-            {title:'Miembro',key:'description', align: 'center'},
-            {title:'Estado',key:'status',align : 'center'},
+            {title:'Id',key:'id',align:'center',class:'d-none'},
+            {title:'Apellido',key:'apellido', align: 'center'},
+            {title:'Nombre',key:'nombres', align: 'center'},
+            {title:'Estado',key:'estado',align : 'center'},
             {title:'Acciones',key:'actions',align:'center'},
         ];
 const arrEstados = [
@@ -71,7 +75,7 @@ const arrEstados = [
             editedIten:-1,
             modalMiembro:false,
             idxMiembroSel:-1,
-            dependencia:{},
+            grupo:{},
             miembros:[],
             miembroDep:{
                 dependenciaID:'',
@@ -89,7 +93,8 @@ const arrEstados = [
         }),
         created(){
             this.init();
-            this.miembroDep.dependenciaID = this.dependencia.descripcion;
+            this.grupo = this.dependencia;
+            this.fetchMiembros();
         },
         computed:{
             modalTitle:function(){
@@ -99,40 +104,48 @@ const arrEstados = [
                 this.miembroDep.estado = this.estadoSel.id;
        
             },
-            getDependencia: function(){
-                return this.dependencia.id;
-            }
+        
         },
         methods:{
             init:function(){
                 this.estados = arrEstados;
             },
+            fetchMiembros:async function(){
+                const querySnapshot = await getDocs(collection(db, "miembrosdependencia"));
+                this.miembros = querySnapshot.docs
+                    .map(doc => ({ id:doc.id, ...doc.data() }));
+
+                // this.miembros = aux_miembros.filter((elem) => {return elem.dependenciaID == dep})
+                this.loading = false;
+            },
             close:function(){
                 this.modalMiembro = false;
                 this.idxMiembroSel = -1;
             },
-            save:function(){
-                if(this.idxMiembroSel === -1){
-                    this.update();
+            save:async function(){
+                if(this.idxMiembroSel > -1){
+                    await this.update();
                 }else{
-                    this.create();
+                    await this.create();
+                    this.close();
                 }
+                this.fetchMiembros(this.miembroDep.dependenciaID);
             },
-            update:function(){
+            update:async function(){
 
             },
             create:async function(){
                
-                this.miembros.push(this.miebroDep);
-                await addDoc(collection(db, "miembrosDependencia"), this.miembroDep);
+                this.miembros.push(this.miembroDep);
+                await addDoc(collection(db, "miembrosdependencia"), this.miembroDep);
                 console.log(this.miembroDep);
                 
             },
             showModal:function(action){
                 this.idxMiembroSel = -1;
-                this.miembroDep.dependencia = this.dependencia.id;
-                console.log("Show Modal:" + action );
                 this.miembroDep.id = crypto.randomUUID();
+                this.miembroDep.dependenciaID = this.grupo.id;
+                // console.log("Show Modal:" + action );
             }
         }
     }
