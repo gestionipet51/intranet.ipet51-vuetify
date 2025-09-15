@@ -20,7 +20,7 @@
                             <v-toolbar flat>
                                 <v-toolbar-title>
                                         <v-icon color="green-accent-4">mdi-account-box-multiple-outline</v-icon>
-                                        Dependencias Isep
+                                        Dependencias Ipet 51
                                 </v-toolbar-title>
                                     <v-text-field
                                         v-model="search"

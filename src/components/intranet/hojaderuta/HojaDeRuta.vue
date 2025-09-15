@@ -30,7 +30,7 @@
                 </v-col>
                 <v-col cols="3">
                     <v-btn color="blue-darken-3" @click="emitManualChange" icon ="mdi-folder-search-outline" title="Buscar"></v-btn> 
-                    <v-btn color="blue-darken-2" @click="showModalResponsables" icon="mdi mdi-account-group" title="Responsables"></v-btn>
+                    <!-- v-btn color="blue-darken-2" @click="showModalResponsables" icon="mdi mdi-account-group" title="Responsables"></v-btn-->
                 </v-col>
                 
                 <v-dialog v-model="dialogDependencias" max-width="800px">
