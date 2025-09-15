@@ -85,7 +85,7 @@
                                                 <v-select
                                                     label="Responsable"
                                                     :items="tlResponsables"
-                                                    item-title="apellido"
+                                                    item-title="docente"
                                                     item-value ="cursoid"
                                                     v-model="matriculaEdited.tl_responsable"
                                                     required
@@ -125,7 +125,7 @@
                                                 <v-select
                                                     label="Responsable"
                                                     :items="blResponsables"
-                                                    item-title="nombre"
+                                                    item-title="docente"
                                                     item-value ="cursoid"
                                                     v-model="matriculaEdited.bl_responsable"
                                                     required
@@ -164,7 +164,7 @@
                                                 <v-select
                                                     label="Responsable"
                                                     :items="cpResponsables"
-                                                    item-title="nombre"
+                                                    item-title="docente"
                                                     item-value ="cursoid"
                                                     v-model="matriculaEdited.coop_responsable"
                                                     required
@@ -207,7 +207,7 @@
                                                 <v-select
                                                     label="Responsable"
                                                     :items="intResponsables"
-                                                    item-title="nombre"
+                                                    item-title="docente"
                                                     item-value ="cursoid"
                                                     v-model="matriculaEdited.int_responsable"
                                                     required
@@ -317,7 +317,7 @@
     import TemplateHdr from './TemplateHdr.vue';
     import firmaIpet from '@/assets/plantillas/images/image1.png'
     import selloIpet from '@/assets/plantillas/images/image2.png'
-import Docentes from '../docentes/Docentes.vue';
+    import Docentes from '../docentes/Docentes.vue';
 
 
     const vEstados = [{id:1,tag:"COMPLETO",key:"CO"},{id:2,tag:"PENDIENTE",key:"PE"},{id:3,tag:"NO CORRESPONDE",key:"NC"}];
@@ -395,7 +395,6 @@ import Docentes from '../docentes/Docentes.vue';
             ANIO:'',
             dialogDependencias:false,
             responsables: [],
-            // dependencias:[{id:1,text:"Cooperadora"},{id:2,text:"Taller"},{id:3,text:"Internado"},{id:4,text:"Biblioteca"}],
             idDependenciaSelected:"",
             headerDeps:vHeaderDependencias,
             dependencias:[],
@@ -415,10 +414,14 @@ import Docentes from '../docentes/Docentes.vue';
             this.responsables = vResponsables;
             this.HTML_template = plantillaHTML;
             // console.log(this.matriculas);
-            this.tlResponsables = this.miembrosdependencias.filter((elem) => (elem.dependenciaID  == (this.dependencias.find(dep => dep.key == "TLA")).id))
-            this.cpResponsables = this.miembrosdependencias.filter((elem) => (elem.dependenciaID  == (this.dependencias.find(dep => dep.key == "COO")).id))
-            this.blResponsables = this.miembrosdependencias.filter((elem) => (elem.dependenciaID  == (this.dependencias.find(dep => dep.key == "BBL")).id))
-            this.intResponsables = this.miembrosdependencias.filter((elem) => (elem.dependenciaID  == (this.dependencias.find(dep => dep.key == "INT")).id))
+            this.tlResponsables = this.miembrosdependencias.filter((elem) => (elem.dependenciaID  == (this.dependencias.find(dep => dep.key == "TLA")).id));
+            this.tlResponsables.forEach(el => { el.docente = el.apellido + "," + el.nombres});
+            this.cpResponsables = this.miembrosdependencias.filter((elem) => (elem.dependenciaID  == (this.dependencias.find(dep => dep.key == "COO")).id));
+            this.cpResponsables.forEach(el => { el.docente = el.apellido + "," + el.nombres});
+            this.blResponsables = this.miembrosdependencias.filter((elem) => (elem.dependenciaID  == (this.dependencias.find(dep => dep.key == "BBL")).id));
+            this.blResponsables.forEach(el => { el.docente = el.apellido + "," + el.nombres});
+            this.intResponsables = this.miembrosdependencias.filter((elem) => (elem.dependenciaID  == (this.dependencias.find(dep => dep.key == "INT")).id));
+            this.intResponsables.forEach(el => { el.docente = el.apellido + "," + el.nombres});
         },
         fetchCursos: async function () {
             const querySnapshot = await getDocs(collection(db, "cursos"));
@@ -827,7 +830,7 @@ import Docentes from '../docentes/Docentes.vue';
         },
         fechaEntrega(){
             return this.fecha.toLocaleDateString('es-AR');
-        }
+        },
     },
     mounted() {
     },
