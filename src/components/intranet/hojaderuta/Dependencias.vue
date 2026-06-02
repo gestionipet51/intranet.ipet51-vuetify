@@ -164,7 +164,6 @@
                     await this.create();
 
                 this.close();
-                await this.fetchDependencias();
             },
             change:function(ev){
                 this.dependenciaEdit.id = ev.value;

@@ -133,7 +133,7 @@ export default {
                         this.editedCurso = Object.assign({}, item)
                         this.dialogDelete = true
                         await deleteDoc(doc(db,"cursos",item.id));
-                        await this.fetchCursos();
+                        this.cursos.splice(this.editedIndex, 1);
             },
 
             cancel(){
@@ -171,7 +171,6 @@ export default {
                 }
 
                 this.close();
-                await this.fetchCursos();
 
             },
 

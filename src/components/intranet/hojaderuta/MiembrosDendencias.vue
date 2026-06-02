@@ -66,7 +66,7 @@
 <script>
 
 import { db } from '../../../firebaseConfig';
-import { collection ,addDoc,getDocs,doc,deleteDoc,updateDoc, getPersistentCacheIndexManager } from 'firebase/firestore';
+import { collection, query, where, addDoc, getDocs, doc, deleteDoc, updateDoc, getPersistentCacheIndexManager } from 'firebase/firestore';
 
 const headerItems = [
             {title:'Id',key:'id',align:'center',class:'d-none'},
@@ -131,11 +131,10 @@ const arrEstados = [{id:1,caption:'Vigente',key:'VI'},
                 this.grupo = this.dependencia;
             },
             fetchMiembros:async function(){
-                const querySnapshot = await getDocs(collection(db, "miembrosdependencia"));
-                const aux_miembros = querySnapshot.docs
+                const miembrosQuery = query(collection(db, "miembrosdependencia"), where("dependenciaID", "==", this.grupo.id));
+                const querySnapshot = await getDocs(miembrosQuery);
+                this.miembros = querySnapshot.docs
                     .map(doc => ({ id:doc.id, ...doc.data() }));
-
-                this.miembros = aux_miembros.filter((elem) => {return elem.dependenciaID == this.grupo.id})
                 this.loading = false;
             },
             close:function(){
@@ -153,12 +152,11 @@ const arrEstados = [{id:1,caption:'Vigente',key:'VI'},
                     await this.create();
                 }
                 this.close();
-                this.fetchMiembros();
             },
             update:async function(){
                 try{
                     Object.assign(this.miembros[this.idxMiembroSel], this.miembroDep)
-                    await updateDoc(doc(db,"miembrosdependencias",this.miembroDep.id),this.miembroDep)
+                    await updateDoc(doc(db,"miembrosdependencia",this.miembroDep.id),this.miembroDep)
 
                 }
                 catch(error){
@@ -170,7 +168,7 @@ const arrEstados = [{id:1,caption:'Vigente',key:'VI'},
                         this.miembroDep = Object.assign({}, item)
                         this.modalDelete = true
                         await deleteDoc(doc(db,"miembrosdependencia",item.id));
-                        await this.fetchMiembros();
+                        this.miembros.splice(this.idxMiembroSel, 1);
             },
             create:async function(){
                

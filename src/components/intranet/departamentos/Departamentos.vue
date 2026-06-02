@@ -154,7 +154,7 @@ export default{
                     await this.create();
                 }
                 this.close();
-                await this.fetchRoles();
+                await this.fetchDeptos();
         },
 
         updateDepto(item){

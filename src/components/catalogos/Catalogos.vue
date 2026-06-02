@@ -184,7 +184,6 @@ export default {
                 await this.create();
             }
             this.close();
-            await this.fetchCatalogos();
         },
         async update() {
             // Update

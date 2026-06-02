@@ -35,12 +35,10 @@
 <script>
 
     import { db } from '../../../firebaseConfig';
-    import { collection ,addDoc,getDocs,doc,deleteDoc,updateDoc, getPersistentCacheIndexManager } from 'firebase/firestore';
+import { collection, writeBatch, doc, getDocs, addDoc, deleteDoc, updateDoc, getPersistentCacheIndexManager } from 'firebase/firestore';
 
-    import Papa from "papaparse"; // Importar PapaParse para procesar CSV
-    import axios from "axios"; // Axios para enviar datos al backend    
-    import { ref } from 'vue';
-
+import Papa from "papaparse"; // Importar PapaParse para procesar CSV
+import axios from "axios"; // Axios para enviar datos al backend
     export default {
         data:()=>{
             return {
@@ -89,19 +87,34 @@
                 }
             },
             async enviarDatos() {
+                if (!this.datosCSV?.length) {
+                    alert("No hay datos para subir.");
+                    return;
+                }
                 try {
-                    // const respuesta = await axios.post("http://localhost:3000/subir-csv", this.datosCSV);
-                    const contador = ref(0) ;
-
-                    this.datosCSV.forEach((elemento) => { 
-                            addDoc(collection(db,"matriculas"),elemento);  
-                            console.log("=>" + contador.value++ );
-                        
-                    }) 
+                    await this.batchImportMatriculas(this.datosCSV);
                     alert("Datos subidos con éxito: " + this.datosCSV.length + " registros");
                 } catch (error) {
                     console.error("Error al subir datos:", error);
-                    alert("Error al subir los datos." );
+                    alert("Error al subir los datos.");
+                }
+            },
+            async batchImportMatriculas(entries) {
+                let batch = writeBatch(db);
+                let counter = 0;
+
+                for (const elemento of entries) {
+                    batch.set(doc(collection(db, "matriculas")), elemento);
+                    counter += 1;
+
+                    if (counter % 250 === 0) {
+                        await batch.commit();
+                        batch = writeBatch(db);
+                    }
+                }
+
+                if (counter % 250 !== 0) {
+                    await batch.commit();
                 }
             },
         },

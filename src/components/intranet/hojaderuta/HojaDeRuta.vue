@@ -303,7 +303,7 @@
 <script>
 
     import { db } from '../../../firebaseConfig';
-    import { collection ,addDoc,getDocs,doc,deleteDoc,updateDoc, getPersistentCacheIndexManager } from 'firebase/firestore';
+    import { collection, addDoc, getDocs, doc, deleteDoc, updateDoc, writeBatch, getPersistentCacheIndexManager } from 'firebase/firestore';
 
     import Papa from "papaparse"; // Importar PapaParse para procesar CSV
     // import axios from "axios"; // Axios para enviar datos al backend
@@ -403,12 +403,14 @@
     },
     methods: {
         async initialize() {
-            // this.ciclos = myCiclos;
             this.loading = true;
-            await this.fetchCursos();
-            await this.fetchMatriculas();
-            await this.fetchDependencias();
-            await this.fetchMiembrosDependencias();
+            await Promise.all([
+                this.fetchCursos(),
+                this.fetchMatriculas(),
+                this.fetchDependencias(),
+                this.fetchMiembrosDependencias(),
+            ]);
+            this.loading = false;
 
             this.opEstados = vEstados;
             this.responsables = vResponsables;
@@ -428,28 +430,24 @@
             this.cursos = querySnapshot.docs
                 .map(doc => ({ id: doc.id, ...doc.data() }))
                 .sort((a, b) => a.anio - b.anio);
-            this.loading = false;
         },
         fetchMatriculas: async function () {
             const qrySnapshot = await getDocs(collection(db, "matriculas"));
             this.matriculas = qrySnapshot.docs
                 .map(doc => ({ id: doc.id, ...doc.data() }))
                 .sort((a, b) => a.matriculaid - b.matriculaid);
-            this.loading = false;
         },
         fetchDependencias: async function(){
             const qrySnapshot = await getDocs(collection(db, "dependencias"));
-                        this.dependencias = qrySnapshot.docs
-                            .map(doc => ({ id: doc.id, ...doc.data() }))
-                            .sort((a, b) => a.id - b.id);
-                        this.loading = false;
+            this.dependencias = qrySnapshot.docs
+                .map(doc => ({ id: doc.id, ...doc.data() }))
+                .sort((a, b) => a.id - b.id);
         },
         fetchMiembrosDependencias: async function(){
             const qrySnapshot = await getDocs(collection(db, "miembrosdependencia"));
-                        this.miembrosdependencias = qrySnapshot.docs
-                            .map(doc => ({ id: doc.id, ...doc.data() }))
-                            .sort((a, b) => a.id - b.id);
-                        this.loading = false;
+            this.miembrosdependencias = qrySnapshot.docs
+                .map(doc => ({ id: doc.id, ...doc.data() }))
+                .sort((a, b) => a.id - b.id);
         },
         cursosProps(item) {
             return {
@@ -475,18 +473,36 @@
                 });
             }
         },
-        enviarDatos() {
+        async enviarDatos() {
+            if (!this.datosCSV?.length) {
+                alert("No hay datos para subir.");
+                return;
+            }
             try {
-                // const respuesta = await axios.post("http://localhost:3000/subir-csv", this.datosCSV);
-                this.datosCSV.forEach((elemento) => {
-                    addDoc(collection(db, "matriculas"), elemento);
-                    console.log("=>" + elemento.idhex);
-                });
-                alert("Datos subidos con éxito: " + respuesta.data.message);
+                await this.batchImportMatriculas(this.datosCSV);
+                alert("Datos subidos con éxito.");
             }
             catch (error) {
                 console.error("Error al subir datos:", error);
                 alert("Error al subir los datos.");
+            }
+        },
+        async batchImportMatriculas(entries) {
+            let batch = writeBatch(db);
+            let counter = 0;
+
+            for (const elemento of entries) {
+                batch.set(doc(collection(db, "matriculas")), elemento);
+                counter += 1;
+
+                if (counter % 250 === 0) {
+                    await batch.commit();
+                    batch = writeBatch(db);
+                }
+            }
+
+            if (counter % 250 !== 0) {
+                await batch.commit();
             }
         },
         onChange(value) {
@@ -514,11 +530,9 @@
                 await this.updateFactory();
             }
             else {
-                // await this.create();
                 console.log("Create");
             }
             this.closeFactory();
-            await this.fetchMatriculas();
         },
         async updateFactory() {
             // Update
@@ -536,15 +550,13 @@
             this.dialogFactory = false;
         },
         async saveLibrary() {
-            if (this.editedIndex > -1) {
+            if (this.matriculaSelected > -1) {
                 await this.updateLibrary();
             }
             else {
-                // await this.create();
                 console.log("Create Library");
             }
             this.closeLibrary();
-            await this.fetchMatriculas();
         },
         editLibrary(item) {
             console.log("Edit Library:");
@@ -569,15 +581,13 @@
             this.dialogLibrary = false;
         },
         async saveCooperadora() {
-            if (this.editedIndex > -1) {
+            if (this.matriculaSelected > -1) {
                 await this.updateCooperadora();
             }
             else {
-                // await this.create();
                 console.log("Create Cooperadora");
             }
             this.closeCooperadora();
-            await this.fetchMatriculas();
         },
         async updateCooperadora() {
             // Update
@@ -605,15 +615,13 @@
             this.dialogCooperadora = false;
         },
         async saveInternado() {
-            if (this.editedIndex > -1) {
+            if (this.matriculaSelected > -1) {
                 await this.updateInternado();
             }
             else {
-                // await this.create();
                 console.log("Create Internado");
             }
             this.closeInternado();
-            await this.fetchMatriculas();
         },
         async updateInternado() {
             // Update

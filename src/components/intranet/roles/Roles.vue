@@ -167,7 +167,6 @@ export default {
                     await this.create();
                 }
                 this.close();
-                await this.fetchRoles();
         },
 
         async fetchRoles (){
