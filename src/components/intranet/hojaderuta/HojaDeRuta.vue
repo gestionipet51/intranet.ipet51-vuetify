@@ -7,15 +7,71 @@
 
             <v-row v-if="loadfile == true ">
 
-                    <v-col cols="6">
-                        <v-file-input  accept=".csv" label="Subir CSV a Firebase" @change="procesarArchivo"></v-file-input>
-                    </v-col>
-                        <v-col cols="3">
-                            <v-btn :disabled="!datosCSV.length" rounded="lg" @click="enviarDatos" color="indigo-darken-3">
-                                Subir Archivo
-                            </v-btn>
-                    </v-col>
+                <v-expansion-panels variant="accordion">
+                    <v-expansion-panel>
+                        <v-expansion-panel-title>
+                            Actualizar Matricula
+                        </v-expansion-panel-title>
+                        <v-expansion-panel-text>
+                            <v-row align="center">
+                                <v-col cols="6" sm="4">
+                                    <v-file-input
+                                        accept=".csv,text/csv"
+                                        label="Seleccionar CSV de matrículas"
+                                        hide-details
+                                        :disabled="reemplazando"
+                                        @change="procesarArchivo">
+                                    </v-file-input>
+                                </v-col>
+                                <v-col cols="6" sm="3" class="d-flex align-center justify-end">
+                                    <v-btn
+                                        :disabled="!datosCSV.length || reemplazando"
+                                        :loading="reemplazando"
+                                        rounded="lg"
+                                        @click="previsualizarReemplazo"
+                                        color="indigo-darken-3">
+                                        Revisar reemplazo
+                                    </v-btn>
+                                </v-col>
+                            </v-row>
+                        </v-expansion-panel-text>
+                    </v-expansion-panel>
+                </v-expansion-panels>
+
+                    
             </v-row>
+
+            <v-alert v-if="errorImportacion" type="error" variant="tonal" class="mb-4">
+                {{ errorImportacion }}
+            </v-alert>
+            <v-alert v-if="mensajeImportacion" type="success" variant="tonal" class="mb-4">
+                {{ mensajeImportacion }}
+            </v-alert>
+
+            <v-dialog v-model="dialogReemplazoMatriculas" max-width="600px" :persistent="reemplazando">
+                <v-card>
+                    <v-card-title class="text-h5">Confirmar reemplazo de matrículas</v-card-title>
+                    <v-card-text v-if="resumenReemplazo">
+                        <p>Se actualizarán {{ resumenReemplazo.actualizadas }} matrículas.</p>
+                        <p>Se agregarán {{ resumenReemplazo.nuevas }} matrículas.</p>
+                        <p>Se eliminarán {{ resumenReemplazo.eliminadas }} registros que no estén en el CSV.</p>
+                        <v-alert type="warning" variant="tonal" class="mt-3">
+                            La colección será reemplazada en una única operación atómica. Se conservará el ID
+                            técnico existente; las nuevas matrículas recibirán uno nuevo. El curso se asignará
+                            según año y división.
+                        </v-alert>
+                    </v-card-text>
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn variant="text" :disabled="reemplazando" @click="dialogReemplazoMatriculas = false">
+                            Cancelar
+                        </v-btn>
+                        <v-btn color="red-darken-2" :loading="reemplazando" @click="confirmarReemplazo">
+                            Confirmar reemplazo
+                        </v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
 
             <v-row>
                 <v-col cols="2"></v-col>
@@ -302,8 +358,9 @@
 
 <script>
 
+    import { markRaw } from "vue";
     import { db } from '../../../firebaseConfig';
-    import { collection, addDoc, getDocs, doc, deleteDoc, updateDoc, writeBatch, getPersistentCacheIndexManager } from 'firebase/firestore';
+    import { collection, addDoc, getDocs, getDocsFromServer, doc, deleteDoc, updateDoc, writeBatch, getPersistentCacheIndexManager } from 'firebase/firestore';
 
     import Papa from "papaparse"; // Importar PapaParse para procesar CSV
     // import axios from "axios"; // Axios para enviar datos al backend
@@ -346,6 +403,33 @@
                 { title: "Actions", key: "actions", sortable: false },
             ];
 
+    const mapeoMatriculas = {
+        id: "matriculaid",
+        "Año": "Año",
+        "División": "División",
+        "Curso": "Curso",
+        "Código Plan de Estudio": "cod_plan_estudio",
+        "Plan de Estudio": "plan_estudio",
+        orden: "orden",
+        "Nro. Documento": "nro_documento",
+        Apellido: "apellido",
+        Nombre: "nombre",
+        "Fecha Nacimiento": "fecha_nacimiento",
+        "Condición Cooperadora": "coop_condicion",
+        Cuotas: "coop_cuotas",
+        "Responsable Cooperadora": "coop_responsable",
+        "Condición Taller Laboratorio": "tl_condicion",
+        "Responsable TL": "tl_responsable",
+        "Condición Bco Libros": "bl_condicion",
+        "Responsable BL": "bl_responsable",
+        "Condición Internado": "int_condicion",
+        "Responsable Internado": "int_responsable",
+        Fecha: "fecha_registro",
+    };
+
+    const normalizarClave = (valor) => String(valor ?? "").trim().toLocaleLowerCase();
+    const claveCurso = (anio, division) => `${normalizarClave(anio)}|${normalizarClave(division)}`;
+
     export default {
     components:{
         TemplateHdr
@@ -365,6 +449,12 @@
             dialogInternado: false,
             dialogHdr: false,
             loadfile: false,
+            dialogReemplazoMatriculas: false,
+            resumenReemplazo: null,
+            reemplazoMatriculas: null,
+            reemplazando: false,
+            errorImportacion: "",
+            mensajeImportacion: "",
             opEstados: [],
             tlResponsables: [],
             cpResponsables: [],
@@ -459,50 +549,227 @@
             };
         },
         procesarArchivo(event) {
-            const archivo = event.target.files[0];
-            if (archivo) {
-                Papa.parse(archivo, {
-                    header: true, // Usa la primera fila como encabezado
-                    complete: (resultados) => {
-                        this.datosCSV = resultados.data; // Guardar los datos procesados
-                        console.log("Datos procesados:", this.datosCSV);
-                    },
-                    error: (error) => {
-                        console.error("Error al procesar el archivo:", error);
+            const archivo = event?.target?.files?.[0] || (Array.isArray(event) ? event[0] : null);
+            this.datosCSV = [];
+            this.resumenReemplazo = null;
+            this.reemplazoMatriculas = null;
+            this.errorImportacion = "";
+            this.mensajeImportacion = "";
+
+            if (!archivo) return;
+
+            Papa.parse(archivo, {
+                header: true,
+                skipEmptyLines: true,
+                transformHeader: (header) => header.trim(),
+                complete: (resultados) => {
+                    if (resultados.errors.length) {
+                        this.errorImportacion = `No se pudo leer el CSV: ${resultados.errors[0].message}`;
+                        console.error("Error al procesar CSV de matrículas:", resultados.errors);
+                        return;
                     }
-                });
-            }
-        },
-        async enviarDatos() {
-            if (!this.datosCSV?.length) {
-                alert("No hay datos para subir.");
-                return;
-            }
-            try {
-                await this.batchImportMatriculas(this.datosCSV);
-                alert("Datos subidos con éxito.");
-            }
-            catch (error) {
-                console.error("Error al subir datos:", error);
-                alert("Error al subir los datos.");
-            }
-        },
-        async batchImportMatriculas(entries) {
-            let batch = writeBatch(db);
-            let counter = 0;
-
-            for (const elemento of entries) {
-                batch.set(doc(collection(db, "matriculas")), elemento);
-                counter += 1;
-
-                if (counter % 250 === 0) {
-                    await batch.commit();
-                    batch = writeBatch(db);
+                    this.datosCSV = resultados.data.filter((fila) =>
+                        Object.values(fila).some((valor) => String(valor ?? "").trim() !== "")
+                    );
+                    if (!this.datosCSV.length) {
+                        this.errorImportacion = "El CSV no contiene matrículas.";
+                    }
+                },
+                error: (error) => {
+                    this.errorImportacion = `No se pudo leer el CSV: ${error.message}`;
+                    console.error("Error al procesar CSV de matrículas:", error);
                 }
-            }
+            });
+        },
+        async previsualizarReemplazo() {
+            this.errorImportacion = "";
+            this.mensajeImportacion = "";
+            this.reemplazoMatriculas = null;
 
-            if (counter % 250 !== 0) {
+            try {
+                const filas = this.datosCSV;
+                if (!filas?.length) throw new Error("Seleccione un CSV con matrículas.");
+
+                const encabezados = Object.keys(filas[0]);
+                const esperados = Object.keys(mapeoMatriculas);
+                if (encabezados.length !== esperados.length || esperados.some((campo) => !encabezados.includes(campo))) {
+                    throw new Error("Los encabezados del CSV no coinciden con el formato de matrículas esperado.");
+                }
+
+                const ids = filas.map((fila) => String(fila.id ?? "").trim());
+                if (ids.some((id) => !id) || new Set(ids).size !== ids.length) {
+                    throw new Error("El CSV contiene IDs vacíos o duplicados.");
+                }
+
+                const [matriculasSnapshot, cursosSnapshot] = await Promise.all([
+                    getDocsFromServer(collection(db, "matriculas")),
+                    getDocsFromServer(collection(db, "cursos"))
+                ]);
+                const matriculasPorId = new Map();
+                for (const matriculaDoc of matriculasSnapshot.docs) {
+                    const id = String(matriculaDoc.data().matriculaid ?? "").trim();
+                    if (!id) continue;
+                    const coincidencias = matriculasPorId.get(id) || [];
+                    coincidencias.push(matriculaDoc);
+                    matriculasPorId.set(id, coincidencias);
+                }
+
+                const idsAmbiguos = ids.filter((id) => (matriculasPorId.get(id) || []).length > 1);
+                if (idsAmbiguos.length) {
+                    throw new Error(`${idsAmbiguos.length} IDs del CSV tienen más de una coincidencia en Firestore.`);
+                }
+
+                const cursosPorClave = new Map();
+                for (const cursoDoc of cursosSnapshot.docs) {
+                    const curso = cursoDoc.data();
+                    const clave = claveCurso(curso.anio, curso.division);
+                    const coincidencias = cursosPorClave.get(clave) || [];
+                    coincidencias.push(curso);
+                    cursosPorClave.set(clave, coincidencias);
+                }
+                const clavesCurso = filas.map((fila) => claveCurso(fila["Año"], fila["División"]));
+                const cursosNoEncontrados = clavesCurso.filter((clave) => {
+                    const coincidencias = cursosPorClave.get(clave) || [];
+                    return coincidencias.length !== 1 || !coincidencias[0].cursoid;
+                }).length;
+                if (cursosNoEncontrados) {
+                    throw new Error(`${cursosNoEncontrados} filas no tienen un curso único por año y división.`);
+                }
+
+                const matriculasExistentes = new Map(ids.map((id) => [id, (matriculasPorId.get(id) || [])[0] || null]));
+                const documentosConservados = new Set(
+                    [...matriculasExistentes.values()].filter(Boolean).map((matriculaDoc) => matriculaDoc.ref.path)
+                );
+                const documentosAEliminar = matriculasSnapshot.docs.filter(
+                    (matriculaDoc) => !documentosConservados.has(matriculaDoc.ref.path)
+                );
+                const operaciones = filas.length + documentosAEliminar.length;
+                if (operaciones > 500) {
+                    throw new Error(`El reemplazo requiere ${operaciones} escrituras; Firestore permite hasta 500 por lote.`);
+                }
+
+                const actualizadas = [...matriculasExistentes.values()].filter(Boolean).length;
+                const nuevas = filas.length - actualizadas;
+                this.reemplazoMatriculas = markRaw({
+                    filas,
+                    ids,
+                    matriculasExistentes,
+                    documentosAEliminar,
+                    cursosPorClave,
+                    clavesCurso,
+                });
+                this.resumenReemplazo = {
+                    actualizadas,
+                    nuevas,
+                    eliminadas: documentosAEliminar.length,
+                };
+                this.dialogReemplazoMatriculas = true;
+            } catch (error) {
+                this.errorImportacion = error.message;
+                console.error("Error al validar reemplazo de matrículas:", error);
+            }
+        },
+        async confirmarReemplazo() {
+            if (!this.reemplazoMatriculas || this.reemplazando) return;
+
+            this.reemplazando = true;
+            this.errorImportacion = "";
+            this.mensajeImportacion = "";
+            let loteAplicado = false;
+            try {
+                const plan = this.reemplazoMatriculas;
+                const [matriculasActuales, cursosActuales] = await Promise.all([
+                    getDocsFromServer(collection(db, "matriculas")),
+                    getDocsFromServer(collection(db, "cursos"))
+                ]);
+                const rutasEsperadas = new Set([
+                    ...[...plan.matriculasExistentes.values()].filter(Boolean).map((matriculaDoc) => matriculaDoc.ref.path),
+                    ...plan.documentosAEliminar.map((matriculaDoc) => matriculaDoc.ref.path)
+                ]);
+                const rutasActuales = new Set(matriculasActuales.docs.map((matriculaDoc) => matriculaDoc.ref.path));
+                if (rutasActuales.size !== rutasEsperadas.size || [...rutasActuales].some((ruta) => !rutasEsperadas.has(ruta))) {
+                    throw new Error("La colección cambió después de la vista previa. Vuelva a validar el CSV.");
+                }
+
+                const cursosPorClaveActuales = new Map();
+                for (const cursoDoc of cursosActuales.docs) {
+                    const curso = cursoDoc.data();
+                    const clave = claveCurso(curso.anio, curso.division);
+                    const coincidencias = cursosPorClaveActuales.get(clave) || [];
+                    coincidencias.push(curso);
+                    cursosPorClaveActuales.set(clave, coincidencias);
+                }
+                if (plan.clavesCurso.some((clave) => {
+                    const coincidencias = cursosPorClaveActuales.get(clave) || [];
+                    return coincidencias.length !== 1 || !coincidencias[0].cursoid;
+                })) {
+                    throw new Error("El catálogo de cursos cambió después de la vista previa. Vuelva a validar el CSV.");
+                }
+                plan.cursosPorClave = cursosPorClaveActuales;
+
+                const batch = writeBatch(db);
+                for (let i = 0; i < plan.filas.length; i++) {
+                    const fila = plan.filas[i];
+                    const matriculaDoc = plan.matriculasExistentes.get(plan.ids[i]);
+                    const curso = plan.cursosPorClave.get(plan.clavesCurso[i])[0];
+                    const datos = {};
+                    for (const [campoOrigen, campoDestino] of Object.entries(mapeoMatriculas)) {
+                        datos[campoDestino] = fila[campoOrigen] ?? "";
+                    }
+                    datos.curidhex = curso.cursoid;
+                    if (matriculaDoc?.data().idhex !== undefined) {
+                        datos.idhex = matriculaDoc.data().idhex;
+                    }
+                    const referencia = matriculaDoc?.ref || doc(collection(db, "matriculas"));
+                    batch.set(referencia, datos);
+                }
+                for (const matriculaDoc of plan.documentosAEliminar) {
+                    batch.delete(matriculaDoc.ref);
+                }
+
                 await batch.commit();
+                loteAplicado = true;
+
+                const verificacion = await getDocsFromServer(collection(db, "matriculas"));
+                const idsVerificados = new Map();
+                for (const matriculaDoc of verificacion.docs) {
+                    const id = String(matriculaDoc.data().matriculaid ?? "").trim();
+                    if (id) idsVerificados.set(id, matriculaDoc.data());
+                }
+                const camposIncorrectos = plan.filas.some((fila, i) => {
+                    const actual = idsVerificados.get(plan.ids[i]);
+                    const curso = plan.cursosPorClave.get(plan.clavesCurso[i])[0];
+                    return !actual || Object.entries(mapeoMatriculas).some(([origen, destino]) =>
+                        String(actual[destino] ?? "").trim() !== String(fila[origen] ?? "").trim()
+                    ) || String(actual.curidhex ?? "") !== String(curso.cursoid);
+                });
+                if (verificacion.size !== plan.filas.length || idsVerificados.size !== plan.filas.length || camposIncorrectos) {
+                    throw new Error("La escritura se aplicó, pero la verificación posterior no coincide con el CSV.");
+                }
+
+                this.matriculas = verificacion.docs
+                    .map((matriculaDoc) => ({ id: matriculaDoc.id, ...matriculaDoc.data() }))
+                    .sort((a, b) => a.matriculaid - b.matriculaid);
+                const cursoSeleccionado = this.cursos.find((curso) => curso.id === this.idCourseSelected);
+                this.courseSelected = cursoSeleccionado
+                    ? this.matriculas.filter((matricula) => matricula.curidhex == cursoSeleccionado.cursoid)
+                    : [];
+                this.dialogReemplazoMatriculas = false;
+                this.reemplazoMatriculas = null;
+                this.resumenReemplazo = null;
+                this.mensajeImportacion = `Reemplazo completado y verificado: ${verificacion.size} matrículas.`;
+            } catch (error) {
+                this.errorImportacion = loteAplicado
+                    ? `El lote se aplicó, pero no se pudo verificar: ${error.message}`
+                    : `No se pudo reemplazar la colección: ${error.message}`;
+                if (loteAplicado) {
+                    this.dialogReemplazoMatriculas = false;
+                    this.reemplazoMatriculas = null;
+                    this.resumenReemplazo = null;
+                }
+                console.error("Error al reemplazar matrículas:", error);
+            } finally {
+                this.reemplazando = false;
             }
         },
         onChange(value) {
