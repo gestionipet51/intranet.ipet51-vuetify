@@ -44,6 +44,12 @@
             <v-alert v-if="errorImportacion" type="error" variant="tonal" class="mb-4">
                 {{ errorImportacion }}
             </v-alert>
+            <v-alert v-if="errorCarga" type="error" variant="tonal" class="mb-4">
+                {{ errorCarga }}
+                <v-btn class="mt-2" variant="outlined" to="/intranet/login/index">
+                    Iniciar sesión
+                </v-btn>
+            </v-alert>
             <v-alert v-if="mensajeImportacion" type="success" variant="tonal" class="mb-4">
                 {{ mensajeImportacion }}
             </v-alert>
@@ -454,6 +460,7 @@
             reemplazoMatriculas: null,
             reemplazando: false,
             errorImportacion: "",
+            errorCarga: "",
             mensajeImportacion: "",
             opEstados: [],
             tlResponsables: [],
@@ -494,26 +501,34 @@
     methods: {
         async initialize() {
             this.loading = true;
-            await Promise.all([
-                this.fetchCursos(),
-                this.fetchMatriculas(),
-                this.fetchDependencias(),
-                this.fetchMiembrosDependencias(),
-            ]);
-            this.loading = false;
+            this.errorCarga = "";
+            try {
+                await Promise.all([
+                    this.fetchCursos(),
+                    this.fetchMatriculas(),
+                    this.fetchDependencias(),
+                    this.fetchMiembrosDependencias(),
+                ]);
 
-            this.opEstados = vEstados;
-            this.responsables = vResponsables;
-            this.HTML_template = plantillaHTML;
-            // console.log(this.matriculas);
-            this.tlResponsables = this.miembrosdependencias.filter((elem) => (elem.dependenciaID  == (this.dependencias.find(dep => dep.key == "TLA")).id));
-            this.tlResponsables.forEach(el => { el.docente = el.apellido + "," + el.nombres});
-            this.cpResponsables = this.miembrosdependencias.filter((elem) => (elem.dependenciaID  == (this.dependencias.find(dep => dep.key == "COO")).id));
-            this.cpResponsables.forEach(el => { el.docente = el.apellido + "," + el.nombres});
-            this.blResponsables = this.miembrosdependencias.filter((elem) => (elem.dependenciaID  == (this.dependencias.find(dep => dep.key == "BBL")).id));
-            this.blResponsables.forEach(el => { el.docente = el.apellido + "," + el.nombres});
-            this.intResponsables = this.miembrosdependencias.filter((elem) => (elem.dependenciaID  == (this.dependencias.find(dep => dep.key == "INT")).id));
-            this.intResponsables.forEach(el => { el.docente = el.apellido + "," + el.nombres});
+                this.opEstados = vEstados;
+                this.responsables = vResponsables;
+                this.HTML_template = plantillaHTML;
+                this.tlResponsables = this.miembrosdependencias.filter((elem) => (elem.dependenciaID == (this.dependencias.find(dep => dep.key == "TLA")).id));
+                this.tlResponsables.forEach(el => { el.docente = el.apellido + "," + el.nombres; });
+                this.cpResponsables = this.miembrosdependencias.filter((elem) => (elem.dependenciaID == (this.dependencias.find(dep => dep.key == "COO")).id));
+                this.cpResponsables.forEach(el => { el.docente = el.apellido + "," + el.nombres; });
+                this.blResponsables = this.miembrosdependencias.filter((elem) => (elem.dependenciaID == (this.dependencias.find(dep => dep.key == "BBL")).id));
+                this.blResponsables.forEach(el => { el.docente = el.apellido + "," + el.nombres; });
+                this.intResponsables = this.miembrosdependencias.filter((elem) => (elem.dependenciaID == (this.dependencias.find(dep => dep.key == "INT")).id));
+                this.intResponsables.forEach(el => { el.docente = el.apellido + "," + el.nombres; });
+            } catch (error) {
+                console.error("No se pudo cargar Hoja de Ruta.", error);
+                this.errorCarga = error.code === "permission-denied"
+                    ? "No tienes permiso para consultar matrículas. Inicia sesión con una cuenta de editor."
+                    : `No se pudo cargar Hoja de Ruta: ${error.message}`;
+            } finally {
+                this.loading = false;
+            }
         },
         fetchCursos: async function () {
             const querySnapshot = await getDocs(collection(db, "cursos"));

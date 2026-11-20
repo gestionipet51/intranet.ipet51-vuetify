@@ -61,6 +61,19 @@ yarn build
 
 Once the build process is completed, your application will be ready for deployment in a production environment.
 
+## Acceso a Firestore
+
+Las reglas de [firestore.rules](./firestore.rules) permiten lectura pública de catálogos y dependencias, pero limitan la lectura de `matriculas` y todas las escrituras a editores autenticados.
+
+Para habilitar el acceso:
+
+1. En Firebase Authentication, activa el proveedor de correo y contraseña y crea manualmente las cuentas de los editores. La aplicación no ofrece registro público.
+2. En Firestore, publica el contenido de `firestore.rules` desde la pestaña **Reglas**.
+3. En Firestore, crea un documento vacío `editors/{UID}` por cada editor autorizado. Usa el UID de su cuenta de Firebase Authentication. No concedas este permiso a usuarios no confiables.
+4. Los editores inician sesión desde **Login** en la aplicación. Una cuenta sin documento en `editors` no puede leer matrículas ni modificar colecciones.
+
+La configuración del cliente de Firebase identifica el proyecto, pero no concede permisos: las reglas publicadas en Firestore son las que aplican el control de acceso.
+
 ## 💪 Support Vuetify Development
 
 This project is built with [Vuetify](https://vuetifyjs.com/en/), a UI Library with a comprehensive collection of Vue components. Vuetify is an MIT licensed Open Source project that has been made possible due to the generous contributions by our [sponsors and backers](https://vuetifyjs.com/introduction/sponsors-and-backers/). If you are interested in supporting this project, please consider:

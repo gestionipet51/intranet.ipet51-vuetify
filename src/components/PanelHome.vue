@@ -41,7 +41,7 @@
 <script>
 
     const menues = [
-        { id:"0", caption:"Login", icon:"mdi-login" ,target:"/intranet/login"},
+        { id:"0", caption:"Login", icon:"mdi-login" ,target:"/intranet/login/index"},
         { id:"1", caption:"Home",icon:"mdi-home-outline",class:"",disable:false ,target:"/"},
         { id:"2", caption:"Cursos",icon:"mdi-file-account-outline",class:"",disable:false ,target:"/intranet/cursos/index"},
         { id:"3", caption:"Roles" ,icon:"mdi-account-card-outline",class:"",disable:false ,target:"/intranet/roles"},
