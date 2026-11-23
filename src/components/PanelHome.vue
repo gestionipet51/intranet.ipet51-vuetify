@@ -19,6 +19,7 @@
           <v-list-item title="Panel de Trabajo"></v-list-item>
           <v-divider></v-divider>
           <v-list-item v-for="i in items" 
+                        :key="i.id"
                         :id="i.id" 
                         link 
                         :title="i.caption" 
@@ -40,17 +41,20 @@
 <script>
 
     const menues = [
-        { id:"0", caption:"Login", icon:"mdi-login" ,target:"/intranet/login"},
+        { id:"0", caption:"Login", icon:"mdi-login" ,target:"/intranet/login/index"},
         { id:"1", caption:"Home",icon:"mdi-home-outline",class:"",disable:false ,target:"/"},
         { id:"2", caption:"Cursos",icon:"mdi-file-account-outline",class:"",disable:false ,target:"/intranet/cursos/index"},
-        { id:"3", caption:"Roles",icon:"mdi-account-card-outline",class:"",disable:true ,target:"/roles"},
-        { id:"4", caption:"Catalogos", icon:"mdi-playlist-edit",class:"",disable:true ,target:"/catalogos"},
-        { id:"5", caption:"Det.Catlogos", icon:"mdi-text-box-edit-outline",class:"",disable:true ,target:"/roles"},
+        { id:"3", caption:"Roles" ,icon:"mdi-account-card-outline",class:"",disable:false ,target:"/intranet/roles"},
+        { id:"4", caption:"Catalogos", icon:"mdi-playlist-edit",class:"",disable:false ,target:"/catalogos"},
+        { id:"5", caption:"Det.Catalogos", icon:"mdi-text-box-edit-outline",class:"",disable:false ,target:"/detalleCatalogos"},
         { id:"6", caption:"Horarios", icon:"mdi-clock-outline",class:"",disable:true ,target:"/horarios"},
         { id:"7", caption:"Esp.Curriculares", icon:"mdi-application-array-outline",class:"",disable:true ,target:"/espacioscurriculares"},
         { id:"8", caption:"Areas", icon:"mdi-group",class:"",disable:true ,target:"/areas"},
-        { id:"9", caption:"Departamentos", icon:"mdi-office-building-outline",class:"",disable:true ,target:"/departamentos"},
-        { id:"10", caption:"Docentes", icon:"mdi-account-group-outline",class:"",disable:true ,target:"/docentes"},
+        { id:"9", caption:"Departamentos", icon:"mdi-office-building-outline",class:"",disable:false ,target:"/intranet/departamentos"},
+        { id:"10", caption:"Docentes", icon:"mdi-account-group-outline",class:"",disable:false ,target:"/intranet/docentes/index"},
+        { id:"11" ,caption:"HDR - Dependencias",icon:"mdi-account-multiple",class:"",disable:false,target:"/intranet/hojaderuta/dependencias"},
+        { id:"12", caption:"Hoja de Ruta",icon:"mdi-routes",class:"blue lighten-2",disable:false,target:"/intranet/hojaderuta/index"},
+        { id:"13", caption:"Subir Datos", icon:"mdi-upload" ,class:"",disable:false,target:"/intranet/loaddata/index"},
     ];
 
     export default {

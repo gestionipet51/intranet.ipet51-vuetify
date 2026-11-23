@@ -1,0 +1,147 @@
+// Plugins
+import Components from 'unplugin-vue-components/vite'
+import Vue from '@vitejs/plugin-vue'
+import Vuetify, { transformAssetUrls } from 'vite-plugin-vuetify'
+import ViteFonts from 'unplugin-fonts/vite'
+
+// Utilities
+import { defineConfig } from 'vite'
+import { fileURLToPath, URL } from 'node:url'
+
+// https://vitejs.dev/config/
+export default defineConfig({
+  plugins: [
+    Vue({
+      template: { transformAssetUrls }
+    }),
+    // https://github.com/vuetifyjs/vuetify-loader/tree/master/packages/vite-plugin#readme
+    Vuetify(),
+    Components(),
+    ViteFonts({
+      google: {
+        families: [{
+          name: 'Roboto',
+          styles: 'wght@100;300;400;500;700;900',
+        }],
+      },
+    }),
+  ],
+  define: { 'process.env': {} },
+  resolve: {
+    alias: {
+      '@': fileURLToPath(new URL('./src', import.meta.url))
+    },
+    extensions: [
+      '.js',
+      '.json',
+      '.jsx',
+      '.mjs',
+      '.ts',
+      '.tsx',
+      '.vue',
+    ],
+  },
+  server: {
+    port: 3000,
+  },
+})
+module.exports = {
+    chainWebpack: config => {
+      config.module
+        .rule('raw')
+        .test(/\.html$/)
+        .use('raw-loader')
+        .end();
+    }
+  };src/App.vue
+src/assets/ipet51/pagina-construccion-002.jpg
+src/assets/ipet51/pagina-construccion-003.jpg
+src/assets/ipet51/pagina-construccion-004.jpg
+src/assets/ipet51/Pagina-en-construccion.gif
+src/assets/ipet51/Pagina_en_construccion.jpg
+src/assets/ipet51/under-construct-001.png
+src/assets/ipet51/under-construct-002.png
+src/assets/ipet51/under-construct-003.png
+src/assets/Login.png
+src/assets/login.svg
+src/assets/logo.png
+src/assets/logo.svg
+src/assets/plantillas/hdr.html
+src/assets/plantillas/hoja_de_ruta.html
+src/components/AppFooter.vue
+src/components/catalogos/Catalogos.vue
+src/components/catalogos/DetCatalogos.vue
+src/components/GoogleDocs.vue
+src/components/HelloWorld.vue
+src/components/intranet/Login.vue
+src/components/PanelHome.vue
+src/components/README.md
+src/components/Welcome.vue
+src/firebaseConfig.js
+src/main.js
+src/plugins/index.js
+src/plugins/README.md
+src/plugins/vuetify.js
+src/router/index.js
+src/server.js
+./src/firebaseConfig.js
+Legend: production dependency, optional only, dev only
+
+Demo001@0.0.0 /home/gestionipet51/www/proyectos/js/vue/vuetify/Demo000
+│
+│   dependencies:
+├── @mdi/font@7.4.47
+├── axios@1.16.1
+├── body-parser@1.20.5
+├── bootstrap@5.3.8
+├── cors@2.8.6
+├── express@4.22.2
+├── firebase@10.14.1
+├── gapi-script@1.2.0
+├── html2canvas@1.4.1
+├── html2pdf.js@0.10.3
+├── jspdf@3.0.4
+├── mariadb@3.5.2
+├── papaparse@5.5.3
+├── roboto-fontface@0.10.0
+├── vue@3.5.35
+├── vue-html-to-paper@2.0.3
+├── vue-router@4.6.4
+├── vue3-google-oauth2@1.0.7
+├── vue3-google-signin@2.1.1
+├── vuetify@3.12.7
+│
+│   devDependencies:
+├── @vitejs/plugin-vue@5.2.4
+├── material-design-icons-iconfont@6.7.0
+├── raw-loader@4.0.2
+├── sass@1.100.0
+├── unplugin-fonts@1.4.0
+├── unplugin-vue-components@0.26.0
+├── vite@5.4.21
+└── vite-plugin-vuetify@2.1.3
+
+28 packages
+src/server.js:5://  import { dbConfig } from '../../../firebaseConfig';
+src/firebaseConfig.js:2:import { initializeApp } from "firebase/app";
+src/firebaseConfig.js:3:import { getFirestore, enableIndexedDbPersistence } from "firebase/firestore"
+src/firebaseConfig.js:4:import { getStorage } from "firebase/storage";
+src/firebaseConfig.js:10:const firebaseConfig = {
+src/firebaseConfig.js:23:const app = initializeApp(firebaseConfig);
+src/firebaseConfig.js:25:export const db = getFirestore(app);
+src/firebaseConfig.js:35:export const storage = getStorage(app);
+src/components/catalogos/Catalogos.vue:102:import { db } from '../../firebaseConfig';
+src/components/GoogleDocs.vue:13:  import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+src/components/GoogleDocs.vue:22:        const auth = getAuth();
+src/components/GoogleDocs.vue:24:          const result = await signInWithPopup(auth, googleProvider);
+src/components/GoogleDocs.vue:34:        const token = (await getAuth().currentUser.getIdToken());
+src/components/intranet/roles/Roles.vue:94:import { db } from '../../../firebaseConfig';
+src/components/intranet/loaddata/LoadData.vue:37:    import { db } from '../../../firebaseConfig';
+src/components/intranet/departamentos/Departamentos.vue:92:import { db } from '../../../firebaseConfig';
+src/components/intranet/cursos/Cursos.vue:68:import { db } from '../../../firebaseConfig';
+src/components/intranet/hojaderuta/HojaDeRuta.vue:305:    import { db } from '../../../firebaseConfig';
+src/components/intranet/hojaderuta/HojaDeRuta.vue:793:                const authInstance = gapi.auth2.getAuthInstance();
+src/components/intranet/hojaderuta/HojaDeRuta.vue:802:            await gapi.auth2.getAuthInstance().signIn();
+src/components/intranet/hojaderuta/HojaDeRuta.vue:806:            gapi.auth2.getAuthInstance().signOut();
+src/components/intranet/hojaderuta/Dependencias.vue:98:    import { db } from '../../../firebaseConfig';
+src/components/intranet/hojaderuta/MiembrosDendencias.vue:68:import { db } from '../../../firebaseConfig';

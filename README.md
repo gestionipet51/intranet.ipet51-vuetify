@@ -61,6 +61,29 @@ yarn build
 
 Once the build process is completed, your application will be ready for deployment in a production environment.
 
+## Acceso a Firestore
+
+Las reglas de [firestore.rules](./firestore.rules) permiten lectura pública de catálogos y dependencias, pero limitan la lectura de `matriculas` y todas las escrituras a editores autenticados.
+
+Para habilitar el acceso:
+
+1. En Firebase Authentication, activa el proveedor de correo y contraseña y crea manualmente las cuentas de los editores. La aplicación no ofrece registro público.
+2. En Firestore, publica el contenido de `firestore.rules` desde la pestaña **Reglas**.
+3. En Firestore, crea un documento vacío `editors/{UID}` por cada editor autorizado. Usa el UID de su cuenta de Firebase Authentication. No concedas este permiso a usuarios no confiables.
+4. Los editores inician sesión desde **Login** en la aplicación. Una cuenta sin documento en `editors` no puede leer matrículas ni modificar colecciones.
+
+La configuración del cliente de Firebase identifica el proyecto, pero no concede permisos: las reglas publicadas en Firestore son las que aplican el control de acceso.
+
+## Deploy en Firebase Hosting
+
+El Hosting está configurado para publicar `dist` y redirigir las rutas de Vue Router a `index.html`.
+
+1. Instala Firebase CLI: `npm install -g firebase-tools`.
+2. Inicia sesión con una cuenta que tenga acceso al proyecto: `firebase login`.
+3. Publica el frontend: `npm run deploy:hosting`.
+
+El proyecto predeterminado es `intranetipet51-20049`. El comando genera la compilación de producción antes de publicarla. Firebase Hosting solo sirve los archivos estáticos del frontend: `src/server.js` no se ejecuta en Hosting y necesitaría desplegarse por separado (por ejemplo, en Cloud Run o Cloud Functions) si la aplicación requiere ese backend.
+
 ## 💪 Support Vuetify Development
 
 This project is built with [Vuetify](https://vuetifyjs.com/en/), a UI Library with a comprehensive collection of Vue components. Vuetify is an MIT licensed Open Source project that has been made possible due to the generous contributions by our [sponsors and backers](https://vuetifyjs.com/introduction/sponsors-and-backers/). If you are interested in supporting this project, please consider:

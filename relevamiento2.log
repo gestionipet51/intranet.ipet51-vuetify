@@ -1,0 +1,151 @@
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getFirestore, enableIndexedDbPersistence } from "firebase/firestore"
+import { getStorage } from "firebase/storage";
+
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+const firebaseConfig = {
+
+    apiKey: "AIzaSyB_ZkXPyUOecizerUZ61mUKDfgnmA1iqe0",
+    authDomain: "intranetipet51-20049.firebaseapp.com",
+    databaseURL: "https://intranetipet51-20049-default-rtdb.firebaseio.com",
+    projectId: "intranetipet51-20049",
+    storageBucket: "intranetipet51-20049.appspot.com",
+    messagingSenderId: "911892646464",
+    appId: "1:911892646464:web:62eff9e76cf00affd4ada5"
+  };
+  
+  
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+
+export const db = getFirestore(app);
+
+enableIndexedDbPersistence(db).catch((err) => {
+  if (err.code === 'failed-precondition') {
+    console.warn('Firebase persistence disabled: multiple tabs open.');
+  } else if (err.code === 'unimplemented') {
+    console.warn('Firebase persistence is not available in this browser.');
+  }
+});
+
+export const storage = getStorage(app);
+
+const express = require("express");
+const bodyParser = require("body-parser");
+const cors = require("cors");
+const firebird = require("node-firebird");
+//  import { dbConfig } from '../../../firebaseConfig';
+
+// Configurar la conexión a Firebird
+
+    const firebirdConfig = {
+    host: "localhost",
+    port: 3050,
+    database:  "https://intranetipet51-20049-default-rtdb.firebaseio.com",
+    user: "gestion.ipet51@gmail.com",
+    password: "e8eA&2707LAP",
+    lowercase_keys: false,
+    role: null,
+    pageSize: 4096
+    };
+
+
+const app = express();
+app.use(cors());
+app.use(bodyParser.json());
+
+// Ruta para recibir datos CSV
+app.post("/subir-csv", (req, res) => {
+  const datos = req.body; // Datos enviados desde Vue.js
+
+  firebird.attach(firebirdConfig, (err, db) => {
+    if (err) {
+      console.error("Error al conectar con Firebird:", err);
+      return res.status(500).json({ error: "Error de conexión a la base de datos." });
+    }
+
+    // Insertar los datos en Firebird
+    const promesas = datos.map((fila) => {
+      return new Promise((resolve, reject) => {
+        const query = `
+          INSERT INTO mi_tabla (columna1, columna2, columna3)
+          VALUES (?, ?, ?)
+        `;
+        db.query(query, [fila.columna1, fila.columna2, fila.columna3], (err, result) => {
+          if (err) {
+            return reject(err);
+          }
+          resolve(result);
+        });
+      });
+    });
+
+    // Manejar todas las promesas
+    Promise.all(promesas)
+      .then(() => {
+        db.detach();
+        res.json({ message: "Datos insertados correctamente." });
+      })
+      .catch((error) => {
+        db.detach();
+        console.error("Error al insertar datos:", error);
+        res.status(500).json({ error: "Error al insertar datos en la base de datos." });
+      });
+  });
+});
+
+// Iniciar el servidor
+app.listen(3000, () => {
+  console.log("Servidor corriendo en http://localhost:3001");
+});import { createRouter,createWebHistory } from "vue-router";
+import Welcome from '../components/Welcome.vue';
+import Login from '../components/intranet/Login.vue';
+import Cursos from '../components/intranet/cursos/Cursos.vue';
+import ListarCursos from '../components/intranet/cursos/ListarCursos.vue';
+import TecnicoElectronica from '../components/intranet/especialidades/TecnicoElectronica.vue'; 
+import TecnicoAutomotores from "@/components/intranet/especialidades/TecnicoAutomotores.vue";
+import TecnicoMecanico from "@/components/intranet/especialidades/TecnicoMecanico.vue";
+import TecnicoCarpinteria from "@/components/intranet/especialidades/TecnicoCarpinteria.vue";
+import PanelHome from "@/components/PanelHome.vue";
+import Roles from '@/components/intranet/roles/Roles.vue';
+import Catalogos from '@/components/catalogos/Catalogos.vue';
+import DetCatalogos from '@/components/catalogos/DetCatalogos.vue';
+import HojaDeRuta from '@/components/intranet/hojaderuta/HojaDeRuta.vue';
+import Departamentos from "@/components/intranet/departamentos/Departamentos.vue";
+import Docentes from "@/components/intranet/docentes/Docentes.vue";
+import LoadData from "@/components/intranet/loaddata/LoadData.vue";
+import Dependencias from '@/components/intranet/hojaderuta/Dependencias.vue';
+
+
+const routes = [
+    { path:'/' , component:Welcome },
+    { path:'/panelHome',component:PanelHome },
+    { path:'/intranet/roles',component:Roles},
+    { path:'/intranet/login/index' , component:Login },
+    { path:'/intranet/cursos/index' , component:Cursos },
+    { path:'/intranet/cursos/listar' , component:ListarCursos },
+    { path:'/intranet/especialidades/electronica', component:TecnicoElectronica },
+    { path:'/intranet/especialidades/mecanico',component:TecnicoMecanico },
+    { path:'/intranet/especialidades/automotores', component:TecnicoAutomotores },
+    { path:'/intranet/especialidades/carpinteria' , component:TecnicoCarpinteria },
+    { path:'/catalogos', component:Catalogos },
+    { path:'/catalogos/detalleCatalogos',component:DetCatalogos},
+    { path:'/intranet/hojaderuta/index',component:HojaDeRuta},
+    { path:'/intranet/departamentos', component:Departamentos},
+    { path:'/intranet/loaddata/index',component:LoadData},
+    { path:'/intranet/docentes/index',component:Docentes},
+    { path:'/intranet/hojaderuta/dependencias',component:Dependencias}
+];
+
+
+const router = createRouter({
+    history:createWebHistory(),
+    routes,
+});
+
+
+export default router;

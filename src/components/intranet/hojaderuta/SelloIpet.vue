@@ -1,0 +1,24 @@
+<template>
+    <div class="image-container">
+        <img :src="selloIpet" alt="Sello Ipet51">
+    </div>
+</template>
+
+<script setup>
+    import selloIpet from '@/assets/plantillas/images/image2.png'
+</script>
+
+<style>
+    img {
+        max-width: 120px;
+        max-height: 150px;
+        width:120px;
+        height:120px;
+    }
+
+    .image-container {
+        text-align: center;
+        margin-top: 20px;
+    }
+    
+</style>
