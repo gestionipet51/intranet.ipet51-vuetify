@@ -74,6 +74,16 @@ Para habilitar el acceso:
 
 La configuración del cliente de Firebase identifica el proyecto, pero no concede permisos: las reglas publicadas en Firestore son las que aplican el control de acceso.
 
+## Deploy en Firebase Hosting
+
+El Hosting está configurado para publicar `dist` y redirigir las rutas de Vue Router a `index.html`.
+
+1. Instala Firebase CLI: `npm install -g firebase-tools`.
+2. Inicia sesión con una cuenta que tenga acceso al proyecto: `firebase login`.
+3. Publica el frontend: `npm run deploy:hosting`.
+
+El proyecto predeterminado es `intranetipet51-20049`. El comando genera la compilación de producción antes de publicarla. Firebase Hosting solo sirve los archivos estáticos del frontend: `src/server.js` no se ejecuta en Hosting y necesitaría desplegarse por separado (por ejemplo, en Cloud Run o Cloud Functions) si la aplicación requiere ese backend.
+
 ## 💪 Support Vuetify Development
 
 This project is built with [Vuetify](https://vuetifyjs.com/en/), a UI Library with a comprehensive collection of Vue components. Vuetify is an MIT licensed Open Source project that has been made possible due to the generous contributions by our [sponsors and backers](https://vuetifyjs.com/introduction/sponsors-and-backers/). If you are interested in supporting this project, please consider:
